@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import { usePrefs } from '../app/usePrefs'
 import { useT } from '../i18n/useT'
 import {
   FOV_HALF_DEG,
@@ -58,6 +59,7 @@ function toLatLngs(coords: Coord[]): L.LatLngExpression[] {
 
 export function ReconView() {
   const { t } = useT()
+  const { wikiLimit } = usePrefs()
   const mapEl = useRef<HTMLDivElement>(null)
   const mapRef = useRef<L.Map | null>(null)
   const blipLayerRef = useRef<L.LayerGroup | null>(null)
@@ -171,12 +173,16 @@ export function ReconView() {
   }, [coord])
 
   useEffect(() => {
+    lastFetchAt.current = null
+  }, [wikiLimit])
+
+  useEffect(() => {
     if (!coord) return
     if (!shouldRefetch(lastFetchAt.current, coord)) return
     let cancelled = false
     setLoading(true)
     setFetchFailed(false)
-    void fetchNearbyPlaces(coord, fetch, RECON_RADIUS_M)
+    void fetchNearbyPlaces(coord, fetch, RECON_RADIUS_M, wikiLimit)
       .then((next) => {
         if (cancelled) return
         lastFetchAt.current = coord
@@ -191,7 +197,7 @@ export function ReconView() {
     return () => {
       cancelled = true
     }
-  }, [coord])
+  }, [coord, wikiLimit])
 
   useEffect(() => {
     const overlay = blipLayerRef.current

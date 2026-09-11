@@ -1,4 +1,9 @@
-import { FETCH_RADIUS_M, MERGE_RADIUS_M, REFETCH_MOVE_M } from './constants'
+import {
+  DEFAULT_WIKI_LIMIT,
+  FETCH_RADIUS_M,
+  MERGE_RADIUS_M,
+  REFETCH_MOVE_M,
+} from './constants'
 import { factId } from './collection'
 import { distanceMeters, movedAtLeast, type Coord } from './geo'
 import type { NearbyPlace } from '../types'
@@ -21,18 +26,23 @@ export function shouldRefetch(prev: Coord | null, next: Coord): boolean {
   return movedAtLeast(prev, next, REFETCH_MOVE_M)
 }
 
-function wikiUrl(lang: 'no' | 'en', coord: Coord, radiusM: number): string {
+function wikiUrl(
+  lang: 'no' | 'en',
+  coord: Coord,
+  radiusM: number,
+  limit: number,
+): string {
   const params = new URLSearchParams({
     action: 'query',
     generator: 'geosearch',
     ggscoord: `${coord.lat}|${coord.lon}`,
     ggsradius: String(radiusM),
-    ggslimit: '50',
+    ggslimit: String(limit),
     prop: 'extracts|coordinates|pageimages|info',
     exintro: '1',
     explaintext: '1',
     exchars: '400',
-    colimit: '1',
+    colimit: String(limit),
     piprop: 'thumbnail',
     pithumbsize: '400',
     inprop: 'url',
@@ -96,8 +106,9 @@ async function fetchLang(
   coord: Coord,
   fetchFn: typeof fetch,
   radiusM: number,
+  limit: number,
 ): Promise<NearbyPlace[]> {
-  const response = await fetchFn(wikiUrl(lang, coord, radiusM))
+  const response = await fetchFn(wikiUrl(lang, coord, radiusM, limit))
   if (!response.ok) {
     throw new Error(`Wikipedia ${lang} ${response.status}`)
   }
@@ -108,6 +119,7 @@ export async function fetchNearbyPlaces(
   coord: Coord,
   fetchFn: typeof fetch = fetch,
   radiusM: number = FETCH_RADIUS_M,
+  limit: number = DEFAULT_WIKI_LIMIT,
 ): Promise<NearbyPlace[]> {
   let norwegian: NearbyPlace[] | undefined
   let english: NearbyPlace[] | undefined
@@ -115,13 +127,13 @@ export async function fetchNearbyPlaces(
   let englishError: unknown
 
   try {
-    norwegian = await fetchLang('no', coord, fetchFn, radiusM)
+    norwegian = await fetchLang('no', coord, fetchFn, radiusM, limit)
   } catch (error) {
     norwegianError = error
   }
 
   try {
-    english = await fetchLang('en', coord, fetchFn, radiusM)
+    english = await fetchLang('en', coord, fetchFn, radiusM, limit)
   } catch (error) {
     englishError = error
   }

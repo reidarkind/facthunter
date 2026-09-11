@@ -120,6 +120,8 @@ describe('fetchNearbyPlaces', () => {
     const query = new URL(urls[0]).searchParams
     expect(query.get('ggscoord')).toBe('63.4305|10.395')
     expect(query.get('ggsradius')).toBe('1000')
+    expect(query.get('ggslimit')).toBe('50')
+    expect(query.get('colimit')).toBe('50')
     expect(query.get('origin')).toBe('*')
     expect(places).toEqual([
       {
@@ -145,6 +147,18 @@ describe('fetchNearbyPlaces', () => {
     }
     await fetchNearbyPlaces({ lat: 63.43, lon: 10.39 }, fetchFn, 2000)
     expect(new URL(urls[0]).searchParams.get('ggsradius')).toBe('2000')
+  })
+
+  it('asks Wikipedia for coordinates on every geosearch hit', async () => {
+    const urls: string[] = []
+    const fetchFn = async (input: RequestInfo | URL): Promise<Response> => {
+      urls.push(String(input))
+      return jsonResponse({})
+    }
+    await fetchNearbyPlaces({ lat: 63.43, lon: 10.39 }, fetchFn, 2000, 250)
+    const query = new URL(urls[0]).searchParams
+    expect(query.get('ggslimit')).toBe('250')
+    expect(query.get('colimit')).toBe('250')
   })
 
   it('keeps English results when Norwegian throws', async () => {

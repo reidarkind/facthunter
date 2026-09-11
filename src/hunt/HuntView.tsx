@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { usePrefs } from '../app/usePrefs'
 import { FactSheet } from '../facts/FactSheet'
 import { useT } from '../i18n/useT'
 import { withRead, withUnlocked } from '../lib/collection'
-import { UNLOCK_ACCURACY_M } from '../lib/constants'
+import { FETCH_RADIUS_M, UNLOCK_ACCURACY_M } from '../lib/constants'
 import {
   arLayout,
   bearingDegrees,
@@ -51,6 +52,7 @@ export function HuntView(props: {
 }) {
   const { facts, onFactsChange } = props
   const { t } = useT()
+  const { wikiLimit } = usePrefs()
   const sensors = useHuntSensors()
   const videoRef = useRef<HTMLVideoElement>(null)
   const [places, setPlaces] = useState<NearbyPlace[]>([])
@@ -69,12 +71,16 @@ export function HuntView(props: {
   const coord = sensors.coord
 
   useEffect(() => {
+    lastFetchAt.current = null
+  }, [wikiLimit])
+
+  useEffect(() => {
     if (!sensors.ready || !coord) return
     if (!shouldRefetch(lastFetchAt.current, coord)) return
     let cancelled = false
     setLoadingPlaces(true)
     setFetchFailed(false)
-    void fetchNearbyPlaces(coord)
+    void fetchNearbyPlaces(coord, fetch, FETCH_RADIUS_M, wikiLimit)
       .then((next) => {
         if (cancelled) return
         lastFetchAt.current = coord
@@ -90,7 +96,7 @@ export function HuntView(props: {
     return () => {
       cancelled = true
     }
-  }, [sensors.ready, coord])
+  }, [sensors.ready, coord, wikiLimit])
 
   const signs = useMemo(() => {
     if (!coord || sensors.headingDeg === null) return []

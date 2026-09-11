@@ -1,8 +1,11 @@
 import { useT } from '../i18n/useT'
+import { WIKI_LIMITS } from '../lib/constants'
 import type { Locale } from '../lib/locale'
+import { usePrefs } from './usePrefs'
 
 export function SettingsPage(props: { onBack?: () => void }) {
   const { t, locale, setLocale } = useT()
+  const { wikiLimit, setWikiLimit } = usePrefs()
 
   function choose(next: Locale) {
     setLocale(next)
@@ -39,6 +42,23 @@ export function SettingsPage(props: { onBack?: () => void }) {
           >
             {t('langEn')}
           </button>
+        </div>
+      </section>
+      <section>
+        <h2>{t('wikiLimit')}</h2>
+        <p>{t('wikiLimitHelp')}</p>
+        <div className="filter-row" role="group" aria-label={t('wikiLimit')}>
+          {WIKI_LIMITS.map((limit) => (
+            <button
+              key={limit}
+              type="button"
+              className={wikiLimit === limit ? 'active' : undefined}
+              aria-pressed={wikiLimit === limit}
+              onClick={() => setWikiLimit(limit)}
+            >
+              {limit}
+            </button>
+          ))}
         </div>
       </section>
     </article>

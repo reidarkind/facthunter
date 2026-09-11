@@ -137,6 +137,16 @@ describe('fetchNearbyPlaces', () => {
     ])
   })
 
+  it('uses the given search radius', async () => {
+    const urls: string[] = []
+    const fetchFn = async (input: RequestInfo | URL): Promise<Response> => {
+      urls.push(String(input))
+      return jsonResponse({})
+    }
+    await fetchNearbyPlaces({ lat: 63.43, lon: 10.39 }, fetchFn, 2000)
+    expect(new URL(urls[0]).searchParams.get('ggsradius')).toBe('2000')
+  })
+
   it('keeps English results when Norwegian throws', async () => {
     const hosts: string[] = []
     const fetchFn = async (input: RequestInfo | URL): Promise<Response> => {

@@ -1,9 +1,11 @@
 import type { ReactNode } from 'react'
 import { InstallPage } from '../install/InstallPage'
 
+export type AppTab = 'hunt' | 'recon' | 'collection'
+
 export function AppShell(props: {
-  tab: 'hunt' | 'collection'
-  onTab: (tab: 'hunt' | 'collection') => void
+  tab: AppTab
+  onTab: (tab: AppTab) => void
   showInstall: boolean
   onBackFromInstall: () => void
   children: ReactNode
@@ -26,6 +28,13 @@ export function AppShell(props: {
           onClick={() => props.onTab('hunt')}
         >
           Jakt
+        </button>
+        <button
+          type="button"
+          className={props.tab === 'recon' ? 'active' : undefined}
+          onClick={() => props.onTab('recon')}
+        >
+          Rekognoser
         </button>
         <button
           type="button"

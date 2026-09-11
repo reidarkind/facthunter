@@ -44,6 +44,7 @@ factId('no', String(page.pageid)) // wikipedia:no:123
 ```
 src/lib/*            pure logic; tests sit beside the module
 src/hunt/*           camera, compass, GPS, AR signs
+src/recon/*          scout map; anonymous blips; no unlock
 src/facts/FactSheet  extract + share
 src/collection/*     search, filter, export/import
 src/install/*        privacy + home-screen steps
@@ -64,6 +65,7 @@ TDD for `src/lib/*`: write the failing test, then the function. UI tests use Tes
 
 - Never add a backend, accounts, cloud sync, or leaderboards.
 - Never add WikiStrinda.
+- Rekognoser never shows fact titles and never unlocks.
 - Never change Vite `base` / PWA `start_url` / `scope` away from `/facthunter/`.
 - Never commit `.env` or secrets.
 - Do not push to `main` or force-push unless the user asks.

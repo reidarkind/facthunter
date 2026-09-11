@@ -15,6 +15,7 @@ FactHunter er et tynt lag over Wikipedia GeoSearch — ikke et lukket spill. Jak
 ## Funksjoner
 
 - **Jakt** — bakkamera, GPS og kompass. Steder innen 500 m vises som AR-skilt i synsfeltet (±30°).
+- **Rekognoser** — låst kart med 2 km tåke-sirkel. Prikkene viser at noe er i nærheten, ikke hva. Bytt til Jakt når du er innen 500 m.
 - **Lås opp** — innen 50 m og med GPS-nøyaktighet ≤ 50 m: 10 poeng, én gang per sted.
 - **Les** — scroll utdraget til bunnen eller minst 80 %: 5 poeng, én gang. Fakta slettes aldri.
 - **Samling** — søk, filter (alle / ulest / lest), avledet poengsum.
@@ -77,7 +78,7 @@ Vite 8, React 19, TypeScript, vitest, vite-plugin-pwa. Wikipedia Action API (`no
 
 ## Deploy
 
-Repoet må være **public**. I GitHub: Settings → Pages → Source = **GitHub Actions**. Push til `main` kjører lint, typecheck, test og build, og deployer Pages.
+Repoet må være **public**. Første deploy krever at Pages er slått på: [Settings → Pages](https://github.com/reidarkind/facthunter/settings/pages) → Source = **GitHub Actions**. Push til `main` (eller **Run workflow** under Actions) kjører lint, typecheck, test og build, og deployer Pages.
 
 ## Agent-instruksjoner
 

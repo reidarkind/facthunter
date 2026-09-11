@@ -21,12 +21,12 @@ export function shouldRefetch(prev: Coord | null, next: Coord): boolean {
   return prev === null || distanceMeters(prev, next) >= REFETCH_MOVE_M - 0.01
 }
 
-function wikiUrl(lang: 'no' | 'en', coord: Coord): string {
+function wikiUrl(lang: 'no' | 'en', coord: Coord, radiusM: number): string {
   const params = new URLSearchParams({
     action: 'query',
     generator: 'geosearch',
     ggscoord: `${coord.lat}|${coord.lon}`,
-    ggsradius: String(FETCH_RADIUS_M),
+    ggsradius: String(radiusM),
     ggslimit: '50',
     prop: 'extracts|coordinates|pageimages|info',
     exintro: '1',
@@ -95,8 +95,9 @@ async function fetchLang(
   lang: 'no' | 'en',
   coord: Coord,
   fetchFn: typeof fetch,
+  radiusM: number,
 ): Promise<NearbyPlace[]> {
-  const response = await fetchFn(wikiUrl(lang, coord))
+  const response = await fetchFn(wikiUrl(lang, coord, radiusM))
   if (!response.ok) {
     throw new Error(`Wikipedia ${lang} ${response.status}`)
   }
@@ -106,6 +107,7 @@ async function fetchLang(
 export async function fetchNearbyPlaces(
   coord: Coord,
   fetchFn: typeof fetch = fetch,
+  radiusM: number = FETCH_RADIUS_M,
 ): Promise<NearbyPlace[]> {
   let norwegian: NearbyPlace[] | undefined
   let english: NearbyPlace[] | undefined
@@ -113,13 +115,13 @@ export async function fetchNearbyPlaces(
   let englishError: unknown
 
   try {
-    norwegian = await fetchLang('no', coord, fetchFn)
+    norwegian = await fetchLang('no', coord, fetchFn, radiusM)
   } catch (error) {
     norwegianError = error
   }
 
   try {
-    english = await fetchLang('en', coord, fetchFn)
+    english = await fetchLang('en', coord, fetchFn, radiusM)
   } catch (error) {
     englishError = error
   }

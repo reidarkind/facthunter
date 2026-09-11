@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
-import { AppShell } from './app/AppShell'
+import { AppShell, type AppTab } from './app/AppShell'
 import { CollectionView } from './collection/CollectionView'
 import { HuntView } from './hunt/HuntView'
 import { loadFacts, saveFacts } from './lib/storage'
+import { ReconView } from './recon/ReconView'
 import type { SavedFact } from './types'
 
 function isInstallRoute(): boolean {
@@ -13,7 +14,7 @@ function isInstallRoute(): boolean {
 
 export default function App() {
   const [facts, setFacts] = useState<SavedFact[]>([])
-  const [tab, setTab] = useState<'hunt' | 'collection'>('hunt')
+  const [tab, setTab] = useState<AppTab>('hunt')
   const [showInstall, setShowInstall] = useState(isInstallRoute)
 
   useEffect(() => {
@@ -47,6 +48,8 @@ export default function App() {
     >
       {tab === 'hunt' ? (
         <HuntView facts={facts} onFactsChange={onFactsChange} />
+      ) : tab === 'recon' ? (
+        <ReconView />
       ) : (
         <CollectionView facts={facts} onChange={onFactsChange} />
       )}

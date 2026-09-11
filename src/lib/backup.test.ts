@@ -73,6 +73,15 @@ describe('mergeFacts', () => {
     expect(facts.map((f) => f.id)).toEqual(['wikipedia:no:1', 'wikipedia:no:2'])
   })
 
+  it('dedupes duplicate incoming new ids', () => {
+    const duplicate = fact({ id: 'wikipedia:no:2', title: 'First' })
+    const incoming = [duplicate, fact({ id: 'wikipedia:no:2', title: 'Second' })]
+    const { facts, newCount } = mergeFacts([], incoming)
+    expect(newCount).toBe(1)
+    expect(facts).toHaveLength(1)
+    expect(facts[0].id).toBe('wikipedia:no:2')
+  })
+
   it('does not drop local-only facts', () => {
     const local = [fact(), fact({ id: 'wikipedia:no:local' })]
     const incoming = [fact({ id: 'wikipedia:no:2' })]

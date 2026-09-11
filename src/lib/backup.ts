@@ -97,6 +97,7 @@ export function mergeFacts(
 ): { facts: SavedFact[]; newCount: number } {
   const byId = new Map(local.map((f) => [f.id, f]))
   const localIds = new Set(local.map((f) => f.id))
+  const newIds: string[] = []
   let newCount = 0
 
   for (const inc of incoming) {
@@ -105,15 +106,16 @@ export function mergeFacts(
       byId.set(inc.id, mergeOne(existing, inc))
     } else {
       byId.set(inc.id, inc)
-      newCount++
+      if (!localIds.has(inc.id)) {
+        newIds.push(inc.id)
+        newCount++
+      }
     }
   }
 
   const facts = local.map((f) => byId.get(f.id)!)
-  for (const inc of incoming) {
-    if (!localIds.has(inc.id)) {
-      facts.push(byId.get(inc.id)!)
-    }
+  for (const id of newIds) {
+    facts.push(byId.get(id)!)
   }
 
   return { facts, newCount }

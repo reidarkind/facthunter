@@ -54,7 +54,7 @@ export function bearingDegrees(from: Coord, to: Coord): number {
 }
 
 export function headingDiffDegrees(heading: number, bearing: number): number {
-  return (((bearing - heading + 540) % 360) - 180)
+  return mod360(bearing - heading + 180) - 180
 }
 
 export function isVisible(distanceM: number): boolean {

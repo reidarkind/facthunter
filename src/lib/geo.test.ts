@@ -37,6 +37,12 @@ describe('bearing and FOV', () => {
     expect(headingDiffDegrees(1, 359)).toBeCloseTo(-2, 5)
   })
 
+  it('headingDiff normalizes angles beyond one revolution', () => {
+    expect(headingDiffDegrees(720, 0)).toBe(0)
+    expect(headingDiffDegrees(0, 720)).toBe(0)
+    expect(headingDiffDegrees(1080, 360)).toBe(0)
+  })
+
   it('FOV is ±30 degrees', () => {
     expect(inFieldOfView(0, 30)).toBe(true)
     expect(inFieldOfView(0, 31)).toBe(false)

@@ -57,6 +57,11 @@ export function headingDiffDegrees(heading: number, bearing: number): number {
   return mod360(bearing - heading + 180) - 180
 }
 
+/** CSS rotate is clockwise. The rose must turn the other way so N stays on north. */
+export function compassRoseRotationDeg(headingDeg: number): number {
+  return -headingDeg || 0
+}
+
 export function isVisible(distanceM: number): boolean {
   return distanceM <= VISIBLE_RADIUS_M
 }

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   arLayout,
   bearingDegrees,
+  compassRoseRotationDeg,
   distanceMeters,
   headingDiffDegrees,
   headingFromEvent,
@@ -46,6 +47,15 @@ describe('bearing and FOV', () => {
   it('FOV is ±30 degrees', () => {
     expect(inFieldOfView(0, 30)).toBe(true)
     expect(inFieldOfView(0, 31)).toBe(false)
+  })
+})
+
+describe('compassRoseRotationDeg', () => {
+  it('keeps N/S the same and flips the E/W sign for CSS clockwise rotate', () => {
+    expect(compassRoseRotationDeg(0)).toBe(0)
+    expect(compassRoseRotationDeg(180)).toBe(-180)
+    expect(compassRoseRotationDeg(90)).toBe(-90)
+    expect(compassRoseRotationDeg(270)).toBe(-270)
   })
 })
 

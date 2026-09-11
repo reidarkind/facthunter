@@ -5,6 +5,7 @@ import { UNLOCK_ACCURACY_M } from '../lib/constants'
 import {
   arLayout,
   bearingDegrees,
+  compassRoseRotationDeg,
   distanceMeters,
   isUnlockable,
   isVisible,
@@ -221,7 +222,7 @@ export function HuntView(props: {
         <div
           className="compass-rose"
           style={{
-            transform: `rotate(${sensors.headingDeg ?? 0}deg)`,
+            transform: `rotate(${compassRoseRotationDeg(sensors.headingDeg ?? 0)}deg)`,
           }}
           aria-hidden="true"
         >

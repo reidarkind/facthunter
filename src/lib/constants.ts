@@ -1,0 +1,10 @@
+export const VISIBLE_RADIUS_M = 500
+export const UNLOCK_RADIUS_M = 50
+export const UNLOCK_ACCURACY_M = 50
+export const FETCH_RADIUS_M = 1000
+export const FOV_HALF_DEG = 30
+export const MERGE_RADIUS_M = 40
+export const REFETCH_MOVE_M = 150
+export const POINTS_UNLOCK = 10
+export const POINTS_READ = 5
+export const APP_NAME = 'FactHunter'

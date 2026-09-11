@@ -11,3 +11,16 @@ export type SavedFact = {
   readAt?: string
   source: 'wikipedia'
 }
+
+export type NearbyPlace = {
+  id: string
+  title: string
+  extract: string
+  thumbnailUrl?: string
+  pageUrl: string
+  lang: 'no' | 'en'
+  lat: number
+  lon: number
+  pageId: number
+  source: 'wikipedia'
+}

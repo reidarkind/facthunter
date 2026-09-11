@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { expect, it } from 'vitest'
 import { installUrl, shareText } from './share'
 
 it('joins origin, base, install without double slashes', () => {

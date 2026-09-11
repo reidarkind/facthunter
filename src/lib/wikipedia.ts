@@ -3,6 +3,8 @@ import {
   FETCH_RADIUS_M,
   MERGE_RADIUS_M,
   REFETCH_MOVE_M,
+  UNLOCK_RADIUS_M,
+  WIKI_MAX_LIMIT,
 } from './constants'
 import { factId } from './collection'
 import { distanceMeters, movedAtLeast, type Coord } from './geo'
@@ -20,6 +22,14 @@ export function mergeWikiPlaces(
   )
 
   return [...norwegian, ...uniqueEnglish]
+}
+
+export function mergePlacesById(places: NearbyPlace[]): NearbyPlace[] {
+  const byId = new Map<string, NearbyPlace>()
+  for (const place of places) {
+    if (!byId.has(place.id)) byId.set(place.id, place)
+  }
+  return [...byId.values()]
 }
 
 export function shouldRefetch(prev: Coord | null, next: Coord): boolean {
@@ -115,6 +125,38 @@ async function fetchLang(
   return parsePlaces(await response.json(), lang)
 }
 
+async function fetchLangBundle(
+  lang: 'no' | 'en',
+  coord: Coord,
+  fetchFn: typeof fetch,
+  radiusM: number,
+  limit: number,
+): Promise<NearbyPlace[]> {
+  const jobs = [{ radiusM, limit }]
+  if (radiusM > UNLOCK_RADIUS_M) {
+    jobs.push({ radiusM: UNLOCK_RADIUS_M, limit: WIKI_MAX_LIMIT })
+  }
+
+  const chunks: NearbyPlace[] = []
+  let lastError: unknown
+  for (const job of jobs) {
+    try {
+      chunks.push(
+        ...(await fetchLang(lang, coord, fetchFn, job.radiusM, job.limit)),
+      )
+    } catch (error) {
+      lastError = error
+    }
+  }
+
+  if (chunks.length === 0 && lastError) {
+    throw lastError instanceof Error
+      ? lastError
+      : new Error(`Wikipedia ${lang} unavailable`)
+  }
+  return mergePlacesById(chunks)
+}
+
 export async function fetchNearbyPlaces(
   coord: Coord,
   fetchFn: typeof fetch = fetch,
@@ -127,13 +169,13 @@ export async function fetchNearbyPlaces(
   let englishError: unknown
 
   try {
-    norwegian = await fetchLang('no', coord, fetchFn, radiusM, limit)
+    norwegian = await fetchLangBundle('no', coord, fetchFn, radiusM, limit)
   } catch (error) {
     norwegianError = error
   }
 
   try {
-    english = await fetchLang('en', coord, fetchFn, radiusM, limit)
+    english = await fetchLangBundle('en', coord, fetchFn, radiusM, limit)
   } catch (error) {
     englishError = error
   }

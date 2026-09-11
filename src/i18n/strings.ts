@@ -67,12 +67,12 @@ const no = {
     'Hvor mange steder som hentes rundt deg. Flere treff gir tettere kart og jakt, men tyngre lasting.',
   whatThisIs: 'Hva dette er',
   whatThisIsBody:
-    'FactHunter er et tynt lag som gjør Wikipedia morsommere å oppdage i den virkelige verden. Du peker bakkameraet, ser steder som skilt i gata, låser dem opp og samler dem i en feltjournal. Innholdet kommer fra Wikipedia; appen eier det ikke.',
+    'FactHunter er et tynt lag som gjør Wikipedia morsommere å oppdage i den virkelige verden. Du bruker kameraet bak på telefonen til å se deg rundt. Steder vises som skilt i gata; du låser dem opp og samler dem i en feltjournal. Innholdet kommer fra Wikipedia; appen eier det ikke.',
   privacy: 'Personvern',
   privacyBody1:
-    'Appen lagrer ingenting i skyen. Samling, lest-status og poeng ligger bare lokalt på telefonen. FactHunter synker ikke mellom enheter.',
+    'Appen lagrer ingenting i skyen. Samling, lest-status og poeng ligger bare lokalt på telefonen. FactHunter synkroniserer ikke mellom enheter.',
   privacyBody2:
-    'Bytt telefon: eksporter filen på den gamle, importer på den nye. Mister du filen, eller sletter nettsteddata uten eksport, er samlingen borte. Wikipedia-lenker du deler går til Wikipedia — det er ikke FactHunter-sky.',
+    'Bytt telefon: eksporter filen på den gamle, importer på den nye. Mister du filen, eller sletter nettsteddata uten eksport, er samlingen borte. Wikipedia-lenker du deler går til Wikipedia. FactHunter lagrer dem ikke i skyen.',
   addToHome: 'Legg til på hjem-skjermen',
   addToHomeBody:
     'FactHunter er en nettside du installerer som app. Den ligger ikke i App Store eller Google Play. Du må åpne den over HTTPS, ellers nekter telefonen kamera og kompass.',
@@ -165,12 +165,12 @@ const en: { [K in keyof typeof no]: string } = {
     'How many places to fetch around you. More results make the map and hunt denser, but loading is heavier.',
   whatThisIs: 'What this is',
   whatThisIsBody:
-    'FactHunter is a thin layer that makes Wikipedia more fun to discover in the real world. You point the rear camera, see places as signs in the street, unlock them and collect them in a field journal. The content comes from Wikipedia; the app does not own it.',
+    'FactHunter is a thin layer that makes Wikipedia more fun to discover in the real world. You use the camera on the back of the phone to look around. Places appear as signs in the street; you unlock them and collect them in a field journal. The content comes from Wikipedia; the app does not own it.',
   privacy: 'Privacy',
   privacyBody1:
     'The app stores nothing in the cloud. Collection, read status and score live only locally on the phone. FactHunter does not sync between devices.',
   privacyBody2:
-    'Switch phones: export the file on the old one, import on the new one. If you lose the file, or clear site data without exporting, the collection is gone. Wikipedia links you share go to Wikipedia — that is not a FactHunter cloud.',
+    'Switch phones: export the file on the old one, import on the new one. If you lose the file, or clear site data without exporting, the collection is gone. Wikipedia links you share go to Wikipedia. FactHunter does not store them in the cloud.',
   addToHome: 'Add to Home Screen',
   addToHomeBody:
     'FactHunter is a website you install as an app. It is not in the App Store or Google Play. You must open it over HTTPS, or the phone will refuse camera and compass.',

@@ -5,6 +5,7 @@ import { usePrefs } from '../app/usePrefs'
 import { useT } from '../i18n/useT'
 import {
   FOV_HALF_DEG,
+  RECON_BEAM_COLOR,
   RECON_CLUSTER_M,
   RECON_RADIUS_M,
   RECON_RECENTER_M,
@@ -34,12 +35,16 @@ const LOCKED_MAP: L.MapOptions = {
   touchZoom: false,
 }
 
+const BLIP_PANE = 'recon-blips'
+const USER_PANE = 'recon-user'
+
 const WEDGE_STYLE: L.PathOptions = {
-  color: '#c9a227',
-  weight: 1,
-  fillColor: '#c9a227',
-  fillOpacity: 0.28,
-  opacity: 0.85,
+  pane: USER_PANE,
+  color: RECON_BEAM_COLOR,
+  weight: 2,
+  fillColor: RECON_BEAM_COLOR,
+  fillOpacity: 0.32,
+  opacity: 0.95,
   interactive: false,
 }
 
@@ -95,6 +100,7 @@ export function ReconView() {
     } else {
       wedgeRef.current = L.polygon(latlngs, WEDGE_STYLE).addTo(map)
     }
+    wedgeRef.current.bringToFront()
     youRef.current?.bringToFront()
   }
 
@@ -136,20 +142,26 @@ export function ReconView() {
     coordRef.current = coord
     if (!mapRef.current) {
       const map = L.map(el, LOCKED_MAP)
+      map.createPane(BLIP_PANE)
+      map.getPane(BLIP_PANE)!.style.zIndex = '450'
+      map.createPane(USER_PANE)
+      map.getPane(USER_PANE)!.style.zIndex = '650'
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
       }).addTo(map)
-      blipLayerRef.current = L.layerGroup().addTo(map)
+      blipLayerRef.current = L.layerGroup([], { pane: BLIP_PANE }).addTo(map)
       ringRef.current = L.circle([coord.lat, coord.lon], {
+        pane: USER_PANE,
         radius: VISIBLE_RADIUS_M,
-        color: '#c9a227',
-        weight: 1,
+        color: RECON_BEAM_COLOR,
+        weight: 2,
         dashArray: '4 6',
         fill: false,
-        opacity: 0.7,
+        opacity: 0.9,
         interactive: false,
       }).addTo(map)
       youRef.current = L.circleMarker([coord.lat, coord.lon], {
+        pane: USER_PANE,
         radius: 7,
         color: '#f3ead7',
         fillColor: '#0f4c4a',
@@ -210,6 +222,7 @@ export function ReconView() {
       RECON_CLUSTER_M,
     )) {
       L.circleMarker([blip.lat, blip.lon], {
+        pane: BLIP_PANE,
         radius: 5 + Math.min(blip.count, 5) * 2,
         color: '#c9a227',
         fillColor: '#c9a227',
@@ -218,9 +231,7 @@ export function ReconView() {
         interactive: false,
       }).addTo(overlay)
     }
-    ringRef.current?.bringToFront()
-    wedgeRef.current?.bringToFront()
-    youRef.current?.bringToFront()
+    paintWedge()
   }, [coord, places])
 
   const blipCount = coord

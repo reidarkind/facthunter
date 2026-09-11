@@ -114,9 +114,9 @@ describe('fetchNearbyPlaces', () => {
       fetchFn,
     )
 
-    expect(urls).toHaveLength(2)
+    expect(urls).toHaveLength(4)
     expect(urls[0]).toContain('no.wikipedia.org')
-    expect(urls[1]).toContain('en.wikipedia.org')
+    expect(urls[2]).toContain('en.wikipedia.org')
     const query = new URL(urls[0]).searchParams
     expect(query.get('ggscoord')).toBe('63.4305|10.395')
     expect(query.get('ggsradius')).toBe('1000')
@@ -147,6 +147,23 @@ describe('fetchNearbyPlaces', () => {
     }
     await fetchNearbyPlaces({ lat: 63.43, lon: 10.39 }, fetchFn, 2000)
     expect(new URL(urls[0]).searchParams.get('ggsradius')).toBe('2000')
+  })
+
+  it('also fetches every place within 50 m at the API max', async () => {
+    const urls: string[] = []
+    const fetchFn = async (input: RequestInfo | URL): Promise<Response> => {
+      urls.push(String(input))
+      return jsonResponse({})
+    }
+    await fetchNearbyPlaces({ lat: 63.43, lon: 10.39 }, fetchFn, 2000, 50)
+    const queries = urls.map((url) => new URL(url).searchParams)
+    const core = queries.filter((query) => query.get('ggsradius') === '50')
+    const outer = queries.filter((query) => query.get('ggsradius') === '2000')
+    expect(core).toHaveLength(2)
+    expect(outer).toHaveLength(2)
+    expect(core.every((query) => query.get('ggslimit') === '500')).toBe(true)
+    expect(core.every((query) => query.get('colimit') === '500')).toBe(true)
+    expect(outer.every((query) => query.get('ggslimit') === '50')).toBe(true)
   })
 
   it('asks Wikipedia for coordinates on every geosearch hit', async () => {
@@ -184,7 +201,9 @@ describe('fetchNearbyPlaces', () => {
 
     const places = await fetchNearbyPlaces({ lat: 63.43, lon: 10.39 }, fetchFn)
 
-    expect(hosts).toEqual(['no.wikipedia.org', 'en.wikipedia.org'])
+    expect(new Set(hosts)).toEqual(
+      new Set(['no.wikipedia.org', 'en.wikipedia.org']),
+    )
     expect(places.map(({ id }) => id)).toEqual(['wikipedia:en:3'])
   })
 

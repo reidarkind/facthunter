@@ -32,7 +32,7 @@ enum Lang { No, En }
 export default function scoreFor(facts: SavedFact[]) { /* ... */ }
 ```
 
-Keep hunt numbers in `src/lib/constants.ts`. Do not scatter 500/50/40/150. Wikipedia result caps live in `WIKI_LIMITS` / `DEFAULT_WIKI_LIMIT`.
+Keep hunt numbers in `src/lib/constants.ts`. Do not scatter 500/50/40/150. Wikipedia result caps live in `WIKI_LIMITS` / `DEFAULT_WIKI_LIMIT` / `WIKI_MAX_LIMIT`. Rekognoser always fetches every geotagged hit within 50 m; farther hits may cluster.
 
 ```ts
 // id format — callers must String(pageId)

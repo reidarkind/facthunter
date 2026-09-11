@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { FactSheet } from '../facts/FactSheet'
+import { useT } from '../i18n/useT'
 import { withRead, withUnlocked } from '../lib/collection'
 import { UNLOCK_ACCURACY_M } from '../lib/constants'
 import {
@@ -49,10 +50,11 @@ export function HuntView(props: {
   onFactsChange: (facts: SavedFact[]) => void
 }) {
   const { facts, onFactsChange } = props
+  const { t } = useT()
   const sensors = useHuntSensors()
   const videoRef = useRef<HTMLVideoElement>(null)
   const [places, setPlaces] = useState<NearbyPlace[]>([])
-  const [fetchError, setFetchError] = useState<string | null>(null)
+  const [fetchFailed, setFetchFailed] = useState(false)
   const [loadingPlaces, setLoadingPlaces] = useState(false)
   const lastFetchAt = useRef<{ lat: number; lon: number } | null>(null)
   const [openId, setOpenId] = useState<string | null>(null)
@@ -71,7 +73,7 @@ export function HuntView(props: {
     if (!shouldRefetch(lastFetchAt.current, coord)) return
     let cancelled = false
     setLoadingPlaces(true)
-    setFetchError(null)
+    setFetchFailed(false)
     void fetchNearbyPlaces(coord)
       .then((next) => {
         if (cancelled) return
@@ -80,7 +82,7 @@ export function HuntView(props: {
       })
       .catch(() => {
         if (cancelled) return
-        setFetchError('Kunne ikke hente steder fra Wikipedia')
+        setFetchFailed(true)
       })
       .finally(() => {
         if (!cancelled) setLoadingPlaces(false)
@@ -162,34 +164,27 @@ export function HuntView(props: {
             height={160}
           />
           <h1>FactHunter</h1>
-          <p>
-            Jakten starter når kamera, posisjon og kompass er på. Én gang, fra
-            samme trykk.
-          </p>
+          <p>{t('huntGateBody')}</p>
           {sensors.missing.length > 0 ? (
             <ul className="gate-missing">
               {sensors.missing.includes('kamera') ? (
-                <li>Kamera mangler eller ble avslått</li>
+                <li>{t('missingCamera')}</li>
               ) : null}
               {sensors.missing.includes('posisjon') ? (
-                <li>Posisjon mangler eller ble avslått</li>
+                <li>{t('missingLocation')}</li>
               ) : null}
               {sensors.missing.includes('kompass') ? (
-                <li>
-                  Kompass mangler eller ble avslått. iPhone: Innstillinger →
-                  Safari (eller FactHunter) → Bevegelse og retning, deretter
-                  Prøv igjen. Si ja når telefonen spør om bevegelse.
-                </li>
+                <li>{t('missingCompass')}</li>
               ) : null}
               {sensors.missing.includes('https') ? (
-                <li>Åpne appen over HTTPS, ikke http://192.168…</li>
+                <li>{t('missingHttps')}</li>
               ) : null}
             </ul>
           ) : null}
           {sensors.stream &&
           !sensors.headingDeg &&
           !sensors.missing.includes('kompass') ? (
-            <p>Venter på kompass — beveg telefonen litt.</p>
+            <p>{t('waitingCompass')}</p>
           ) : null}
           <button
             type="button"
@@ -198,13 +193,10 @@ export function HuntView(props: {
             onClick={() => void sensors.startFromUserGesture()}
           >
             {sensors.missing.length > 0 || sensors.stream
-              ? 'Prøv igjen'
-              : 'Start jakt'}
+              ? t('tryAgain')
+              : t('startHunt')}
           </button>
-          <p className="hint">
-            iPhone: Innstillinger → Safari (eller appen) → Bevegelse og retning.
-            Kamera og kompass virker ikke på vanlig http over Wi-Fi.
-          </p>
+          <p className="hint">{t('huntHintIphone')}</p>
         </section>
       ) : (
       <div className="hunt-overlay">
@@ -229,10 +221,12 @@ export function HuntView(props: {
           <span className="compass-n">N</span>
         </div>
         <div className="hunt-banners">
-          {gpsUncertain ? <p className="banner warn">GPS usikker</p> : null}
-          {fetchError ? <p className="banner warn">{fetchError}</p> : null}
-          {!loadingPlaces && !fetchError && places.length === 0 ? (
-            <p className="banner">Ingen steder her — gå litt</p>
+          {gpsUncertain ? <p className="banner warn">{t('gpsUncertain')}</p> : null}
+          {fetchFailed ? (
+            <p className="banner warn">{t('wikiFetchFailed')}</p>
+          ) : null}
+          {!loadingPlaces && !fetchFailed && places.length === 0 ? (
+            <p className="banner">{t('noPlacesHere')}</p>
           ) : null}
         </div>
       </div>

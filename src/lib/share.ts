@@ -4,9 +4,14 @@ export function installUrl(origin: string, base: string): string {
   return new URL('install', baseUrl).href
 }
 
-export function shareText(pageUrl: string, installUrl: string): string {
-  return `Se hva jeg fant via FactHunter!
+export function shareText(
+  pageUrl: string,
+  installUrl: string,
+  intro = 'Se hva jeg fant via FactHunter!',
+  installLine = 'Installer appen:',
+): string {
+  return `${intro}
 ${pageUrl}
 
-Installer appen: ${installUrl}`
+${installLine} ${installUrl}`
 }

@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { FactSheet } from '../facts/FactSheet'
+import { useT } from '../i18n/useT'
 import {
   buildExportPayload,
   mergeFacts,
@@ -24,6 +25,7 @@ export function CollectionView(props: {
   onChange: (facts: SavedFact[]) => void
 }) {
   const { facts, onChange } = props
+  const { t } = useT()
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState<Filter>('all')
   const [openId, setOpenId] = useState<string | null>(null)
@@ -69,14 +71,14 @@ export function CollectionView(props: {
       const raw: unknown = JSON.parse(await file.text())
       const parsed = parseImportPayload(raw)
       if (!parsed.ok) {
-        setNotice('Kunne ikke lese filen')
+        setNotice(t('importFailed'))
         return
       }
       const { facts: merged, newCount } = mergeFacts(facts, parsed.facts)
       onChange(merged)
-      setNotice(`Importerte ${newCount} nye fakta`)
+      setNotice(t('importedNew', { count: newCount }))
     } catch {
-      setNotice('Kunne ikke lese filen')
+      setNotice(t('importFailed'))
     }
   }
 
@@ -84,33 +86,30 @@ export function CollectionView(props: {
     <section className="collection">
       <header className="collection-head">
         <div>
-          <h1>Samling</h1>
-          <p className="score">{scoreFor(facts)} poeng</p>
+          <h1>{t('collectionTitle')}</h1>
+          <p className="score">{t('points', { score: scoreFor(facts) })}</p>
         </div>
-        <a className="text-button" href="#/install">
-          Om appen
-        </a>
       </header>
 
       <label className="sr-only" htmlFor="fact-search">
-        Søk
+        {t('search')}
       </label>
       <input
         id="fact-search"
         type="search"
         value={query}
         onChange={(event) => setQuery(event.target.value)}
-        placeholder="Søk i tittel og utdrag"
+        placeholder={t('searchPlaceholder')}
       />
 
-      <div className="filter-row" role="group" aria-label="Filter">
+      <div className="filter-row" role="group" aria-label={t('filter')}>
         <button
           type="button"
           className={filter === 'all' ? 'active' : undefined}
           aria-pressed={filter === 'all'}
           onClick={() => setFilter('all')}
         >
-          Alle
+          {t('filterAll')}
         </button>
         <button
           type="button"
@@ -118,7 +117,7 @@ export function CollectionView(props: {
           aria-pressed={filter === 'unread'}
           onClick={() => setFilter('unread')}
         >
-          Ulest
+          {t('filterUnread')}
         </button>
         <button
           type="button"
@@ -126,16 +125,16 @@ export function CollectionView(props: {
           aria-pressed={filter === 'read'}
           onClick={() => setFilter('read')}
         >
-          Lest
+          {t('filterRead')}
         </button>
       </div>
 
       <div className="backup-row">
         <button type="button" onClick={() => void exportCollection()}>
-          Eksporter
+          {t('export')}
         </button>
         <button type="button" onClick={() => fileRef.current?.click()}>
-          Importer
+          {t('import')}
         </button>
         <input
           ref={fileRef}
@@ -154,7 +153,7 @@ export function CollectionView(props: {
       {facts.length === 0 ? (
         <div className="empty">
           <img src={emptySrc} alt="" width={220} height={220} />
-          <p>Journalen er tom. Gå ut og jakt noen fakta.</p>
+          <p>{t('emptyJournal')}</p>
         </div>
       ) : (
         <ul className="fact-list">
@@ -166,7 +165,7 @@ export function CollectionView(props: {
                 onClick={() => setOpenId(fact.id)}
               >
                 <strong>{fact.title}</strong>
-                <span>{fact.readAt ? 'Lest' : 'Ulest'}</span>
+                <span>{fact.readAt ? t('read') : t('unread')}</span>
               </button>
             </li>
           ))}

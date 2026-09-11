@@ -1,28 +1,32 @@
 import { useCallback, useEffect, useState } from 'react'
-import { AppShell, type AppTab } from './app/AppShell'
+import { AppShell, type AppOverlay, type AppTab } from './app/AppShell'
 import { CollectionView } from './collection/CollectionView'
 import { HuntView } from './hunt/HuntView'
 import { loadFacts, saveFacts } from './lib/storage'
 import { ReconView } from './recon/ReconView'
 import type { SavedFact } from './types'
 
-function isInstallRoute(): boolean {
-  if (window.location.hash === '#/install') return true
+function currentOverlay(): AppOverlay {
+  const hash = window.location.hash
+  if (hash === '#/settings') return 'settings'
+  if (hash === '#/install' || hash === '#/about') return 'install'
   const path = window.location.pathname.replace(/\/+$/, '')
-  return path.endsWith('/install')
+  if (path.endsWith('/settings')) return 'settings'
+  if (path.endsWith('/install')) return 'install'
+  return 'none'
 }
 
 export default function App() {
   const [facts, setFacts] = useState<SavedFact[]>([])
   const [tab, setTab] = useState<AppTab>('hunt')
-  const [showInstall, setShowInstall] = useState(isInstallRoute)
+  const [overlay, setOverlay] = useState<AppOverlay>(currentOverlay)
 
   useEffect(() => {
     void loadFacts().then(setFacts)
   }, [])
 
   useEffect(() => {
-    const sync = () => setShowInstall(isInstallRoute())
+    const sync = () => setOverlay(currentOverlay())
     window.addEventListener('hashchange', sync)
     window.addEventListener('popstate', sync)
     return () => {
@@ -40,10 +44,10 @@ export default function App() {
     <AppShell
       tab={tab}
       onTab={setTab}
-      showInstall={showInstall}
-      onBackFromInstall={() => {
+      overlay={overlay}
+      onCloseOverlay={() => {
         window.location.hash = ''
-        setShowInstall(false)
+        setOverlay('none')
       }}
     >
       {tab === 'hunt' ? (

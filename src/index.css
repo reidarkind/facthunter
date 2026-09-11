@@ -49,6 +49,7 @@ p {
   flex-direction: column;
   background: var(--paper);
   color: var(--ink);
+  position: relative;
 }
 
 .app-main {
@@ -60,10 +61,11 @@ p {
 
 .tab-bar {
   display: grid;
-  grid-template-columns: 1fr 1.15fr 1fr;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr) 44px;
   gap: 6px;
   padding: 8px 10px calc(10px + env(safe-area-inset-bottom));
   background: var(--teal-deep);
+  z-index: 22;
 }
 
 .tab-bar button {
@@ -78,6 +80,43 @@ p {
 .tab-bar button.active {
   background: var(--teal);
   color: var(--gold);
+}
+
+.menu-button {
+  font-size: 20px;
+  line-height: 1;
+  padding: 12px 0;
+}
+
+.app-menu-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  background: rgb(0 0 0 / 45%);
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: calc(58px + env(safe-area-inset-bottom));
+}
+
+.app-menu {
+  width: 100%;
+  background: var(--paper);
+  border-radius: 20px 20px 0 0;
+  padding: 8px 16px 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-menu a {
+  padding: 16px 4px;
+  color: var(--teal);
+  text-decoration: none;
+  font-weight: 650;
+  border-bottom: 1px solid #d7cbb3;
+}
+
+.app-menu a:last-child {
+  border-bottom: 0;
 }
 
 .text-button {

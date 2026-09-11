@@ -1,5 +1,6 @@
 import {
   FOV_HALF_DEG,
+  HEADING_SMOOTH,
   UNLOCK_ACCURACY_M,
   UNLOCK_RADIUS_M,
   VISIBLE_RADIUS_M,
@@ -55,6 +56,58 @@ export function bearingDegrees(from: Coord, to: Coord): number {
 
 export function headingDiffDegrees(heading: number, bearing: number): number {
   return mod360(bearing - heading + 180) - 180
+}
+
+export function destinationCoord(
+  from: Coord,
+  bearingDeg: number,
+  distanceM: number,
+): Coord {
+  const angularDistance = distanceM / EARTH_RADIUS_M
+  const bearing = toRadians(bearingDeg)
+  const lat1 = toRadians(from.lat)
+  const lon1 = toRadians(from.lon)
+  const lat2 = Math.asin(
+    Math.sin(lat1) * Math.cos(angularDistance) +
+      Math.cos(lat1) * Math.sin(angularDistance) * Math.cos(bearing),
+  )
+  const lon2 =
+    lon1 +
+    Math.atan2(
+      Math.sin(bearing) * Math.sin(angularDistance) * Math.cos(lat1),
+      Math.cos(angularDistance) - Math.sin(lat1) * Math.sin(lat2),
+    )
+  return { lat: toDegrees(lat2), lon: toDegrees(lon2) }
+}
+
+const WEDGE_ARC_STEPS = 12
+
+export function fovWedgeCoords(
+  origin: Coord,
+  headingDeg: number,
+  halfDeg: number,
+  radiusM: number,
+): Coord[] {
+  const points: Coord[] = [origin]
+  for (let step = 0; step <= WEDGE_ARC_STEPS; step++) {
+    const bearing = headingDeg - halfDeg + (2 * halfDeg * step) / WEDGE_ARC_STEPS
+    points.push(destinationCoord(origin, bearing, radiusM))
+  }
+  points.push(origin)
+  return points
+}
+
+export function movedAtLeast(
+  prev: Coord | null,
+  next: Coord,
+  meters: number,
+): boolean {
+  return prev === null || distanceMeters(prev, next) >= meters - 0.01
+}
+
+export function smoothHeading(prev: number | null, next: number): number {
+  if (prev === null) return next
+  return mod360(prev + headingDiffDegrees(prev, next) * HEADING_SMOOTH)
 }
 
 /** CSS rotate is clockwise. The rose must turn the other way so N stays on north. */

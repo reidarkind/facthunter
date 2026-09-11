@@ -1,3 +1,5 @@
+import { useT } from '../i18n/useT'
+
 export type SignKind = 'locked' | 'ready' | 'owned'
 
 export function ArSign(props: {
@@ -9,6 +11,7 @@ export function ArSign(props: {
   onClick: () => void
 }) {
   const { title, kind, xPct, yPct, scale, onClick } = props
+  const { t } = useT()
   return (
     <button
       type="button"
@@ -25,7 +28,7 @@ export function ArSign(props: {
       <span className="sign-plaque">
         <span className="sign-title">{title}</span>
         {kind === 'locked' ? (
-          <span className="sign-hint">Gå nærmere</span>
+          <span className="sign-hint">{t('moveCloser')}</span>
         ) : null}
         {kind === 'owned' ? (
           <span className="sign-owned" aria-hidden="true">

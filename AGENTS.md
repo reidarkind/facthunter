@@ -1,6 +1,6 @@
 # FactHunter
 
-Norwegian-language mobile PWA. Vite 8 + React 19 + TypeScript. No backend.
+Norwegian-first mobile PWA (English in Settings). Vite 8 + React 19 + TypeScript. No backend.
 Wikipedia GeoSearch (`no` then `en`) overlaid as AR signposts. Collection in IndexedDB.
 Hosted on GitHub Pages at `/facthunter/` (repo name, not the local folder `fact_hunter`).
 
@@ -20,7 +20,7 @@ Single test: `npx vitest run src/lib/geo.test.ts`
 
 ## Code style
 
-UI copy is Norwegian. App name is **FactHunter**. No TypeScript enums. Use `import type`. Named exports except `src/App.tsx` (Vite default).
+UI copy lives in `src/i18n/strings.ts`. Default locale is Norwegian; English is a settings toggle (`localStorage` `facthunter-lang`). App name is **FactHunter**. No TypeScript enums. Use `import type`. Named exports except `src/App.tsx` (Vite default).
 
 ```ts
 // CORRECT
@@ -43,17 +43,18 @@ factId('no', String(page.pageid)) // wikipedia:no:123
 
 ```
 src/lib/*            pure logic; tests sit beside the module
+src/i18n/*           no/en copy; LocaleProvider; default Norwegian
 src/hunt/*           camera, compass, GPS, AR signs
-src/recon/*          scout map; anonymous blips; no unlock
+src/recon/*          scout map; anonymous blips; heading wedge; no unlock
 src/facts/FactSheet  extract + share
 src/collection/*     search, filter, export/import
-src/install/*        privacy + home-screen steps
-src/app/AppShell     tabs Jakt | Samling, hash `#/install`
+src/install/*        privacy + home-screen steps + credits
+src/app/AppShell     tabs Rekognoser | Jakt | Samling, hamburger, `#/install` `#/settings`
 ```
 
 Data flow: sensors → Wikipedia fetch → AR signs → unlock writes IndexedDB → collection reads the same `SavedFact[]`. Score is derived (`10` unlock + `5` read), never stored.
 
-Hunt must not start until camera stream + one GPS fix + one heading exist, all from one **Start jakt** tap. Video: `playsInline` + muted, `facingMode: environment`.
+Hunt must not start until camera stream + one GPS fix + one heading exist, all from one **Start jakt** tap. Video: `playsInline` + muted, `facingMode: environment`. Rekognoser requests compass on **Start rekognosering** for the FOV wedge, but the map still works without heading.
 
 Install copy lives in `InstallPage` and `README.md`. Keep those two in sync.
 

@@ -3,12 +3,16 @@ import {
   arLayout,
   bearingDegrees,
   compassRoseRotationDeg,
+  destinationCoord,
   distanceMeters,
+  fovWedgeCoords,
   headingDiffDegrees,
   headingFromEvent,
   inFieldOfView,
   isUnlockable,
   isVisible,
+  movedAtLeast,
+  smoothHeading,
 } from './geo'
 
 describe('distanceMeters', () => {
@@ -117,5 +121,81 @@ describe('arLayout', () => {
       distanceM: 100,
     })
     expect(p!.xPct).toBeGreaterThan(50)
+  })
+})
+
+describe('destinationCoord', () => {
+  const origin = { lat: 63.43, lon: 10.39 }
+
+  it('moves ~111 m north by about 0.001 deg latitude', () => {
+    const north = destinationCoord(origin, 0, 111)
+    expect(north.lat - origin.lat).toBeCloseTo(0.001, 3)
+    expect(north.lon).toBeCloseTo(origin.lon, 4)
+    expect(distanceMeters(origin, north)).toBeCloseTo(111, 0)
+  })
+
+  it('moves east with a bearing of 90', () => {
+    const east = destinationCoord(origin, 90, 200)
+    expect(east.lon).toBeGreaterThan(origin.lon)
+    expect(east.lat).toBeCloseTo(origin.lat, 3)
+    expect(distanceMeters(origin, east)).toBeCloseTo(200, 0)
+  })
+})
+
+describe('fovWedgeCoords', () => {
+  const origin = { lat: 63.43, lon: 10.39 }
+
+  it('starts and ends at the origin', () => {
+    const wedge = fovWedgeCoords(origin, 0, 30, 500)
+    expect(wedge[0]).toEqual(origin)
+    expect(wedge[wedge.length - 1]).toEqual(origin)
+    expect(wedge.length).toBeGreaterThan(4)
+  })
+
+  it('points the arc north when heading is 0', () => {
+    const wedge = fovWedgeCoords(origin, 0, 30, 500)
+    const mid = wedge[Math.floor(wedge.length / 2)]
+    expect(mid.lat).toBeGreaterThan(origin.lat)
+    expect(mid.lon).toBeCloseTo(origin.lon, 3)
+    expect(distanceMeters(origin, mid)).toBeCloseTo(500, 0)
+  })
+
+  it('points the arc east when heading is 90', () => {
+    const wedge = fovWedgeCoords(origin, 90, 30, 500)
+    const mid = wedge[Math.floor(wedge.length / 2)]
+    expect(mid.lon).toBeGreaterThan(origin.lon)
+    expect(bearingDegrees(origin, mid)).toBeCloseTo(90, 0)
+  })
+})
+
+describe('movedAtLeast', () => {
+  it('is true without a previous coordinate', () => {
+    expect(movedAtLeast(null, { lat: 63.43, lon: 10.39 }, 40)).toBe(true)
+  })
+
+  it('is true after moving 40 m', () => {
+    const previous = { lat: 0, lon: 0 }
+    const fortyNorth = { lat: 40 / 6371000 / (Math.PI / 180), lon: 0 }
+    expect(movedAtLeast(previous, fortyNorth, 40)).toBe(true)
+  })
+
+  it('is false after a few meters', () => {
+    expect(
+      movedAtLeast(
+        { lat: 63.43, lon: 10.39 },
+        { lat: 63.43001, lon: 10.39 },
+        40,
+      ),
+    ).toBe(false)
+  })
+})
+
+describe('smoothHeading', () => {
+  it('returns the next heading when there is no previous', () => {
+    expect(smoothHeading(null, 90)).toBe(90)
+  })
+
+  it('moves a fraction of the shortest turn, including wraparound', () => {
+    expect(smoothHeading(350, 10)).toBeCloseTo(355.6, 1)
   })
 })

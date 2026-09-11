@@ -15,7 +15,8 @@ FactHunter er et tynt lag over Wikipedia GeoSearch — ikke et lukket spill. Jak
 ## Funksjoner
 
 - **Jakt** — bakkamera, GPS og kompass. Steder innen 500 m vises som AR-skilt i synsfeltet (±30°).
-- **Rekognoser** — låst kart med 2 km tåke-sirkel. Prikkene viser at noe er i nærheten, ikke hva. Bytt til Jakt når du er innen 500 m.
+- **Rekognoser** — låst kart med 2 km tåke-sirkel. Prikkene viser at noe er i nærheten, ikke hva. En kile viser hvor telefonen peker (samme ±30° / 500 m som jakten). Bytt til Jakt når du er innen 500 m.
+- **Innstillinger** — hamburger-meny nederst: språk (norsk/engelsk) og Om appen.
 - **Lås opp** — innen 50 m og med GPS-nøyaktighet ≤ 50 m: 10 poeng, én gang per sted.
 - **Les** — scroll utdraget til bunnen eller minst 80 %: 5 poeng, én gang. Fakta slettes aldri.
 - **Samling** — søk, filter (alle / ulest / lest), avledet poengsum.
@@ -83,3 +84,5 @@ Repoet må være **public**. Første deploy krever at Pages er slått på: [Sett
 ## Agent-instruksjoner
 
 Se [AGENTS.md](AGENTS.md) for konvensjoner som AI-agenter skal følge.
+
+Ideen er Reidar Kind sin. Utviklet ved hjelp av AI.

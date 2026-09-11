@@ -1,6 +1,6 @@
 import { FETCH_RADIUS_M, MERGE_RADIUS_M, REFETCH_MOVE_M } from './constants'
 import { factId } from './collection'
-import { distanceMeters, type Coord } from './geo'
+import { distanceMeters, movedAtLeast, type Coord } from './geo'
 import type { NearbyPlace } from '../types'
 
 export function mergeWikiPlaces(
@@ -18,7 +18,7 @@ export function mergeWikiPlaces(
 }
 
 export function shouldRefetch(prev: Coord | null, next: Coord): boolean {
-  return prev === null || distanceMeters(prev, next) >= REFETCH_MOVE_M - 0.01
+  return movedAtLeast(prev, next, REFETCH_MOVE_M)
 }
 
 function wikiUrl(lang: 'no' | 'en', coord: Coord, radiusM: number): string {

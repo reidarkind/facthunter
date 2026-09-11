@@ -1,4 +1,5 @@
 import { useCallback, type UIEvent } from 'react'
+import { useT } from '../i18n/useT'
 import { isExtractRead } from '../lib/collection'
 import { installUrl, shareText } from '../lib/share'
 
@@ -24,7 +25,13 @@ export function FactSheet(props: {
   onShare?: (text: string) => void
 }) {
   const { fact, onClose, onRead } = props
-  const text = shareText(fact.pageUrl, currentInstallUrl())
+  const { t } = useT()
+  const text = shareText(
+    fact.pageUrl,
+    currentInstallUrl(),
+    t('shareIntro'),
+    t('shareInstall'),
+  )
 
   const onScroll = useCallback(
     (event: UIEvent<HTMLDivElement>) => {
@@ -64,14 +71,16 @@ export function FactSheet(props: {
         <header className="sheet-head">
           <h2 id="sheet-title">{fact.title}</h2>
           <button type="button" className="text-button" onClick={onClose}>
-            Lukk
+            {t('close')}
           </button>
         </header>
         {fact.thumbnailUrl ? (
           <img className="sheet-thumb" src={fact.thumbnailUrl} alt="" />
         ) : null}
         {fact.distanceM !== undefined ? (
-          <p className="sheet-meta">{Math.round(fact.distanceM)} m unna</p>
+          <p className="sheet-meta">
+            {t('metersAway', { m: Math.round(fact.distanceM) })}
+          </p>
         ) : null}
         <div
           className="sheet-extract"
@@ -82,21 +91,21 @@ export function FactSheet(props: {
         </div>
         <p>
           <a href={fact.pageUrl} target="_blank" rel="noreferrer">
-            Les mer på Wikipedia
+            {t('readMoreWiki')}
           </a>
         </p>
         <div className="share-row">
           <button type="button" onClick={() => void shareNative()}>
-            Del
+            {t('share')}
           </button>
           <button type="button" onClick={() => void copy()}>
-            Kopier
+            {t('copy')}
           </button>
           <a className="button-link" href={smsHref}>
-            SMS
+            {t('sms')}
           </a>
           <a className="button-link" href={mailHref}>
-            E-post
+            {t('email')}
           </a>
         </div>
       </section>

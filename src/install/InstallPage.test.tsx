@@ -9,6 +9,8 @@ it('covers Wikipedia, privacy, and local export', () => {
   expect(body).toMatch(/skyen/)
   expect(body).toMatch(/lokalt/)
   expect(body).toMatch(/eksporter/)
+  expect(body).toMatch(/Reidar Kind/)
+  expect(body).toMatch(/AI/)
 })
 
 it('explains home-screen install on iPhone and Android', () => {

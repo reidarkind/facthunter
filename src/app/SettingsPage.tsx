@@ -1,12 +1,14 @@
 import { useT } from '../i18n/useT'
 import { WIKI_LIMITS, WIKI_SOURCE_LANGS } from '../lib/constants'
 import type { Locale } from '../lib/locale'
-import {
-  parseWikiLang,
-  withWikiPrimary,
-  withWikiSecondary,
-} from '../lib/prefs'
+import { parseWikiLang, withWikiSlot } from '../lib/prefs'
 import { usePrefs } from './usePrefs'
+
+const SLOT_LABELS = [
+  'wikiSourcePrimary',
+  'wikiSourceSecondary',
+  'wikiSourceTertiary',
+] as const
 
 export function SettingsPage(props: { onBack?: () => void }) {
   const { t, locale, setLocale } = useT()
@@ -52,40 +54,34 @@ export function SettingsPage(props: { onBack?: () => void }) {
       <section>
         <h2>{t('wikiSources')}</h2>
         <p>{t('wikiSourcesHelp')}</p>
-        <label className="settings-field">
-          {t('wikiSourcePrimary')}
-          <select
-            aria-label={t('wikiSourcePrimary')}
-            value={wikiSources.primary}
-            onChange={(event) => {
-              const next = parseWikiLang(event.target.value)
-              if (next) setWikiSources(withWikiPrimary(wikiSources, next))
-            }}
-          >
-            {WIKI_SOURCE_LANGS.map((lang) => (
-              <option key={lang.code} value={lang.code}>
-                {lang.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="settings-field">
-          {t('wikiSourceSecondary')}
-          <select
-            aria-label={t('wikiSourceSecondary')}
-            value={wikiSources.secondary}
-            onChange={(event) => {
-              const next = parseWikiLang(event.target.value)
-              if (next) setWikiSources(withWikiSecondary(wikiSources, next))
-            }}
-          >
-            {WIKI_SOURCE_LANGS.map((lang) => (
-              <option key={`second-${lang.code}`} value={lang.code}>
-                {lang.name}
-              </option>
-            ))}
-          </select>
-        </label>
+        {SLOT_LABELS.map((key, index) => (
+          <label className="settings-field" key={key}>
+            {t(key)}
+            <select
+              aria-label={t(key)}
+              value={wikiSources.langs[index] ?? ''}
+              onChange={(event) => {
+                const raw = event.target.value
+                if (raw === '') {
+                  if (index === 0) return
+                  setWikiSources(withWikiSlot(wikiSources, index, null))
+                  return
+                }
+                const next = parseWikiLang(raw)
+                if (next) setWikiSources(withWikiSlot(wikiSources, index, next))
+              }}
+            >
+              {index > 0 ? (
+                <option value="">{t('wikiSourceNone')}</option>
+              ) : null}
+              {WIKI_SOURCE_LANGS.map((lang) => (
+                <option key={`${key}-${lang.code}`} value={lang.code}>
+                  {lang.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        ))}
       </section>
       <section>
         <h2>{t('wikiLimit')}</h2>

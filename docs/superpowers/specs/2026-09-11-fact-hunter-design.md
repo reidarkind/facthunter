@@ -93,8 +93,8 @@ Skiltet skal stå **i verden**, ikke som HUD-klistremerke.
 
 ### 5.4 Wikipedia
 
-- Hent fra to Wikipedia-utgaver valgt i innstillinger (standard `no` deretter `en`).
-- Hvis en artikkel fra andre kilde ligger nærmere enn 40 m fra en fra første: behold den første. To artikler på samme språk vises begge.
+- Hent fra 1–3 Wikipedia-utgaver valgt i innstillinger, i prioritert rekkefølge (standard `no` deretter `en`).
+- Samme artikkel på tvers av språk (Wikidata-Q, ellers langlink-tittel): behold den første. To ulike artikler vises begge, også om de ligger nær hverandre.
 - Bruk GeoSearch + extracts/thumbnail i batch (CORS `origin=*`).
 - Ikke cache API-svar som sannhet på disk; minnecache mens jakten kjører, refetch når posisjonen har flyttet seg mer enn 150 m.
 - Tomt resultat: «Ingen steder her — gå litt».
@@ -111,7 +111,7 @@ Skiltet skal stå **i verden**, ikke som HUD-klistremerke.
 | `extract` | Utdrag (lagres ved opplåsing) |
 | `thumbnailUrl` | Valgfri |
 | `pageUrl` | Kanonisk Wikipedia-URL |
-| `lang` | `no` eller `en` |
+| `lang` | Wikipedia-utgave for artikkelen |
 | `lat`, `lon` | Koordinater |
 | `unlockedAt` | ISO-tid |
 | `readAt` | ISO-tid eller tom |
@@ -196,7 +196,7 @@ Uttrykk: feltjournal / utforsker. Teal, krem, gull. Grafikk skal være lesbar og
 ```
 Start jakt (tap)
   → tillatelser + kamera + heading + GPS
-  → Wikipedia GeoSearch(no, en) rundt posisjon
+  → Wikipedia GeoSearch (1–3 utgaver fra innstillinger) rundt posisjon
   → for hvert sted: avstand, peiling
   → hvis ≤500 m og i synsfelt: tegn AR-skilt
   → tap + ≤50 m + accuracy ≤50 m → IndexedDB unlock + 10 poeng → leseark

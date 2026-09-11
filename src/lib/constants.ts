@@ -5,16 +5,20 @@ export const FETCH_RADIUS_M = 1000
 export const RECON_RADIUS_M = 2000
 export const RECON_CLUSTER_M = 80
 export const RECON_BLIP_CLUSTER_PX = 16
+export const RECON_BLIP_RADIUS_PX = 6
+export const RECON_CLUSTER_RADIUS_PX = 10
+export const RECON_CLUSTER_RADIUS_WIDE_PX = 12
+export const RECON_BLIP_COLOR = '#c9a227'
+export const RECON_CLUSTER_COLOR = '#3d7a76'
+export const RECON_CLUSTER_FILL_OPACITY = 0.55
 export const RECON_RECENTER_M = 40
 export const HEADING_SMOOTH = 0.28
 export const FOV_HALF_DEG = 30
-export const MERGE_RADIUS_M = 40
 export const REFETCH_MOVE_M = 150
 export const WIKI_LIMITS = [50, 100, 250, 500] as const
 export const DEFAULT_WIKI_LIMIT = 50
 export const WIKI_MAX_LIMIT = 500
-export const DEFAULT_WIKI_PRIMARY = 'no'
-export const DEFAULT_WIKI_SECONDARY = 'en'
+export const DEFAULT_WIKI_LANGS = ['no', 'en'] as const
 export const WIKI_SOURCE_LANGS = [
   { code: 'no', name: 'Norsk bokmål' },
   { code: 'nn', name: 'Norsk nynorsk' },

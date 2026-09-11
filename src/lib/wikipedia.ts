@@ -1,29 +1,57 @@
 import {
   DEFAULT_WIKI_LIMIT,
   FETCH_RADIUS_M,
-  MERGE_RADIUS_M,
   REFETCH_MOVE_M,
   UNLOCK_RADIUS_M,
   WIKI_MAX_LIMIT,
 } from './constants'
 import { factId } from './collection'
-import { distanceMeters, movedAtLeast, type Coord } from './geo'
-import type { WikiSources } from './prefs'
+import { movedAtLeast, type Coord } from './geo'
+import { parseWikiSources, type WikiSources } from './prefs'
 import type { NearbyPlace } from '../types'
 
-const DEFAULT_WIKI_SOURCES: WikiSources = { primary: 'no', secondary: 'en' }
+const DEFAULT_WIKI_SOURCES = parseWikiSources(null)
 
-export function mergeWikiPlaces(
-  first: NearbyPlace[],
-  second: NearbyPlace[],
-): NearbyPlace[] {
-  const uniqueSecond = second.filter((secondPlace) =>
-    first.every(
-      (firstPlace) => distanceMeters(firstPlace, secondPlace) >= MERGE_RADIUS_M,
-    ),
-  )
+export function mergeWikiPlaces(...groups: NearbyPlace[][]): NearbyPlace[] {
+  const kept: NearbyPlace[] = []
+  const claimedQ = new Set<string>()
 
-  return [...first, ...uniqueSecond]
+  for (const group of groups) {
+    for (const place of group) {
+      if (isSameArticle(place, kept, claimedQ)) continue
+      kept.push(place)
+      if (place.wikidataId) claimedQ.add(place.wikidataId)
+    }
+  }
+  return kept
+}
+
+function titlesMatch(a: string, b: string): boolean {
+  return a.localeCompare(b, undefined, { sensitivity: 'accent' }) === 0
+}
+
+function isSameArticle(
+  candidate: NearbyPlace,
+  kept: NearbyPlace[],
+  claimedQ: Set<string>,
+): boolean {
+  if (candidate.wikidataId && claimedQ.has(candidate.wikidataId)) return true
+  return kept.some((place) => {
+    if (
+      candidate.wikidataId &&
+      place.wikidataId &&
+      candidate.wikidataId === place.wikidataId
+    ) {
+      return true
+    }
+    const candidateAsKept = candidate.langTitles?.[place.lang]
+    if (candidateAsKept && titlesMatch(candidateAsKept, place.title)) return true
+    const keptAsCandidate = place.langTitles?.[candidate.lang]
+    if (keptAsCandidate && titlesMatch(keptAsCandidate, candidate.title)) {
+      return true
+    }
+    return false
+  })
 }
 
 export function mergePlacesById(places: NearbyPlace[]): NearbyPlace[] {
@@ -50,13 +78,15 @@ function wikiUrl(
     ggscoord: `${coord.lat}|${coord.lon}`,
     ggsradius: String(radiusM),
     ggslimit: String(limit),
-    prop: 'extracts|coordinates|pageimages|info',
+    prop: 'extracts|coordinates|pageimages|info|pageprops|langlinks',
     exintro: '1',
     explaintext: '1',
     exchars: '400',
     colimit: String(limit),
     piprop: 'thumbnail',
     pithumbsize: '400',
+    ppprop: 'wikibase_item',
+    lllimit: 'max',
     inprop: 'url',
     format: 'json',
     origin: '*',
@@ -69,6 +99,24 @@ function asRecord(value: unknown): Record<string, unknown> | null {
     return null
   }
   return value as Record<string, unknown>
+}
+
+function parseLangTitles(value: unknown): Record<string, string> | undefined {
+  if (!Array.isArray(value)) return undefined
+  const titles: Record<string, string> = {}
+  for (const item of value) {
+    const record = asRecord(item)
+    if (!record || typeof record.lang !== 'string') continue
+    const title =
+      typeof record['*'] === 'string'
+        ? record['*']
+        : typeof record.title === 'string'
+          ? record.title
+          : null
+    if (!title) continue
+    titles[record.lang] = title
+  }
+  return Object.keys(titles).length > 0 ? titles : undefined
 }
 
 function parsePlaces(data: unknown, lang: string): NearbyPlace[] {
@@ -96,18 +144,26 @@ function parsePlaces(data: unknown, lang: string): NearbyPlace[] {
     const extract = typeof record.extract === 'string' ? record.extract : ''
     const pageUrl =
       typeof record.canonicalurl === 'string' ? record.canonicalurl : ''
+    const pageprops = asRecord(record.pageprops)
+    const wikidataId =
+      typeof pageprops?.wikibase_item === 'string'
+        ? pageprops.wikibase_item
+        : undefined
+    const langTitles = parseLangTitles(record.langlinks)
 
     places.push({
       id: factId(lang, String(pageId)),
       title,
       extract,
-      thumbnailUrl,
       pageUrl,
       lang,
       lat: coord.lat,
       lon: coord.lon,
       pageId,
       source: 'wikipedia',
+      ...(thumbnailUrl ? { thumbnailUrl } : {}),
+      ...(wikidataId ? { wikidataId } : {}),
+      ...(langTitles ? { langTitles } : {}),
     })
   }
   return places
@@ -166,40 +222,25 @@ export async function fetchNearbyPlaces(
   limit: number = DEFAULT_WIKI_LIMIT,
   langs: WikiSources = DEFAULT_WIKI_SOURCES,
 ): Promise<NearbyPlace[]> {
-  let first: NearbyPlace[] | undefined
-  let second: NearbyPlace[] | undefined
-  let firstError: unknown
-  let secondError: unknown
+  const sources =
+    langs.langs.length > 0 ? langs.langs : DEFAULT_WIKI_SOURCES.langs
+  const groups: NearbyPlace[][] = []
+  let lastError: unknown
 
-  try {
-    first = await fetchLangBundle(
-      langs.primary,
-      coord,
-      fetchFn,
-      radiusM,
-      limit,
-    )
-  } catch (error) {
-    firstError = error
+  for (const lang of sources) {
+    try {
+      groups.push(await fetchLangBundle(lang, coord, fetchFn, radiusM, limit))
+    } catch (error) {
+      lastError = error
+      groups.push([])
+    }
   }
 
-  try {
-    second = await fetchLangBundle(
-      langs.secondary,
-      coord,
-      fetchFn,
-      radiusM,
-      limit,
-    )
-  } catch (error) {
-    secondError = error
-  }
-
-  if (firstError && secondError) {
-    throw firstError instanceof Error
-      ? firstError
+  const merged = mergeWikiPlaces(...groups)
+  if (merged.length === 0 && lastError) {
+    throw lastError instanceof Error
+      ? lastError
       : new Error('Wikipedia unavailable')
   }
-
-  return mergeWikiPlaces(first ?? [], second ?? [])
+  return merged
 }

@@ -249,10 +249,10 @@ export function ReconView() {
       const mark = L.circleMarker([blip.lat, blip.lon], {
         pane: BLIP_PANE,
         radius: look.radiusPx,
-        color: look.label ? '#f3ead7' : '#c9a227',
-        fillColor: '#c9a227',
-        fillOpacity: 0.95,
-        weight: look.label ? 2 : 0,
+        color: look.label ? '#f3ead7' : look.color,
+        fillColor: look.color,
+        fillOpacity: look.fillOpacity,
+        weight: look.label ? 1 : 0,
         interactive: false,
       }).addTo(overlay)
       if (look.label) {

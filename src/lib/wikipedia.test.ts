@@ -7,10 +7,11 @@ import {
 } from './wikipedia'
 
 function place(
-  lang: 'no' | 'en',
+  lang: string,
   pageId: number,
   lat: number,
   lon: number,
+  extra: Partial<NearbyPlace> = {},
 ): NearbyPlace {
   return {
     id: `wikipedia:${lang}:${pageId}`,
@@ -22,20 +23,21 @@ function place(
     lon,
     pageId,
     source: 'wikipedia',
+    ...extra,
   }
 }
 
 describe('mergeWikiPlaces', () => {
-  it('drops an English place within 40 m of a Norwegian place', () => {
-    const norwegian = place('no', 1, 63.43, 10.39)
-    const english = place('en', 2, 63.43009, 10.39)
+  it('drops a later-language place with the same Wikidata id', () => {
+    const norwegian = place('no', 1, 63.43, 10.39, { wikidataId: 'Q215023' })
+    const english = place('en', 2, 63.44, 10.41, { wikidataId: 'Q215023' })
 
     expect(mergeWikiPlaces([norwegian], [english])).toEqual([norwegian])
   })
 
-  it('keeps an English place farther than 40 m from Norwegian places', () => {
-    const norwegian = place('no', 1, 63.43, 10.39)
-    const english = place('en', 2, 63.4309, 10.39)
+  it('keeps a nearby later-language place that is a different article', () => {
+    const norwegian = place('no', 1, 63.43, 10.39, { wikidataId: 'Q1' })
+    const english = place('en', 2, 63.43009, 10.39, { wikidataId: 'Q2' })
 
     expect(mergeWikiPlaces([norwegian], [english])).toEqual([
       norwegian,
@@ -43,11 +45,33 @@ describe('mergeWikiPlaces', () => {
     ])
   })
 
-  it('keeps nearby Norwegian places distinct', () => {
+  it('drops a later-language place whose title matches a langlink', () => {
+    const norwegian = place('no', 1, 63.43, 10.39, {
+      title: 'Nidarosdomen',
+      langTitles: { en: 'Nidaros Cathedral' },
+    })
+    const english = place('en', 2, 63.44, 10.41, {
+      title: 'Nidaros Cathedral',
+    })
+
+    expect(mergeWikiPlaces([norwegian], [english])).toEqual([norwegian])
+  })
+
+  it('keeps nearby places on the same language distinct', () => {
     const first = place('no', 1, 63.43, 10.39)
     const second = place('no', 2, 63.43009, 10.39)
 
     expect(mergeWikiPlaces([first, second], [])).toEqual([first, second])
+  })
+
+  it('prefers the earliest language when three editions overlap', () => {
+    const norwegian = place('no', 1, 63.43, 10.39, { wikidataId: 'Q9' })
+    const english = place('en', 2, 63.43, 10.39, { wikidataId: 'Q9' })
+    const spanish = place('es', 3, 63.43, 10.39, { wikidataId: 'Q9' })
+
+    expect(mergeWikiPlaces([norwegian], [english], [spanish])).toEqual([
+      norwegian,
+    ])
   })
 })
 
@@ -123,6 +147,10 @@ describe('fetchNearbyPlaces', () => {
     expect(query.get('ggslimit')).toBe('50')
     expect(query.get('colimit')).toBe('50')
     expect(query.get('origin')).toBe('*')
+    expect(query.get('ppprop')).toBe('wikibase_item')
+    expect(query.get('prop')).toContain('pageprops')
+    expect(query.get('prop')).toContain('langlinks')
+    expect(query.get('lllimit')).toBe('max')
     expect(places).toEqual([
       {
         id: 'wikipedia:no:1',
@@ -177,11 +205,30 @@ describe('fetchNearbyPlaces', () => {
       fetchFn,
       2000,
       50,
-      { primary: 'es', secondary: 'en' },
+      { langs: ['es', 'en', 'fr'] },
     )
     expect(urls[0]).toContain('es.wikipedia.org')
     expect(urls[2]).toContain('en.wikipedia.org')
+    expect(urls[4]).toContain('fr.wikipedia.org')
     expect(urls.some((url) => url.includes('no.wikipedia.org'))).toBe(false)
+  })
+
+  it('fetches only one Wikipedia language when that is all that is chosen', async () => {
+    const urls: string[] = []
+    const fetchFn = async (input: RequestInfo | URL): Promise<Response> => {
+      urls.push(String(input))
+      return jsonResponse({})
+    }
+    await fetchNearbyPlaces(
+      { lat: 40.4, lon: -3.7 },
+      fetchFn,
+      2000,
+      50,
+      { langs: ['es'] },
+    )
+    expect(urls[0]).toContain('es.wikipedia.org')
+    expect(urls.every((url) => url.includes('es.wikipedia.org'))).toBe(true)
+    expect(urls).toHaveLength(2)
   })
 
   it('asks Wikipedia for coordinates on every geosearch hit', async () => {
@@ -237,6 +284,49 @@ describe('fetchNearbyPlaces', () => {
     const places = await fetchNearbyPlaces({ lat: 63.43, lon: 10.39 }, fetchFn)
 
     expect(places.map(({ id }) => id)).toEqual(['wikipedia:no:1'])
+  })
+
+  it('maps Wikidata id and langlinks from the page', async () => {
+    const fetchFn = async (): Promise<Response> =>
+      jsonResponse({
+        query: {
+          pages: {
+            '1': {
+              pageid: 1,
+              title: 'Nidarosdomen',
+              extract: 'Domkirke.',
+              canonicalurl: 'https://no.wikipedia.org/wiki/Nidarosdomen',
+              coordinates: [{ lat: 63.43, lon: 10.39 }],
+              pageprops: { wikibase_item: 'Q215023' },
+              langlinks: [{ lang: 'en', '*': 'Nidaros Cathedral' }],
+            },
+          },
+        },
+      })
+
+    const places = await fetchNearbyPlaces(
+      { lat: 63.43, lon: 10.39 },
+      fetchFn,
+      2000,
+      50,
+      { langs: ['no'] },
+    )
+
+    expect(places).toEqual([
+      {
+        id: 'wikipedia:no:1',
+        title: 'Nidarosdomen',
+        extract: 'Domkirke.',
+        pageUrl: 'https://no.wikipedia.org/wiki/Nidarosdomen',
+        lang: 'no',
+        lat: 63.43,
+        lon: 10.39,
+        pageId: 1,
+        source: 'wikipedia',
+        wikidataId: 'Q215023',
+        langTitles: { en: 'Nidaros Cathedral' },
+      },
+    ])
   })
 
   it('throws when both language requests fail', async () => {

@@ -1,13 +1,24 @@
 import {
   RECON_BLIP_CLUSTER_PX,
+  RECON_BLIP_COLOR,
+  RECON_BLIP_RADIUS_PX,
+  RECON_CLUSTER_COLOR,
+  RECON_CLUSTER_FILL_OPACITY,
   RECON_CLUSTER_M,
+  RECON_CLUSTER_RADIUS_PX,
+  RECON_CLUSTER_RADIUS_WIDE_PX,
   VISIBLE_RADIUS_M,
 } from './constants'
 import { distanceMeters, type Coord } from './geo'
 
 export type ReconBlip = { lat: number; lon: number; count: number }
 
-export type ReconBlipLook = { radiusPx: number; label: string | null }
+export type ReconBlipLook = {
+  radiusPx: number
+  label: string | null
+  color: string
+  fillOpacity: number
+}
 
 export function reconClusterMeters(metersPerPixel: number): number {
   if (!Number.isFinite(metersPerPixel) || metersPerPixel <= 0) {
@@ -17,10 +28,20 @@ export function reconClusterMeters(metersPerPixel: number): number {
 }
 
 export function reconBlipLook(count: number): ReconBlipLook {
-  if (count <= 1) return { radiusPx: 6, label: null }
+  if (count <= 1) {
+    return {
+      radiusPx: RECON_BLIP_RADIUS_PX,
+      label: null,
+      color: RECON_BLIP_COLOR,
+      fillOpacity: 0.9,
+    }
+  }
   return {
-    radiusPx: 10 + Math.min(count, 8) * 2,
+    radiusPx:
+      count > 100 ? RECON_CLUSTER_RADIUS_WIDE_PX : RECON_CLUSTER_RADIUS_PX,
     label: String(count),
+    color: RECON_CLUSTER_COLOR,
+    fillOpacity: RECON_CLUSTER_FILL_OPACITY,
   }
 }
 

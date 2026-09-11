@@ -23,4 +23,6 @@ export type NearbyPlace = {
   lon: number
   pageId: number
   source: 'wikipedia'
+  wikidataId?: string
+  langTitles?: Record<string, string>
 }

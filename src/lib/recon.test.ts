@@ -91,13 +91,25 @@ describe('reconClusterMeters', () => {
 })
 
 describe('reconBlipLook', () => {
-  it('keeps a single place as an unlabeled dot', () => {
-    expect(reconBlipLook(1)).toEqual({ radiusPx: 6, label: null })
+  it('keeps a single place as an unlabeled gold dot', () => {
+    const look = reconBlipLook(1)
+    expect(look.label).toBeNull()
+    expect(look.radiusPx).toBe(6)
+    expect(look.fillOpacity).toBeGreaterThan(0.8)
   })
 
-  it('marks a cluster with its count and a larger mark', () => {
-    const look = reconBlipLook(3)
-    expect(look.label).toBe('3')
-    expect(look.radiusPx).toBeGreaterThan(reconBlipLook(1).radiusPx)
+  it('uses one modest cluster size no matter how many places it holds', () => {
+    const small = reconBlipLook(2)
+    const large = reconBlipLook(40)
+    expect(small.label).toBe('2')
+    expect(large.label).toBe('40')
+    expect(small.radiusPx).toBe(large.radiusPx)
+    expect(small.radiusPx).toBeGreaterThan(reconBlipLook(1).radiusPx)
+    expect(small.color).not.toBe(reconBlipLook(1).color)
+    expect(small.fillOpacity).toBeLessThan(reconBlipLook(1).fillOpacity)
+  })
+
+  it('widens only when the count needs three digits', () => {
+    expect(reconBlipLook(101).radiusPx).toBeGreaterThan(reconBlipLook(2).radiusPx)
   })
 })

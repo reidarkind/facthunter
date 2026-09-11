@@ -287,18 +287,37 @@ p {
   color: #d9cbb0;
 }
 
-.leaflet-div-icon.recon-cluster {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #c9a227;
-  border: 2px solid #f3ead7;
-  border-radius: 50%;
-  color: #0f4c4a;
+.leaflet-tooltip.recon-cluster-label {
+  background: none;
+  border: none;
+  box-shadow: none;
+  color: #f3ead7;
   font-size: 11px;
-  font-weight: 700;
-  line-height: 1;
-  box-shadow: 0 0 0 1px rgb(5 15 15 / 55%);
+  font-weight: 800;
+  padding: 0;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.leaflet-tooltip.recon-cluster-label::before {
+  display: none;
+}
+
+.settings-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.settings-field select {
+  font: inherit;
+  font-weight: 500;
+  padding: 10px 12px;
+  border: 1px solid #d7cbb3;
+  border-radius: 10px;
+  background: #fff;
 }
 
 .sign {

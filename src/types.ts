@@ -4,7 +4,7 @@ export type SavedFact = {
   extract: string
   thumbnailUrl?: string
   pageUrl: string
-  lang: 'no' | 'en'
+  lang: string
   lat: number
   lon: number
   unlockedAt: string
@@ -18,7 +18,7 @@ export type NearbyPlace = {
   extract: string
   thumbnailUrl?: string
   pageUrl: string
-  lang: 'no' | 'en'
+  lang: string
   lat: number
   lon: number
   pageId: number

@@ -1,11 +1,16 @@
 import { useT } from '../i18n/useT'
-import { WIKI_LIMITS } from '../lib/constants'
+import { WIKI_LIMITS, WIKI_SOURCE_LANGS } from '../lib/constants'
 import type { Locale } from '../lib/locale'
+import {
+  parseWikiLang,
+  withWikiPrimary,
+  withWikiSecondary,
+} from '../lib/prefs'
 import { usePrefs } from './usePrefs'
 
 export function SettingsPage(props: { onBack?: () => void }) {
   const { t, locale, setLocale } = useT()
-  const { wikiLimit, setWikiLimit } = usePrefs()
+  const { wikiLimit, setWikiLimit, wikiSources, setWikiSources } = usePrefs()
 
   function choose(next: Locale) {
     setLocale(next)
@@ -43,6 +48,44 @@ export function SettingsPage(props: { onBack?: () => void }) {
             {t('langEn')}
           </button>
         </div>
+      </section>
+      <section>
+        <h2>{t('wikiSources')}</h2>
+        <p>{t('wikiSourcesHelp')}</p>
+        <label className="settings-field">
+          {t('wikiSourcePrimary')}
+          <select
+            aria-label={t('wikiSourcePrimary')}
+            value={wikiSources.primary}
+            onChange={(event) => {
+              const next = parseWikiLang(event.target.value)
+              if (next) setWikiSources(withWikiPrimary(wikiSources, next))
+            }}
+          >
+            {WIKI_SOURCE_LANGS.map((lang) => (
+              <option key={lang.code} value={lang.code}>
+                {lang.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="settings-field">
+          {t('wikiSourceSecondary')}
+          <select
+            aria-label={t('wikiSourceSecondary')}
+            value={wikiSources.secondary}
+            onChange={(event) => {
+              const next = parseWikiLang(event.target.value)
+              if (next) setWikiSources(withWikiSecondary(wikiSources, next))
+            }}
+          >
+            {WIKI_SOURCE_LANGS.map((lang) => (
+              <option key={`second-${lang.code}`} value={lang.code}>
+                {lang.name}
+              </option>
+            ))}
+          </select>
+        </label>
       </section>
       <section>
         <h2>{t('wikiLimit')}</h2>

@@ -52,7 +52,7 @@ export function HuntView(props: {
 }) {
   const { facts, onFactsChange } = props
   const { t } = useT()
-  const { wikiLimit } = usePrefs()
+  const { wikiLimit, wikiSources } = usePrefs()
   const sensors = useHuntSensors()
   const videoRef = useRef<HTMLVideoElement>(null)
   const [places, setPlaces] = useState<NearbyPlace[]>([])
@@ -72,7 +72,7 @@ export function HuntView(props: {
 
   useEffect(() => {
     lastFetchAt.current = null
-  }, [wikiLimit])
+  }, [wikiLimit, wikiSources])
 
   useEffect(() => {
     if (!sensors.ready || !coord) return
@@ -80,7 +80,13 @@ export function HuntView(props: {
     let cancelled = false
     setLoadingPlaces(true)
     setFetchFailed(false)
-    void fetchNearbyPlaces(coord, fetch, FETCH_RADIUS_M, wikiLimit)
+    void fetchNearbyPlaces(
+      coord,
+      fetch,
+      FETCH_RADIUS_M,
+      wikiLimit,
+      wikiSources,
+    )
       .then((next) => {
         if (cancelled) return
         lastFetchAt.current = coord
@@ -96,7 +102,7 @@ export function HuntView(props: {
     return () => {
       cancelled = true
     }
-  }, [sensors.ready, coord, wikiLimit])
+  }, [sensors.ready, coord, wikiLimit, wikiSources])
 
   const signs = useMemo(() => {
     if (!coord || sensors.headingDeg === null) return []

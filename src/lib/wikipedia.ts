@@ -8,20 +8,22 @@ import {
 } from './constants'
 import { factId } from './collection'
 import { distanceMeters, movedAtLeast, type Coord } from './geo'
+import type { WikiSources } from './prefs'
 import type { NearbyPlace } from '../types'
 
+const DEFAULT_WIKI_SOURCES: WikiSources = { primary: 'no', secondary: 'en' }
+
 export function mergeWikiPlaces(
-  norwegian: NearbyPlace[],
-  english: NearbyPlace[],
+  first: NearbyPlace[],
+  second: NearbyPlace[],
 ): NearbyPlace[] {
-  const uniqueEnglish = english.filter((englishPlace) =>
-    norwegian.every(
-      (norwegianPlace) =>
-        distanceMeters(norwegianPlace, englishPlace) >= MERGE_RADIUS_M,
+  const uniqueSecond = second.filter((secondPlace) =>
+    first.every(
+      (firstPlace) => distanceMeters(firstPlace, secondPlace) >= MERGE_RADIUS_M,
     ),
   )
 
-  return [...norwegian, ...uniqueEnglish]
+  return [...first, ...uniqueSecond]
 }
 
 export function mergePlacesById(places: NearbyPlace[]): NearbyPlace[] {
@@ -37,7 +39,7 @@ export function shouldRefetch(prev: Coord | null, next: Coord): boolean {
 }
 
 function wikiUrl(
-  lang: 'no' | 'en',
+  lang: string,
   coord: Coord,
   radiusM: number,
   limit: number,
@@ -69,7 +71,7 @@ function asRecord(value: unknown): Record<string, unknown> | null {
   return value as Record<string, unknown>
 }
 
-function parsePlaces(data: unknown, lang: 'no' | 'en'): NearbyPlace[] {
+function parsePlaces(data: unknown, lang: string): NearbyPlace[] {
   const root = asRecord(data)
   const query = asRecord(root?.query)
   const pages = asRecord(query?.pages)
@@ -112,7 +114,7 @@ function parsePlaces(data: unknown, lang: 'no' | 'en'): NearbyPlace[] {
 }
 
 async function fetchLang(
-  lang: 'no' | 'en',
+  lang: string,
   coord: Coord,
   fetchFn: typeof fetch,
   radiusM: number,
@@ -126,7 +128,7 @@ async function fetchLang(
 }
 
 async function fetchLangBundle(
-  lang: 'no' | 'en',
+  lang: string,
   coord: Coord,
   fetchFn: typeof fetch,
   radiusM: number,
@@ -162,29 +164,42 @@ export async function fetchNearbyPlaces(
   fetchFn: typeof fetch = fetch,
   radiusM: number = FETCH_RADIUS_M,
   limit: number = DEFAULT_WIKI_LIMIT,
+  langs: WikiSources = DEFAULT_WIKI_SOURCES,
 ): Promise<NearbyPlace[]> {
-  let norwegian: NearbyPlace[] | undefined
-  let english: NearbyPlace[] | undefined
-  let norwegianError: unknown
-  let englishError: unknown
+  let first: NearbyPlace[] | undefined
+  let second: NearbyPlace[] | undefined
+  let firstError: unknown
+  let secondError: unknown
 
   try {
-    norwegian = await fetchLangBundle('no', coord, fetchFn, radiusM, limit)
+    first = await fetchLangBundle(
+      langs.primary,
+      coord,
+      fetchFn,
+      radiusM,
+      limit,
+    )
   } catch (error) {
-    norwegianError = error
+    firstError = error
   }
 
   try {
-    english = await fetchLangBundle('en', coord, fetchFn, radiusM, limit)
+    second = await fetchLangBundle(
+      langs.secondary,
+      coord,
+      fetchFn,
+      radiusM,
+      limit,
+    )
   } catch (error) {
-    englishError = error
+    secondError = error
   }
 
-  if (norwegianError && englishError) {
-    throw norwegianError instanceof Error
-      ? norwegianError
+  if (firstError && secondError) {
+    throw firstError instanceof Error
+      ? firstError
       : new Error('Wikipedia unavailable')
   }
 
-  return mergeWikiPlaces(norwegian ?? [], english ?? [])
+  return mergeWikiPlaces(first ?? [], second ?? [])
 }

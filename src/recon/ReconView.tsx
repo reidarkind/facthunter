@@ -79,7 +79,7 @@ function clusterMetersOnMap(map: L.Map, origin: Coord): number {
 
 export function ReconView() {
   const { t } = useT()
-  const { wikiLimit } = usePrefs()
+  const { wikiLimit, wikiSources } = usePrefs()
   const mapEl = useRef<HTMLDivElement>(null)
   const mapRef = useRef<L.Map | null>(null)
   const blipLayerRef = useRef<L.LayerGroup | null>(null)
@@ -201,7 +201,7 @@ export function ReconView() {
 
   useEffect(() => {
     lastFetchAt.current = null
-  }, [wikiLimit])
+  }, [wikiLimit, wikiSources])
 
   useEffect(() => {
     if (!coord) return
@@ -209,7 +209,13 @@ export function ReconView() {
     let cancelled = false
     setLoading(true)
     setFetchFailed(false)
-    void fetchNearbyPlaces(coord, fetch, RECON_RADIUS_M, wikiLimit)
+    void fetchNearbyPlaces(
+      coord,
+      fetch,
+      RECON_RADIUS_M,
+      wikiLimit,
+      wikiSources,
+    )
       .then((next) => {
         if (cancelled) return
         lastFetchAt.current = coord
@@ -224,7 +230,7 @@ export function ReconView() {
     return () => {
       cancelled = true
     }
-  }, [coord, wikiLimit])
+  }, [coord, wikiLimit, wikiSources])
 
   useEffect(() => {
     const overlay = blipLayerRef.current
@@ -240,29 +246,22 @@ export function ReconView() {
       clusterM,
     )) {
       const look = reconBlipLook(blip.count)
+      const mark = L.circleMarker([blip.lat, blip.lon], {
+        pane: BLIP_PANE,
+        radius: look.radiusPx,
+        color: look.label ? '#f3ead7' : '#c9a227',
+        fillColor: '#c9a227',
+        fillOpacity: 0.95,
+        weight: look.label ? 2 : 0,
+        interactive: false,
+      }).addTo(overlay)
       if (look.label) {
-        const size = look.radiusPx * 2
-        L.marker([blip.lat, blip.lon], {
-          pane: BLIP_PANE,
-          interactive: false,
-          keyboard: false,
-          icon: L.divIcon({
-            className: 'recon-cluster',
-            html: `<span>${look.label}</span>`,
-            iconSize: [size, size],
-            iconAnchor: [size / 2, size / 2],
-          }),
-        }).addTo(overlay)
-      } else {
-        L.circleMarker([blip.lat, blip.lon], {
-          pane: BLIP_PANE,
-          radius: look.radiusPx,
-          color: '#c9a227',
-          fillColor: '#c9a227',
-          fillOpacity: 0.9,
-          weight: 0,
-          interactive: false,
-        }).addTo(overlay)
+        mark.bindTooltip(look.label, {
+          permanent: true,
+          direction: 'center',
+          className: 'recon-cluster-label',
+          opacity: 1,
+        })
       }
     }
     paintWedge()

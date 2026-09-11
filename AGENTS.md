@@ -1,7 +1,7 @@
 # FactHunter
 
 Norwegian-first mobile PWA (English in Settings). Vite 8 + React 19 + TypeScript. No backend.
-Wikipedia GeoSearch (`no` then `en`) overlaid as AR signposts. Collection in IndexedDB.
+Wikipedia GeoSearch (settings: first then second edition, default `no` then `en`) overlaid as AR signposts. Collection in IndexedDB.
 Hosted on GitHub Pages at `/facthunter/` (repo name, not the local folder `fact_hunter`).
 
 ## Commands
@@ -32,7 +32,7 @@ enum Lang { No, En }
 export default function scoreFor(facts: SavedFact[]) { /* ... */ }
 ```
 
-Keep hunt numbers in `src/lib/constants.ts`. Do not scatter 500/50/40/150. Wikipedia result caps live in `WIKI_LIMITS` / `DEFAULT_WIKI_LIMIT` / `WIKI_MAX_LIMIT`. Rekognoser always fetches every geotagged hit within 50 m. Farther hits cluster when they overlap at the locked 2 km map scale (`reconClusterMeters`); clusters show a count.
+Keep hunt numbers in `src/lib/constants.ts`. Do not scatter 500/50/40/150. Wikipedia result caps live in `WIKI_LIMITS` / `DEFAULT_WIKI_LIMIT` / `WIKI_MAX_LIMIT`. Wikipedia editions live in `WIKI_SOURCE_LANGS` (settings: first then second; default `no` then `en`). Rekognoser always fetches every geotagged hit within 50 m. Places inside the 500 m hunt ring stay unclustered; farther hits cluster when they overlap at the locked 2 km map scale (`reconClusterMeters`). Cluster count is drawn on the gold blip itself.
 
 ```ts
 // id format — callers must String(pageId)

@@ -93,8 +93,8 @@ Skiltet skal stå **i verden**, ikke som HUD-klistremerke.
 
 ### 5.4 Wikipedia
 
-- Hent alltid fra både `no.wikipedia.org` og `en.wikipedia.org`.
-- Hvis en norsk og en engelsk artikkel ligger nærmere enn 40 m: behold den norske. To artikler på samme språk vises begge.
+- Hent fra to Wikipedia-utgaver valgt i innstillinger (standard `no` deretter `en`).
+- Hvis en artikkel fra andre kilde ligger nærmere enn 40 m fra en fra første: behold den første. To artikler på samme språk vises begge.
 - Bruk GeoSearch + extracts/thumbnail i batch (CORS `origin=*`).
 - Ikke cache API-svar som sannhet på disk; minnecache mens jakten kjører, refetch når posisjonen har flyttet seg mer enn 150 m.
 - Tomt resultat: «Ingen steder her — gå litt».

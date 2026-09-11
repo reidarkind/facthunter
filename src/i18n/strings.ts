@@ -65,6 +65,11 @@ const no = {
   wikiLimit: 'Wikipedia-treff',
   wikiLimitHelp:
     'Hvor mange steder som hentes rundt deg. Flere treff gir tettere kart og jakt, men tyngre lasting.',
+  wikiSources: 'Wikipedia-kilder',
+  wikiSourcesHelp:
+    'Hvilke Wikipedia-utgaver som søkes rundt deg. Første språk vinner når to artikler ligger nærmere enn 40 m.',
+  wikiSourcePrimary: 'Første',
+  wikiSourceSecondary: 'Andre',
   whatThisIs: 'Hva dette er',
   whatThisIsBody:
     'FactHunter er et tynt lag som gjør Wikipedia morsommere å oppdage i den virkelige verden. Du bruker kameraet bak på telefonen til å se deg rundt. Steder vises som skilt i gata; du låser dem opp og samler dem i en feltjournal. Innholdet kommer fra Wikipedia; appen eier det ikke.',
@@ -163,6 +168,11 @@ const en: { [K in keyof typeof no]: string } = {
   wikiLimit: 'Wikipedia results',
   wikiLimitHelp:
     'How many places to fetch around you. More results make the map and hunt denser, but loading is heavier.',
+  wikiSources: 'Wikipedia sources',
+  wikiSourcesHelp:
+    'Which Wikipedia editions to search around you. The first language wins when two articles are closer than 40 m.',
+  wikiSourcePrimary: 'First',
+  wikiSourceSecondary: 'Second',
   whatThisIs: 'What this is',
   whatThisIsBody:
     'FactHunter is a thin layer that makes Wikipedia more fun to discover in the real world. You use the camera on the back of the phone to look around. Places appear as signs in the street; you unlock them and collect them in a field journal. The content comes from Wikipedia; the app does not own it.',

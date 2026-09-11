@@ -33,3 +33,18 @@ it('lets the user raise the Wikipedia result cap', async () => {
   await user.click(twoFifty)
   expect(twoFifty).toHaveAttribute('aria-pressed', 'true')
 })
+
+it('lets the user pick Wikipedia source languages', async () => {
+  const user = userEvent.setup()
+  render(
+    <LocaleProvider>
+      <PrefsProvider>
+        <SettingsPage />
+      </PrefsProvider>
+    </LocaleProvider>,
+  )
+  const primary = screen.getByLabelText('Første')
+  await user.selectOptions(primary, 'es')
+  expect(primary).toHaveValue('es')
+  expect(screen.getByLabelText('Andre')).toHaveValue('en')
+})

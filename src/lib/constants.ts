@@ -13,6 +13,43 @@ export const REFETCH_MOVE_M = 150
 export const WIKI_LIMITS = [50, 100, 250, 500] as const
 export const DEFAULT_WIKI_LIMIT = 50
 export const WIKI_MAX_LIMIT = 500
+export const DEFAULT_WIKI_PRIMARY = 'no'
+export const DEFAULT_WIKI_SECONDARY = 'en'
+export const WIKI_SOURCE_LANGS = [
+  { code: 'no', name: 'Norsk bokmål' },
+  { code: 'nn', name: 'Norsk nynorsk' },
+  { code: 'en', name: 'English' },
+  { code: 'sv', name: 'Svenska' },
+  { code: 'da', name: 'Dansk' },
+  { code: 'de', name: 'Deutsch' },
+  { code: 'es', name: 'Español' },
+  { code: 'fr', name: 'Français' },
+  { code: 'it', name: 'Italiano' },
+  { code: 'nl', name: 'Nederlands' },
+  { code: 'fi', name: 'Suomi' },
+  { code: 'is', name: 'Íslenska' },
+  { code: 'pl', name: 'Polski' },
+  { code: 'pt', name: 'Português' },
+  { code: 'cs', name: 'Čeština' },
+  { code: 'hu', name: 'Magyar' },
+  { code: 'ro', name: 'Română' },
+  { code: 'el', name: 'Ελληνικά' },
+  { code: 'hr', name: 'Hrvatski' },
+  { code: 'sk', name: 'Slovenčina' },
+  { code: 'sl', name: 'Slovenščina' },
+  { code: 'et', name: 'Eesti' },
+  { code: 'lv', name: 'Latviešu' },
+  { code: 'lt', name: 'Lietuvių' },
+  { code: 'ru', name: 'Русский' },
+  { code: 'uk', name: 'Українська' },
+  { code: 'tr', name: 'Türkçe' },
+  { code: 'ar', name: 'العربية' },
+  { code: 'ja', name: '日本語' },
+  { code: 'zh', name: '中文' },
+  { code: 'ca', name: 'Català' },
+  { code: 'eu', name: 'Euskara' },
+] as const
+export type WikiSourceLang = (typeof WIKI_SOURCE_LANGS)[number]['code']
 export const RECON_BEAM_COLOR = '#e2473a'
 export const POINTS_UNLOCK = 10
 export const POINTS_READ = 5

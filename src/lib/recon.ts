@@ -1,7 +1,7 @@
 import {
   RECON_BLIP_CLUSTER_PX,
   RECON_CLUSTER_M,
-  UNLOCK_RADIUS_M,
+  VISIBLE_RADIUS_M,
 } from './constants'
 import { distanceMeters, type Coord } from './geo'
 
@@ -53,7 +53,7 @@ export function blipsForRecon(
   origin: Coord,
   radiusM: number,
   clusterM: number,
-  keepSeparateWithinM: number = UNLOCK_RADIUS_M,
+  keepSeparateWithinM: number = VISIBLE_RADIUS_M,
 ): ReconBlip[] {
   const inRange = places.filter(
     (place) => distanceMeters(origin, place) <= radiusM,

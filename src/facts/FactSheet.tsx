@@ -9,7 +9,7 @@ export type SheetFact = {
   extract: string
   thumbnailUrl?: string
   pageUrl: string
-  lang: 'no' | 'en'
+  lang: string
   distanceM?: number
   readAt?: string
 }

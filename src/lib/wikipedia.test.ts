@@ -166,6 +166,24 @@ describe('fetchNearbyPlaces', () => {
     expect(outer.every((query) => query.get('ggslimit') === '50')).toBe(true)
   })
 
+  it('fetches the chosen Wikipedia languages in order', async () => {
+    const urls: string[] = []
+    const fetchFn = async (input: RequestInfo | URL): Promise<Response> => {
+      urls.push(String(input))
+      return jsonResponse({})
+    }
+    await fetchNearbyPlaces(
+      { lat: 40.4, lon: -3.7 },
+      fetchFn,
+      2000,
+      50,
+      { primary: 'es', secondary: 'en' },
+    )
+    expect(urls[0]).toContain('es.wikipedia.org')
+    expect(urls[2]).toContain('en.wikipedia.org')
+    expect(urls.some((url) => url.includes('no.wikipedia.org'))).toBe(false)
+  })
+
   it('asks Wikipedia for coordinates on every geosearch hit', async () => {
     const urls: string[] = []
     const fetchFn = async (input: RequestInfo | URL): Promise<Response> => {

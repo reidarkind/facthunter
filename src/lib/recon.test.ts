@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   RECON_BLIP_CLUSTER_PX,
   RECON_CLUSTER_M,
-  UNLOCK_RADIUS_M,
+  VISIBLE_RADIUS_M,
 } from './constants'
 import { destinationCoord, distanceMeters } from './geo'
 import { blipsForRecon, reconBlipLook, reconClusterMeters } from './recon'
@@ -24,12 +24,23 @@ describe('blipsForRecon', () => {
     expect(blips[0].lon).toBeCloseTo(near.lon)
   })
 
-  it('clusters two nearby places into one blip', () => {
-    const a = { lat: 63.431, lon: 10.39 }
-    const b = { lat: 63.43105, lon: 10.39 }
+  it('clusters two nearby places outside hunt range into one blip', () => {
+    const a = destinationCoord(origin, 0, 700)
+    const b = destinationCoord(origin, 0, 705)
+    expect(distanceMeters(origin, a)).toBeGreaterThan(VISIBLE_RADIUS_M)
     const blips = blipsForRecon([a, b], origin, 2000, 80)
     expect(blips).toHaveLength(1)
     expect(blips[0].count).toBe(2)
+  })
+
+  it('keeps nearby places inside the hunt ring as separate blips', () => {
+    const a = destinationCoord(origin, 0, 200)
+    const b = destinationCoord(origin, 0, 210)
+    expect(distanceMeters(origin, a)).toBeLessThan(VISIBLE_RADIUS_M)
+    expect(distanceMeters(a, b)).toBeLessThan(80)
+    const blips = blipsForRecon([a, b], origin, 2000, 80)
+    expect(blips).toHaveLength(2)
+    expect(blips.map((blip) => blip.count)).toEqual([1, 1])
   })
 
   it('keeps well-separated places as distinct blips', () => {
@@ -40,29 +51,19 @@ describe('blipsForRecon', () => {
     expect(blips.map((blip) => blip.count)).toEqual([1, 1])
   })
 
-  it('never clusters places within unlock range of the hunter', () => {
-    const closeA = destinationCoord(origin, 0, 20)
-    const closeB = destinationCoord(origin, 90, 20)
-    expect(distanceMeters(origin, closeA)).toBeLessThan(UNLOCK_RADIUS_M)
-    expect(distanceMeters(origin, closeB)).toBeLessThan(UNLOCK_RADIUS_M)
-    expect(distanceMeters(closeA, closeB)).toBeLessThan(80)
+  it('does not fold a hunt-range place into a farther cluster', () => {
+    const inside = destinationCoord(origin, 0, 480)
+    const outside = destinationCoord(origin, 0, 540)
+    expect(distanceMeters(origin, inside)).toBeLessThan(VISIBLE_RADIUS_M)
+    expect(distanceMeters(origin, outside)).toBeGreaterThan(VISIBLE_RADIUS_M)
+    expect(distanceMeters(inside, outside)).toBeLessThan(80)
 
-    const blips = blipsForRecon([closeA, closeB], origin, 2000, 80)
+    const blips = blipsForRecon([inside, outside], origin, 2000, 80)
     expect(blips).toHaveLength(2)
-    expect(blips.map((blip) => blip.count)).toEqual([1, 1])
-  })
-
-  it('does not fold an unlock-range place into a farther cluster', () => {
-    const close = destinationCoord(origin, 0, 30)
-    const farther = destinationCoord(origin, 0, 90)
-    expect(distanceMeters(close, farther)).toBeLessThan(80)
-
-    const blips = blipsForRecon([close, farther], origin, 2000, 80)
-    expect(blips).toHaveLength(2)
-    const closeBlip = blips.find(
-      (blip) => blip.count === 1 && blip.lat === close.lat,
+    const insideBlip = blips.find(
+      (blip) => blip.count === 1 && blip.lat === inside.lat,
     )
-    expect(closeBlip).toBeDefined()
+    expect(insideBlip).toBeDefined()
   })
 })
 
@@ -78,8 +79,9 @@ describe('reconClusterMeters', () => {
 
   it('merges farther places that overlap at recon map scale', () => {
     const origin = { lat: 63.43, lon: 10.39 }
-    const a = destinationCoord(origin, 0, 200)
-    const b = destinationCoord(origin, 0, 320)
+    const a = destinationCoord(origin, 0, 700)
+    const b = destinationCoord(origin, 0, 820)
+    expect(distanceMeters(origin, a)).toBeGreaterThan(VISIBLE_RADIUS_M)
     expect(distanceMeters(a, b)).toBeGreaterThan(RECON_CLUSTER_M)
     expect(distanceMeters(a, b)).toBeLessThan(reconClusterMeters(12))
     const blips = blipsForRecon([a, b], origin, 2000, reconClusterMeters(12))

@@ -53,7 +53,7 @@ describe('parseImportPayload', () => {
 
   it('rejects entire file when any fact fails field guard', () => {
     const valid = fact()
-    const invalid = { ...fact(), lang: 'fr' }
+    const invalid = { ...fact(), lang: '' }
     expect(
       parseImportPayload({
         app: APP_NAME,
@@ -61,6 +61,14 @@ describe('parseImportPayload', () => {
         facts: [valid, invalid],
       }),
     ).toEqual({ ok: false })
+  })
+
+  it('accepts a Wikipedia language other than Norwegian and English', () => {
+    const raw = buildExportPayload(
+      [fact({ id: 'wikipedia:es:9', lang: 'es' })],
+      '2026-09-11T12:00:00.000Z',
+    )
+    expect(parseImportPayload(raw)).toEqual({ ok: true, facts: raw.facts })
   })
 })
 

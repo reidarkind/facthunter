@@ -27,7 +27,9 @@ function isValidFact(item: unknown): item is SavedFact {
   if (typeof o.title !== 'string') return false
   if (typeof o.extract !== 'string') return false
   if (typeof o.pageUrl !== 'string') return false
-  if (o.lang !== 'no' && o.lang !== 'en') return false
+  if (typeof o.lang !== 'string' || !/^[a-z]{2,3}(-[a-z]+)?$/.test(o.lang)) {
+    return false
+  }
   if (typeof o.lat !== 'number') return false
   if (typeof o.lon !== 'number') return false
   if (typeof o.unlockedAt !== 'string') return false

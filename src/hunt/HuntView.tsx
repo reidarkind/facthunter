@@ -147,7 +147,11 @@ export function HuntView(props: {
               <li>Posisjon mangler eller ble avslått</li>
             ) : null}
             {sensors.missing.includes('kompass') ? (
-              <li>Kompass mangler eller ble avslått</li>
+              <li>
+                Kompass mangler eller ble avslått. iPhone: Innstillinger →
+                Safari (eller FactHunter) → Bevegelse og retning, deretter
+                Prøv igjen. Si ja når telefonen spør om bevegelse.
+              </li>
             ) : null}
             {sensors.missing.includes('https') ? (
               <li>Åpne appen over HTTPS, ikke http://192.168…</li>

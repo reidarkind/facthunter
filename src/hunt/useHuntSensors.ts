@@ -20,6 +20,14 @@ function screenAngle(): number {
   return window.screen.orientation?.angle ?? 0
 }
 
+function orientationPermissionRequest(): Promise<string> | null {
+  if (typeof DeviceOrientationEvent === 'undefined') return null
+  const doe = DeviceOrientationEvent as DeviceOrientationWithPermission
+  if (typeof doe.requestPermission !== 'function') return null
+  // Call immediately so iOS still counts this as the user gesture.
+  return doe.requestPermission()
+}
+
 export function useHuntSensors() {
   const [requesting, setRequesting] = useState(false)
   const [stream, setStream] = useState<MediaStream | null>(null)
@@ -60,27 +68,7 @@ export function useHuntSensors() {
     const missingNow: string[] = []
     if (!window.isSecureContext) missingNow.push('https')
 
-    try {
-      const nextStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: 'environment' } },
-        audio: false,
-      })
-      streamRef.current?.getTracks().forEach((track) => track.stop())
-      streamRef.current = nextStream
-      setStream(nextStream)
-    } catch {
-      missingNow.push('kamera')
-    }
-
-    const doe = DeviceOrientationEvent as DeviceOrientationWithPermission
-    if (typeof doe.requestPermission === 'function') {
-      try {
-        const permission = await doe.requestPermission()
-        if (permission !== 'granted') missingNow.push('kompass')
-      } catch {
-        missingNow.push('kompass')
-      }
-    }
+    const orientationPermission = orientationPermissionRequest()
 
     if (orientHandler.current) {
       window.removeEventListener(
@@ -92,7 +80,15 @@ export function useHuntSensors() {
 
     const onOrient = (event: DeviceOrientationEvent) => {
       const preferAbsolute = event.type === 'deviceorientationabsolute'
-      const heading = headingFromEvent(event, screenAngle(), preferAbsolute)
+      const heading = headingFromEvent(
+        event as {
+          webkitCompassHeading?: number | null
+          alpha?: number | null
+          absolute?: boolean
+        },
+        screenAngle(),
+        preferAbsolute,
+      )
       if (heading !== null) {
         const smoothed = smoothHeading(headingRef.current, heading)
         headingRef.current = smoothed
@@ -105,6 +101,27 @@ export function useHuntSensors() {
     orientHandler.current = onOrient
     window.addEventListener('deviceorientationabsolute', onOrient)
     window.addEventListener('deviceorientation', onOrient)
+
+    if (orientationPermission) {
+      try {
+        const permission = await orientationPermission
+        if (permission !== 'granted') missingNow.push('kompass')
+      } catch {
+        missingNow.push('kompass')
+      }
+    }
+
+    try {
+      const nextStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: 'environment' } },
+        audio: false,
+      })
+      streamRef.current?.getTracks().forEach((track) => track.stop())
+      streamRef.current = nextStream
+      setStream(nextStream)
+    } catch {
+      missingNow.push('kamera')
+    }
 
     if (!navigator.geolocation) {
       missingNow.push('posisjon')

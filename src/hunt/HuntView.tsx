@@ -29,6 +29,20 @@ function toSaved(place: NearbyPlace, nowIso: string): SavedFact {
   }
 }
 
+function attachCamera(video: HTMLVideoElement, stream: MediaStream) {
+  if (video.srcObject !== stream) {
+    video.srcObject = stream
+  }
+  video.muted = true
+  video.defaultMuted = true
+  video.playsInline = true
+  video.setAttribute('playsinline', 'true')
+  video.setAttribute('webkit-playsinline', 'true')
+  void video.play().catch(() => {
+    /* iOS may need a second play() after loadedmetadata */
+  })
+}
+
 export function HuntView(props: {
   facts: SavedFact[]
   onFactsChange: (facts: SavedFact[]) => void
@@ -46,11 +60,8 @@ export function HuntView(props: {
   useEffect(() => {
     const video = videoRef.current
     if (!video || !sensors.stream) return
-    video.srcObject = sensors.stream
-    void video.play().catch(() => {
-      /* autoplay can fail until metadata */
-    })
-  }, [sensors.stream])
+    attachCamera(video, sensors.stream)
+  }, [sensors.stream, sensors.ready])
 
   const coord = sensors.coord
 
@@ -124,61 +135,6 @@ export function HuntView(props: {
     setOpenId(place.id)
   }
 
-  if (!sensors.ready) {
-    return (
-      <section className="gate">
-        <img
-          src={`${import.meta.env.BASE_URL}hunter-badge.png`}
-          alt=""
-          width={160}
-          height={160}
-        />
-        <h1>FactHunter</h1>
-        <p>
-          Jakten starter når kamera, posisjon og kompass er på. Én gang, fra
-          samme trykk.
-        </p>
-        {sensors.missing.length > 0 ? (
-          <ul className="gate-missing">
-            {sensors.missing.includes('kamera') ? (
-              <li>Kamera mangler eller ble avslått</li>
-            ) : null}
-            {sensors.missing.includes('posisjon') ? (
-              <li>Posisjon mangler eller ble avslått</li>
-            ) : null}
-            {sensors.missing.includes('kompass') ? (
-              <li>
-                Kompass mangler eller ble avslått. iPhone: Innstillinger →
-                Safari (eller FactHunter) → Bevegelse og retning, deretter
-                Prøv igjen. Si ja når telefonen spør om bevegelse.
-              </li>
-            ) : null}
-            {sensors.missing.includes('https') ? (
-              <li>Åpne appen over HTTPS, ikke http://192.168…</li>
-            ) : null}
-          </ul>
-        ) : null}
-        {sensors.stream && !sensors.headingDeg && !sensors.missing.includes('kompass') ? (
-          <p>Venter på kompass — beveg telefonen litt.</p>
-        ) : null}
-        <button
-          type="button"
-          className="primary"
-          disabled={sensors.requesting}
-          onClick={() => void sensors.startFromUserGesture()}
-        >
-          {sensors.missing.length > 0 || sensors.stream
-            ? 'Prøv igjen'
-            : 'Start jakt'}
-        </button>
-        <p className="hint">
-          iPhone: Innstillinger → Safari (eller appen) → Bevegelse og retning.
-          Kamera og kompass virker ikke på vanlig http over Wi-Fi.
-        </p>
-      </section>
-    )
-  }
-
   const gpsUncertain =
     sensors.accuracyM !== null && sensors.accuracyM > UNLOCK_ACCURACY_M
 
@@ -190,7 +146,66 @@ export function HuntView(props: {
         autoPlay
         playsInline
         muted
+        controls={false}
+        disablePictureInPicture
+        onLoadedMetadata={(event) => {
+          if (sensors.stream) attachCamera(event.currentTarget, sensors.stream)
+        }}
       />
+      {!sensors.ready ? (
+        <section className="gate">
+          <img
+            src={`${import.meta.env.BASE_URL}hunter-badge.png`}
+            alt=""
+            width={160}
+            height={160}
+          />
+          <h1>FactHunter</h1>
+          <p>
+            Jakten starter når kamera, posisjon og kompass er på. Én gang, fra
+            samme trykk.
+          </p>
+          {sensors.missing.length > 0 ? (
+            <ul className="gate-missing">
+              {sensors.missing.includes('kamera') ? (
+                <li>Kamera mangler eller ble avslått</li>
+              ) : null}
+              {sensors.missing.includes('posisjon') ? (
+                <li>Posisjon mangler eller ble avslått</li>
+              ) : null}
+              {sensors.missing.includes('kompass') ? (
+                <li>
+                  Kompass mangler eller ble avslått. iPhone: Innstillinger →
+                  Safari (eller FactHunter) → Bevegelse og retning, deretter
+                  Prøv igjen. Si ja når telefonen spør om bevegelse.
+                </li>
+              ) : null}
+              {sensors.missing.includes('https') ? (
+                <li>Åpne appen over HTTPS, ikke http://192.168…</li>
+              ) : null}
+            </ul>
+          ) : null}
+          {sensors.stream &&
+          !sensors.headingDeg &&
+          !sensors.missing.includes('kompass') ? (
+            <p>Venter på kompass — beveg telefonen litt.</p>
+          ) : null}
+          <button
+            type="button"
+            className="primary"
+            disabled={sensors.requesting}
+            onClick={() => void sensors.startFromUserGesture()}
+          >
+            {sensors.missing.length > 0 || sensors.stream
+              ? 'Prøv igjen'
+              : 'Start jakt'}
+          </button>
+          <p className="hint">
+            iPhone: Innstillinger → Safari (eller appen) → Bevegelse og retning.
+            Kamera og kompass virker ikke på vanlig http over Wi-Fi.
+          </p>
+        </section>
+      ) : (
       <div className="hunt-overlay">
         {signs.map((sign) => (
           <ArSign
@@ -220,6 +235,7 @@ export function HuntView(props: {
           ) : null}
         </div>
       </div>
+      )}
       {openSaved ? (
         <FactSheet
           fact={{ ...openSaved, distanceM: openDistance }}

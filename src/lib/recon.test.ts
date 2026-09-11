@@ -1,7 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { UNLOCK_RADIUS_M } from './constants'
+import {
+  RECON_BLIP_CLUSTER_PX,
+  RECON_CLUSTER_M,
+  UNLOCK_RADIUS_M,
+} from './constants'
 import { destinationCoord, distanceMeters } from './geo'
-import { blipsForRecon } from './recon'
+import { blipsForRecon, reconBlipLook, reconClusterMeters } from './recon'
 
 describe('blipsForRecon', () => {
   const origin = { lat: 63.43, lon: 10.39 }
@@ -59,5 +63,39 @@ describe('blipsForRecon', () => {
       (blip) => blip.count === 1 && blip.lat === close.lat,
     )
     expect(closeBlip).toBeDefined()
+  })
+})
+
+describe('reconClusterMeters', () => {
+  it('never goes below the constant floor', () => {
+    expect(reconClusterMeters(1)).toBe(RECON_CLUSTER_M)
+  })
+
+  it('widens clustering when one map pixel covers more ground than a blip', () => {
+    expect(reconClusterMeters(12)).toBeGreaterThan(RECON_CLUSTER_M)
+    expect(reconClusterMeters(12)).toBe(12 * RECON_BLIP_CLUSTER_PX)
+  })
+
+  it('merges farther places that overlap at recon map scale', () => {
+    const origin = { lat: 63.43, lon: 10.39 }
+    const a = destinationCoord(origin, 0, 200)
+    const b = destinationCoord(origin, 0, 320)
+    expect(distanceMeters(a, b)).toBeGreaterThan(RECON_CLUSTER_M)
+    expect(distanceMeters(a, b)).toBeLessThan(reconClusterMeters(12))
+    const blips = blipsForRecon([a, b], origin, 2000, reconClusterMeters(12))
+    expect(blips).toHaveLength(1)
+    expect(blips[0].count).toBe(2)
+  })
+})
+
+describe('reconBlipLook', () => {
+  it('keeps a single place as an unlabeled dot', () => {
+    expect(reconBlipLook(1)).toEqual({ radiusPx: 6, label: null })
+  })
+
+  it('marks a cluster with its count and a larger mark', () => {
+    const look = reconBlipLook(3)
+    expect(look.label).toBe('3')
+    expect(look.radiusPx).toBeGreaterThan(reconBlipLook(1).radiusPx)
   })
 })

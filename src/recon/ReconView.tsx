@@ -20,7 +20,11 @@ import {
   attachHeadingListener,
   requestOrientationPermission,
 } from '../lib/heading'
-import { blipsForRecon } from '../lib/recon'
+import {
+  blipsForRecon,
+  reconBlipLook,
+  reconClusterMeters,
+} from '../lib/recon'
 import { fetchNearbyPlaces, shouldRefetch } from '../lib/wikipedia'
 import type { NearbyPlace } from '../types'
 
@@ -60,6 +64,17 @@ function startWatch(onFix: (coord: Coord) => void, onError: () => void): number 
 
 function toLatLngs(coords: Coord[]): L.LatLngExpression[] {
   return coords.map((coord) => [coord.lat, coord.lon])
+}
+
+function clusterMetersOnMap(map: L.Map, origin: Coord): number {
+  const size = map.getSize()
+  if (size.x < 80 || size.y < 80) return RECON_CLUSTER_M
+  const p0 = map.latLngToContainerPoint([origin.lat, origin.lon])
+  const metersPerPixel = map.distance(
+    map.containerPointToLatLng(p0),
+    map.containerPointToLatLng(L.point(p0.x + 1, p0.y)),
+  )
+  return reconClusterMeters(metersPerPixel)
 }
 
 export function ReconView() {
@@ -213,23 +228,42 @@ export function ReconView() {
 
   useEffect(() => {
     const overlay = blipLayerRef.current
-    if (!overlay || !coord) return
+    const map = mapRef.current
+    if (!overlay || !map || !coord) return
     overlay.clearLayers()
+    map.invalidateSize()
+    const clusterM = clusterMetersOnMap(map, coord)
     for (const blip of blipsForRecon(
       places,
       coord,
       RECON_RADIUS_M,
-      RECON_CLUSTER_M,
+      clusterM,
     )) {
-      L.circleMarker([blip.lat, blip.lon], {
-        pane: BLIP_PANE,
-        radius: 5 + Math.min(blip.count, 5) * 2,
-        color: '#c9a227',
-        fillColor: '#c9a227',
-        fillOpacity: 0.9,
-        weight: 0,
-        interactive: false,
-      }).addTo(overlay)
+      const look = reconBlipLook(blip.count)
+      if (look.label) {
+        const size = look.radiusPx * 2
+        L.marker([blip.lat, blip.lon], {
+          pane: BLIP_PANE,
+          interactive: false,
+          keyboard: false,
+          icon: L.divIcon({
+            className: 'recon-cluster',
+            html: `<span>${look.label}</span>`,
+            iconSize: [size, size],
+            iconAnchor: [size / 2, size / 2],
+          }),
+        }).addTo(overlay)
+      } else {
+        L.circleMarker([blip.lat, blip.lon], {
+          pane: BLIP_PANE,
+          radius: look.radiusPx,
+          color: '#c9a227',
+          fillColor: '#c9a227',
+          fillOpacity: 0.9,
+          weight: 0,
+          interactive: false,
+        }).addTo(overlay)
+      }
     }
     paintWedge()
   }, [coord, places])

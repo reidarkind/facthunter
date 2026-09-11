@@ -1,7 +1,28 @@
-import { UNLOCK_RADIUS_M } from './constants'
+import {
+  RECON_BLIP_CLUSTER_PX,
+  RECON_CLUSTER_M,
+  UNLOCK_RADIUS_M,
+} from './constants'
 import { distanceMeters, type Coord } from './geo'
 
 export type ReconBlip = { lat: number; lon: number; count: number }
+
+export type ReconBlipLook = { radiusPx: number; label: string | null }
+
+export function reconClusterMeters(metersPerPixel: number): number {
+  if (!Number.isFinite(metersPerPixel) || metersPerPixel <= 0) {
+    return RECON_CLUSTER_M
+  }
+  return Math.max(RECON_CLUSTER_M, metersPerPixel * RECON_BLIP_CLUSTER_PX)
+}
+
+export function reconBlipLook(count: number): ReconBlipLook {
+  if (count <= 1) return { radiusPx: 6, label: null }
+  return {
+    radiusPx: 10 + Math.min(count, 8) * 2,
+    label: String(count),
+  }
+}
 
 function clusterPlaces(places: Coord[], clusterM: number): ReconBlip[] {
   const clusters: { members: Coord[] }[] = []

@@ -81,6 +81,8 @@ Skiltet skal stå **i verden**, ikke som HUD-klistremerke.
 - Horisontalt: differanse mellom kompassheading og peiling til stedet.
 - Vertikalt: telefonens pitch (`beta`) slik at merket følger bakken/horisonten når brukeren ser opp eller ned.
 - Skala: større og lavere i bildet når nærme; mindre mot horisonten når langt unna.
+- Overlapp: det nærmeste skiltet ligger foran.
+- Avstand vises på skiltet («{m} m unna»). Utenfor 50 m (eller ved dårlig GPS) også «Gå nærmere».
 - Utseende: utforsker-støtte (stang + skilt) i dyp teal og messinggull. Innen 50 m lyser den og er trykkbar. Lenger unna dempet. Allerede låst opp: merket som ditt, fortsatt synlig.
 
 ### 5.3 Opplåsing og lesing

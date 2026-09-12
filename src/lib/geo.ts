@@ -152,6 +152,16 @@ export function headingFromEvent(
   return null
 }
 
+export function signZIndex(distanceM: number): number {
+  return Math.max(1, Math.round(VISIBLE_RADIUS_M - distanceM) + 1)
+}
+
+export function stackNearestLast<T extends { distanceM: number }>(
+  signs: T[],
+): T[] {
+  return [...signs].sort((a, b) => b.distanceM - a.distanceM)
+}
+
 export function arLayout(input: {
   headingDeg: number
   bearingDeg: number

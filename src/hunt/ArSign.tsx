@@ -8,10 +8,13 @@ export function ArSign(props: {
   xPct: number
   yPct: number
   scale: number
+  distanceM: number
+  zIndex: number
   onClick: () => void
 }) {
-  const { title, kind, xPct, yPct, scale, onClick } = props
+  const { title, kind, xPct, yPct, scale, distanceM, zIndex, onClick } = props
   const { t } = useT()
+  const away = t('metersAway', { m: Math.round(distanceM) })
   return (
     <button
       type="button"
@@ -19,14 +22,16 @@ export function ArSign(props: {
       style={{
         left: `${xPct}%`,
         top: `${yPct}%`,
+        zIndex,
         transform: `translate(-50%, -100%) scale(${scale})`,
       }}
       onClick={kind === 'locked' ? undefined : onClick}
-      aria-label={title}
+      aria-label={`${title}, ${away}`}
     >
       <span className="sign-pole" aria-hidden="true" />
       <span className="sign-plaque">
         <span className="sign-title">{title}</span>
+        <span className="sign-distance">{away}</span>
         {kind === 'locked' ? (
           <span className="sign-hint">{t('moveCloser')}</span>
         ) : null}

@@ -12,7 +12,9 @@ import {
   isUnlockable,
   isVisible,
   movedAtLeast,
+  signZIndex,
   smoothHeading,
+  stackNearestLast,
 } from './geo'
 
 describe('distanceMeters', () => {
@@ -197,5 +199,23 @@ describe('smoothHeading', () => {
 
   it('moves a fraction of the shortest turn, including wraparound', () => {
     expect(smoothHeading(350, 10)).toBeCloseTo(355.6, 1)
+  })
+})
+
+describe('signZIndex', () => {
+  it('puts a nearer sign above a farther one', () => {
+    expect(signZIndex(40)).toBeGreaterThan(signZIndex(200))
+    expect(signZIndex(0)).toBeGreaterThan(signZIndex(500))
+  })
+})
+
+describe('stackNearestLast', () => {
+  it('paints farther signs first so the nearest stays in front', () => {
+    const stacked = stackNearestLast([
+      { id: 'near', distanceM: 40 },
+      { id: 'far', distanceM: 200 },
+      { id: 'mid', distanceM: 90 },
+    ])
+    expect(stacked.map((sign) => sign.id)).toEqual(['far', 'mid', 'near'])
   })
 })

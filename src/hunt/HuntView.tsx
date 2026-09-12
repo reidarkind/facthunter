@@ -11,6 +11,8 @@ import {
   distanceMeters,
   isUnlockable,
   isVisible,
+  signZIndex,
+  stackNearestLast,
 } from '../lib/geo'
 import { fetchNearbyPlaces, shouldRefetch } from '../lib/wikipedia'
 import type { NearbyPlace, SavedFact } from '../types'
@@ -109,25 +111,27 @@ export function HuntView(props: {
     const heading = sensors.headingDeg
     const pitch = sensors.pitchDeg
     const accuracy = sensors.accuracyM ?? Number.POSITIVE_INFINITY
-    return places.flatMap((place) => {
-      const distanceM = distanceMeters(coord, place)
-      if (!isVisible(distanceM)) return []
-      const bearingDeg = bearingDegrees(coord, place)
-      const layout = arLayout({
-        headingDeg: heading,
-        bearingDeg,
-        pitchDeg: pitch,
-        distanceM,
-      })
-      if (!layout) return []
-      const owned = ownedIds.has(place.id)
-      const kind: SignKind = owned
-        ? 'owned'
-        : isUnlockable(distanceM, accuracy)
-          ? 'ready'
-          : 'locked'
-      return [{ place, distanceM, kind, ...layout }]
-    })
+    return stackNearestLast(
+      places.flatMap((place) => {
+        const distanceM = distanceMeters(coord, place)
+        if (!isVisible(distanceM)) return []
+        const bearingDeg = bearingDegrees(coord, place)
+        const layout = arLayout({
+          headingDeg: heading,
+          bearingDeg,
+          pitchDeg: pitch,
+          distanceM,
+        })
+        if (!layout) return []
+        const owned = ownedIds.has(place.id)
+        const kind: SignKind = owned
+          ? 'owned'
+          : isUnlockable(distanceM, accuracy)
+            ? 'ready'
+            : 'locked'
+        return [{ place, distanceM, kind, ...layout }]
+      }),
+    )
   }, [
     places,
     coord,
@@ -220,6 +224,8 @@ export function HuntView(props: {
             xPct={sign.xPct}
             yPct={sign.yPct}
             scale={sign.scale}
+            distanceM={sign.distanceM}
+            zIndex={signZIndex(sign.distanceM)}
             onClick={() => unlockOrOpen(sign.place, sign.kind)}
           />
         ))}

@@ -173,7 +173,7 @@ export function HuntView(props: {
             disabled={sensors.requesting}
             onClick={() => void sensors.startFromUserGesture()}
           >
-            {sensors.missing.length > 0 || sensors.stream
+            {sensors.missing.length > 0 || sensors.stream || sensors.started
               ? t('tryAgain')
               : t('startHunt')}
           </button>

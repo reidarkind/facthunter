@@ -37,7 +37,7 @@ Utvikling mot telefon krever HTTPS-devserver (ikke `http://<LAN-IP>`).
 2. Bakkamera (`getUserMedia`, `facingMode: environment`)
 3. Kompass (se under)
 
-Jakten åpnes først når **alle tre lever**: kamerastrøm vises, minst én gyldig heading er mottatt, og minst én GPS-posisjon er mottatt.
+Jakten åpnes først når **alle tre lever**: kamerastrøm vises med minst ett video-spor i `readyState === 'live'`, minst én gyldig heading er mottatt, og minst én GPS-posisjon er mottatt. Et MediaStream-objekt med avsluttede spor teller ikke.
 
 Videoelementet skal ha `playsinline` (og være muted) slik at iOS ikke tar fullskjerm og ødelegger overlay.
 
@@ -56,6 +56,8 @@ Jakten starter ikke. Én skjerm viser hva som mangler, **Prøv igjen**, og kort 
 - HTTPS / åpnet via GitHub Pages eller HTTPS-dev
 - Kamera- og posisjonstillatelse
 - iPhone: Innstillinger → Safari (eller appen) → Bevegelse og retning
+
+Hvis kamera- eller GPS-tilgang faller (appen i bakgrunnen, video-spor `ended`, avslag), er jakten ikke klar. Gaten vises igjen. Når appen blir synlig etter at Start jakt er brukt, startes GPS-watch på nytt og kameraet forsøkes hentet. iOS krever ofte et nytt trykk; **Prøv igjen** ber om kamera, posisjon og kompass fra samme gest. Kamera/`getUserMedia` kalles ikke automatisk før Start jakt har vært brukt i denne økten.
 
 Samlingen og installasjonssiden er tilgjengelige uten sensorer.
 

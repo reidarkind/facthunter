@@ -54,7 +54,7 @@ src/app/AppShell     tabs Rekognoser | Jakt | Samling, hamburger, `#/install` `#
 
 Data flow: sensors → Wikipedia fetch → AR signs → unlock writes IndexedDB → collection reads the same `SavedFact[]`. Score is derived (`10` unlock + `5` read), never stored.
 
-Hunt must not start until camera stream + one GPS fix + one heading exist, all from one **Start jakt** tap. Video: `playsInline` + muted, `facingMode: environment`. Rekognoser requests compass on **Start rekognosering** for the FOV wedge, but the map still works without heading.
+Hunt must not start until a **live** camera stream (`readyState === 'live'`) + one GPS fix + one heading exist, all from one **Start jakt** tap. If the camera track ends or GPS errors, hunt returns to the gate. Coming back to the foreground after Start retries GPS and camera; **Prøv igjen** re-requests from a user gesture. Video: `playsInline` + muted, `facingMode: environment`. Rekognoser requests compass on **Start rekognosering** for the FOV wedge, but the map still works without heading.
 
 Install copy lives in `InstallPage` and `README.md`. Keep those two in sync.
 

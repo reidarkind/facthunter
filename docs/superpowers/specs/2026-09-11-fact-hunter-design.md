@@ -90,7 +90,7 @@ Skiltet skal stå **i verden**, ikke som HUD-klistremerke.
 1. Trykk på et låsbart skilt → faktumet lagres lokalt → **10 poeng** (én gang).
 2. Leseark åpnes med tittel, Wikipedia-utdrag, bilde (hvis API-et gir det), avstand og delingsknapper.
 3. Brukeren kan lukke arket og lese senere fra samlingen.
-4. Scroll til bunnen av utdraget, **eller** minst 80 % av utdragshøyden → markeres som lest → **5 poeng** (én gang). Faktumet fjernes ikke.
+4. Scroll arket slik at minst 80 % av utdraget er synlig (eller det allerede får plass), **eller** åpne Wikipedia-artikkelen → markeres som lest → **5 poeng** (én gang). Faktumet fjernes ikke.
 5. Nytt trykk på samme sted åpner arket igjen. Ingen nye opplåsingspoeng.
 
 ### 5.4 Wikipedia

@@ -64,4 +64,8 @@ describe('isExtractRead', () => {
     expect(isExtractRead(0, 79, 100)).toBe(false)
     expect(isExtractRead(20, 80, 100)).toBe(true)
   })
+
+  it('true when the whole extract already fits', () => {
+    expect(isExtractRead(0, 200, 200)).toBe(true)
+  })
 })

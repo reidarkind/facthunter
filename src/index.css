@@ -468,8 +468,6 @@ p {
 }
 
 .sheet-extract {
-  max-height: 40vh;
-  overflow: auto;
   padding-right: 4px;
 }
 

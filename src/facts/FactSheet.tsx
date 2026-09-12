@@ -1,4 +1,4 @@
-import { useCallback, type UIEvent } from 'react'
+import { useCallback, useLayoutEffect, useRef, type UIEvent } from 'react'
 import { useT } from '../i18n/useT'
 import { isExtractRead } from '../lib/collection'
 import { installUrl, shareText } from '../lib/share'
@@ -26,6 +26,7 @@ export function FactSheet(props: {
 }) {
   const { fact, onClose, onRead } = props
   const { t } = useT()
+  const sheetRef = useRef<HTMLElement>(null)
   const text = shareText(
     fact.pageUrl,
     currentInstallUrl(),
@@ -33,15 +34,32 @@ export function FactSheet(props: {
     t('shareInstall'),
   )
 
-  const onScroll = useCallback(
-    (event: UIEvent<HTMLDivElement>) => {
-      const el = event.currentTarget
+  const checkRead = useCallback(
+    (el: HTMLElement | null) => {
+      if (!el) return
       if (isExtractRead(el.scrollTop, el.clientHeight, el.scrollHeight)) {
         onRead()
       }
     },
     [onRead],
   )
+
+  const onScroll = useCallback(
+    (event: UIEvent<HTMLElement>) => {
+      checkRead(event.currentTarget)
+    },
+    [checkRead],
+  )
+
+  useLayoutEffect(() => {
+    const el = sheetRef.current
+    if (!el) return
+    checkRead(el)
+    if (typeof ResizeObserver === 'undefined') return
+    const observer = new ResizeObserver(() => checkRead(el))
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [checkRead, fact.id])
 
   async function shareNative() {
     props.onShare?.(text)
@@ -67,7 +85,13 @@ export function FactSheet(props: {
 
   return (
     <div className="sheet-backdrop">
-      <section className="sheet" role="dialog" aria-labelledby="sheet-title">
+      <section
+        ref={sheetRef}
+        className="sheet"
+        role="dialog"
+        aria-labelledby="sheet-title"
+        onScroll={onScroll}
+      >
         <header className="sheet-head">
           <h2 id="sheet-title">{fact.title}</h2>
           <button type="button" className="text-button" onClick={onClose}>
@@ -82,15 +106,16 @@ export function FactSheet(props: {
             {t('metersAway', { m: Math.round(fact.distanceM) })}
           </p>
         ) : null}
-        <div
-          className="sheet-extract"
-          data-testid="extract"
-          onScroll={onScroll}
-        >
+        <div className="sheet-extract" data-testid="extract">
           <p>{fact.extract}</p>
         </div>
         <p>
-          <a href={fact.pageUrl} target="_blank" rel="noreferrer">
+          <a
+            href={fact.pageUrl}
+            target="_blank"
+            rel="noreferrer"
+            onClick={() => onRead()}
+          >
             {t('readMoreWiki')}
           </a>
         </p>

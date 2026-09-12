@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { usePrefs } from '../app/usePrefs'
+import { useWikiPlaces } from '../app/useWikiPlaces'
 import { FactSheet } from '../facts/FactSheet'
 import { useT } from '../i18n/useT'
 import { withRead, withUnlocked } from '../lib/collection'
@@ -14,7 +14,6 @@ import {
   signZIndex,
   stackNearestLast,
 } from '../lib/geo'
-import { fetchNearbyPlaces, shouldRefetch } from '../lib/wikipedia'
 import type { NearbyPlace, SavedFact } from '../types'
 import { ArSign, type SignKind } from './ArSign'
 import { useHuntSensors } from './useHuntSensors'
@@ -54,13 +53,8 @@ export function HuntView(props: {
 }) {
   const { facts, onFactsChange } = props
   const { t } = useT()
-  const { wikiLimit, wikiSources } = usePrefs()
   const sensors = useHuntSensors()
   const videoRef = useRef<HTMLVideoElement>(null)
-  const [places, setPlaces] = useState<NearbyPlace[]>([])
-  const [fetchFailed, setFetchFailed] = useState(false)
-  const [loadingPlaces, setLoadingPlaces] = useState(false)
-  const lastFetchAt = useRef<{ lat: number; lon: number } | null>(null)
   const [openId, setOpenId] = useState<string | null>(null)
   const ownedIds = useMemo(() => new Set(facts.map((f) => f.id)), [facts])
 
@@ -71,40 +65,11 @@ export function HuntView(props: {
   }, [sensors.stream, sensors.ready])
 
   const coord = sensors.coord
-
-  useEffect(() => {
-    lastFetchAt.current = null
-  }, [wikiLimit, wikiSources])
-
-  useEffect(() => {
-    if (!sensors.ready || !coord) return
-    if (!shouldRefetch(lastFetchAt.current, coord)) return
-    let cancelled = false
-    setLoadingPlaces(true)
-    setFetchFailed(false)
-    void fetchNearbyPlaces(
-      coord,
-      fetch,
-      FETCH_RADIUS_M,
-      wikiLimit,
-      wikiSources,
-    )
-      .then((next) => {
-        if (cancelled) return
-        lastFetchAt.current = coord
-        setPlaces(next)
-      })
-      .catch(() => {
-        if (cancelled) return
-        setFetchFailed(true)
-      })
-      .finally(() => {
-        if (!cancelled) setLoadingPlaces(false)
-      })
-    return () => {
-      cancelled = true
-    }
-  }, [sensors.ready, coord, wikiLimit, wikiSources])
+  const { places, loading: loadingPlaces, fetchFailed } = useWikiPlaces(
+    coord,
+    FETCH_RADIUS_M,
+    sensors.ready,
+  )
 
   const signs = useMemo(() => {
     if (!coord || sensors.headingDeg === null) return []

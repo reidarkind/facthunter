@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import { usePrefs } from '../app/usePrefs'
 import { useT } from '../i18n/useT'
+import { useWikiPlaces } from '../app/useWikiPlaces'
 import {
   FOV_HALF_DEG,
   RECON_BEAM_COLOR,
@@ -25,8 +25,6 @@ import {
   reconBlipLook,
   reconClusterMeters,
 } from '../lib/recon'
-import { fetchNearbyPlaces, shouldRefetch } from '../lib/wikipedia'
-import type { NearbyPlace } from '../types'
 
 const LOCKED_MAP: L.MapOptions = {
   zoomControl: false,
@@ -79,7 +77,6 @@ function clusterMetersOnMap(map: L.Map, origin: Coord): number {
 
 export function ReconView() {
   const { t } = useT()
-  const { wikiLimit, wikiSources } = usePrefs()
   const mapEl = useRef<HTMLDivElement>(null)
   const mapRef = useRef<L.Map | null>(null)
   const blipLayerRef = useRef<L.LayerGroup | null>(null)
@@ -90,13 +87,14 @@ export function ReconView() {
   const headingRef = useRef<number | null>(null)
   const lastFitAt = useRef<Coord | null>(null)
   const [coord, setCoord] = useState<Coord | null>(null)
-  const [places, setPlaces] = useState<NearbyPlace[]>([])
   const [gpsError, setGpsError] = useState(false)
-  const [fetchFailed, setFetchFailed] = useState(false)
-  const [loading, setLoading] = useState(false)
   const watchId = useRef<number | null>(null)
   const stopHeading = useRef<(() => void) | null>(null)
-  const lastFetchAt = useRef<Coord | null>(null)
+  const { places, loading, fetchFailed } = useWikiPlaces(
+    coord,
+    RECON_RADIUS_M,
+    coord !== null,
+  )
 
   function paintWedge() {
     const map = mapRef.current
@@ -198,39 +196,6 @@ export function ReconView() {
     }
     paintWedge()
   }, [coord])
-
-  useEffect(() => {
-    lastFetchAt.current = null
-  }, [wikiLimit, wikiSources])
-
-  useEffect(() => {
-    if (!coord) return
-    if (!shouldRefetch(lastFetchAt.current, coord)) return
-    let cancelled = false
-    setLoading(true)
-    setFetchFailed(false)
-    void fetchNearbyPlaces(
-      coord,
-      fetch,
-      RECON_RADIUS_M,
-      wikiLimit,
-      wikiSources,
-    )
-      .then((next) => {
-        if (cancelled) return
-        lastFetchAt.current = coord
-        setPlaces(next)
-      })
-      .catch(() => {
-        if (!cancelled) setFetchFailed(true)
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false)
-      })
-    return () => {
-      cancelled = true
-    }
-  }, [coord, wikiLimit, wikiSources])
 
   useEffect(() => {
     const overlay = blipLayerRef.current

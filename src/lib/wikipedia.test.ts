@@ -4,6 +4,7 @@ import {
   fetchNearbyPlaces,
   mergeWikiPlaces,
   shouldRefetch,
+  shouldStartWikiFetch,
 } from './wikipedia'
 
 function place(
@@ -94,6 +95,27 @@ describe('shouldRefetch', () => {
         { lat: 63.43009, lon: 10.39 },
       ),
     ).toBe(false)
+  })
+})
+
+describe('shouldStartWikiFetch', () => {
+  const here = { lat: 63.43, lon: 10.39 }
+  const far = { lat: 63.44, lon: 10.39 }
+
+  it('starts when there is no previous fetch', () => {
+    expect(shouldStartWikiFetch(null, false, here)).toBe(true)
+  })
+
+  it('does not start a second fetch while one is in flight', () => {
+    expect(shouldStartWikiFetch(null, true, here)).toBe(false)
+    expect(shouldStartWikiFetch(here, true, far)).toBe(false)
+  })
+
+  it('starts again after a finished fetch only if we moved 150 m', () => {
+    expect(shouldStartWikiFetch(here, false, { lat: 63.43009, lon: 10.39 })).toBe(
+      false,
+    )
+    expect(shouldStartWikiFetch(here, false, far)).toBe(true)
   })
 })
 

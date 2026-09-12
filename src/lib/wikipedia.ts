@@ -66,6 +66,15 @@ export function shouldRefetch(prev: Coord | null, next: Coord): boolean {
   return movedAtLeast(prev, next, REFETCH_MOVE_M)
 }
 
+export function shouldStartWikiFetch(
+  lastFetchAt: Coord | null,
+  fetching: boolean,
+  coord: Coord,
+): boolean {
+  if (fetching) return false
+  return shouldRefetch(lastFetchAt, coord)
+}
+
 function wikiUrl(
   lang: string,
   coord: Coord,

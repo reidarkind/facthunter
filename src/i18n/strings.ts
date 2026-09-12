@@ -10,7 +10,7 @@ const no = {
   about: 'Om appen',
   back: 'Tilbake',
   huntGateBody:
-    'Jakten starter når kamera, posisjon og kompass er på. Én gang, fra samme trykk.',
+    'Nå peker du kameraet. Skiltene står i verden når du er nær nok. Kamera, posisjon og kompass slås på med samme trykk.',
   missingCamera: 'Kamera mangler eller ble avslått',
   missingLocation: 'Posisjon mangler eller ble avslått',
   missingCompass:
@@ -27,12 +27,13 @@ const no = {
   moveCloser: 'Gå nærmere',
   reconTitle: 'Rekognoser',
   reconIntro:
-    'Speid 2 km rundt deg. Prikkene viser at noe er der — ikke hva. Gå mot dem, og bytt til Jakt når du er innen 500 m.',
+    'Det finnes kunnskap i det fjerne. Speid 2 km rundt deg. Prikkene viser at noe er der — ikke hva. Gå mot dem, og bytt til Jakt innen den stiplede ringen.',
   startRecon: 'Start rekognosering',
   reconLiveTitle: 'Rekognoser · 2 km',
   reconWikiFailed: 'Kunne ikke speide Wikipedia',
   reconEmpty: 'Ingen spor i 2 km. Gå et annet sted.',
-  reconHint: 'Noe er i nærheten. Bytt til Jakt innen den stiplede ringen.',
+  reconHint:
+    'Kunnskap i det fjerne — bytt til Jakt innen den stiplede ringen.',
   reconOsm: 'Kart: OpenStreetMap',
   collectionTitle: 'Samling',
   points: '{score} poeng',
@@ -74,7 +75,7 @@ const no = {
   wikiSourceNone: 'Ingen',
   whatThisIs: 'Hva dette er',
   whatThisIsBody:
-    'FactHunter er et tynt lag som gjør Wikipedia morsommere å oppdage i den virkelige verden. Du bruker kameraet bak på telefonen til å se deg rundt. Steder vises som skilt i gata; du låser dem opp og samler dem i en feltjournal. Innholdet kommer fra Wikipedia; appen eier det ikke.',
+    'FactHunter er et tynt lag som gjør Wikipedia morsommere å oppdage i den virkelige verden. Først speider du på kartet etter spor i det fjerne. Når du er nær nok, peker du kameraet bak på telefonen: stedene vises som skilt i gata; du låser dem opp og samler dem i en feltjournal. Innholdet kommer fra Wikipedia; appen eier det ikke.',
   privacy: 'Personvern',
   privacyBody1:
     'Appen lagrer ingenting i skyen. Samling, lest-status og poeng ligger bare lokalt på telefonen. FactHunter synkroniserer ikke mellom enheter.',
@@ -91,7 +92,8 @@ const no = {
   ios3:
     'Bla i Del-arket og trykk Legg til på Hjem-skjerm. Ser du den ikke: sveip nederste rad, eller trykk Rediger handlinger.',
   ios4: 'Trykk Legg til. Åpne FactHunter fra det nye ikonet.',
-  ios5: 'Første gang du trykker Start jakt: tillat kamera og posisjon.',
+  ios5:
+    'Appen åpner på Rekognoser. Når du er nær: trykk Start jakt og tillat kamera og posisjon.',
   ios6:
     'Kompass: Innstillinger → Safari → Bevegelse og retning. Har du lagt til appen på hjem-skjermen: Innstillinger → FactHunter → Bevegelse og retning.',
   iosNote:
@@ -100,7 +102,8 @@ const no = {
   android2:
     'Trykk menyen (tre prikker) oppe til høyre, deretter Installer app eller Legg til på startskjerm. Noen telefoner viser også et installasjonsbanner nederst.',
   android3: 'Åpne FactHunter fra startskjermen.',
-  android4: 'Trykk Start jakt og tillat kamera og posisjon når telefonen spør.',
+  android4:
+    'Appen åpner på Rekognoser. Når du er nær: trykk Start jakt og tillat kamera og posisjon når telefonen spør.',
   androidNote:
     'Kompasset på Android kommer fra telefonens retningssensor. Hold telefonen unna magnetiske deksler hvis pila hopper.',
 }
@@ -115,7 +118,7 @@ const en: { [K in keyof typeof no]: string } = {
   about: 'About',
   back: 'Back',
   huntGateBody:
-    'The hunt starts when camera, location and compass are on. Once, from the same tap.',
+    'Now you point the camera. Signs stand in the world when you are close enough. Camera, location and compass turn on from the same tap.',
   missingCamera: 'Camera is missing or was denied',
   missingLocation: 'Location is missing or was denied',
   missingCompass:
@@ -132,12 +135,13 @@ const en: { [K in keyof typeof no]: string } = {
   moveCloser: 'Move closer',
   reconTitle: 'Scout',
   reconIntro:
-    'Scout 2 km around you. The dots show that something is there — not what. Walk toward them, and switch to Hunt when you are within 500 m.',
+    'There is knowledge in the distance. Scout 2 km around you. The dots show that something is there — not what. Walk toward them, and switch to Hunt inside the dashed ring.',
   startRecon: 'Start scouting',
   reconLiveTitle: 'Scout · 2 km',
   reconWikiFailed: 'Could not scout Wikipedia',
   reconEmpty: 'No traces in 2 km. Walk somewhere else.',
-  reconHint: 'Something is nearby. Switch to Hunt inside the dashed ring.',
+  reconHint:
+    'Knowledge in the distance — switch to Hunt inside the dashed ring.',
   reconOsm: 'Map: OpenStreetMap',
   collectionTitle: 'Collection',
   points: '{score} points',
@@ -179,7 +183,7 @@ const en: { [K in keyof typeof no]: string } = {
   wikiSourceNone: 'None',
   whatThisIs: 'What this is',
   whatThisIsBody:
-    'FactHunter is a thin layer that makes Wikipedia more fun to discover in the real world. You use the camera on the back of the phone to look around. Places appear as signs in the street; you unlock them and collect them in a field journal. The content comes from Wikipedia; the app does not own it.',
+    'FactHunter is a thin layer that makes Wikipedia more fun to discover in the real world. First you scout the map for traces in the distance. When you are close enough, you point the camera on the back of the phone: places appear as signs in the street; you unlock them and collect them in a field journal. The content comes from Wikipedia; the app does not own it.',
   privacy: 'Privacy',
   privacyBody1:
     'The app stores nothing in the cloud. Collection, read status and score live only locally on the phone. FactHunter does not sync between devices.',
@@ -196,7 +200,8 @@ const en: { [K in keyof typeof no]: string } = {
   ios3:
     'Scroll the Share sheet and tap Add to Home Screen. If you do not see it: swipe the bottom row, or tap Edit Actions.',
   ios4: 'Tap Add. Open FactHunter from the new icon.',
-  ios5: 'The first time you tap Start hunt: allow camera and location.',
+  ios5:
+    'The app opens on Scout. When you are close: tap Start hunt and allow camera and location.',
   ios6:
     'Compass: Settings → Safari → Motion & Orientation. If you added the app to the Home Screen: Settings → FactHunter → Motion & Orientation.',
   iosNote:
@@ -205,7 +210,8 @@ const en: { [K in keyof typeof no]: string } = {
   android2:
     'Tap the menu (three dots) at the top right, then Install app or Add to Home screen. Some phones also show an install banner at the bottom.',
   android3: 'Open FactHunter from the home screen.',
-  android4: 'Tap Start hunt and allow camera and location when the phone asks.',
+  android4:
+    'The app opens on Scout. When you are close: tap Start hunt and allow camera and location when the phone asks.',
   androidNote:
     'Compass on Android comes from the phone’s orientation sensor. Keep the phone away from magnetic cases if the needle jumps.',
 }

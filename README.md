@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/reidarkind/facthunter/actions/workflows/ci.yml/badge.svg)](https://github.com/reidarkind/facthunter/actions/workflows/ci.yml)
 
-Pek kameraet, se Wikipedia-steder som skilt i gata, lås dem opp og samle dem på telefonen.
+Speid kartet etter kunnskap i det fjerne. Når du er nær, pek kameraet, se Wikipedia-steder som skilt i gata, lås dem opp og samle dem på telefonen.
 
 <p align="center">
   <img src="public/icon.png" alt="FactHunter-ikon" width="128" height="128" />
@@ -14,8 +14,8 @@ FactHunter er et tynt lag over Wikipedia GeoSearch — ikke et lukket spill. Jak
 
 ## Funksjoner
 
+- **Rekognoser** — startsiden. Låst kart med 2 km tåke-sirkel. Prikkene viser at noe er i nærheten, ikke hva. En kile viser hvor telefonen peker (samme ±30° / 500 m som jakten). Bytt til Jakt når du er innen den stiplede ringen.
 - **Jakt** — bakkamera, GPS og kompass. Steder innen 500 m vises som AR-skilt i synsfeltet (±30°).
-- **Rekognoser** — låst kart med 2 km tåke-sirkel. Prikkene viser at noe er i nærheten, ikke hva. En kile viser hvor telefonen peker (samme ±30° / 500 m som jakten). Bytt til Jakt når du er innen 500 m.
 - **Innstillinger** — hamburger-meny: UI-språk (norsk/engelsk), Wikipedia-kilder (1–3 utgaver) og treff-tak, og Om appen.
 - **Lås opp** — innen 50 m og med GPS-nøyaktighet ≤ 50 m: 10 poeng, én gang per sted.
 - **Les** — scroll utdraget til bunnen eller minst 80 %: 5 poeng, én gang. Fakta slettes aldri.
@@ -34,7 +34,7 @@ Appen ligger ikke i App Store eller Google Play. Åpne [FactHunter](https://reid
 2. Trykk **Del** (firkanten med pil opp) nederst.
 3. Bla og trykk **Legg til på Hjem-skjerm**. Ser du den ikke: sveip nederste rad, eller trykk Rediger handlinger.
 4. Trykk **Legg til**. Start FactHunter fra det nye ikonet, ikke fra Safari-fanen.
-5. Trykk **Start jakt** og tillat kamera og posisjon.
+5. Appen åpner på **Rekognoser**. Når du er nær: trykk **Start jakt** og tillat kamera og posisjon.
 6. Kompass: Innstillinger → Safari → **Bevegelse og retning**. Er appen installert: Innstillinger → FactHunter → Bevegelse og retning.
 
 ### Android
@@ -42,7 +42,7 @@ Appen ligger ikke i App Store eller Google Play. Åpne [FactHunter](https://reid
 1. Åpne lenken i **Chrome** (eller Samsung Internet).
 2. Meny (tre prikker) → **Installer app** eller Legg til på startskjerm. Noen telefoner viser et banner nederst.
 3. Åpne FactHunter fra startskjermen.
-4. Trykk **Start jakt** og tillat kamera og posisjon.
+4. Appen åpner på **Rekognoser**. Når du er nær: trykk **Start jakt** og tillat kamera og posisjon.
 
 ## Personvern
 

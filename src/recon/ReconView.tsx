@@ -237,13 +237,19 @@ export function ReconView() {
     : 0
 
   return (
-    <section className="recon">
+    <section className="recon" aria-label={t('reconTitle')}>
       <div ref={mapEl} className="recon-map" />
       <div className="recon-vignette" aria-hidden="true" />
       <div className="recon-hud">
         {!coord ? (
           <>
-            <h1>{t('reconTitle')}</h1>
+            <img
+              src={`${import.meta.env.BASE_URL}hunter-badge.png`}
+              alt=""
+              width={160}
+              height={160}
+            />
+            <h1>FactHunter</h1>
             <p>{t('reconIntro')}</p>
             {gpsError ? (
               <p className="banner warn">{t('missingLocation')}</p>

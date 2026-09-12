@@ -274,6 +274,16 @@ p {
   pointer-events: none;
 }
 
+.recon-hud h1 {
+  color: var(--gold);
+  margin: 0;
+}
+
+.recon-hud img {
+  width: 160px;
+  height: 160px;
+}
+
 .recon-hud .primary,
 .recon-hud .banner {
   pointer-events: auto;

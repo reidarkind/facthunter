@@ -18,7 +18,7 @@ function currentOverlay(): AppOverlay {
 
 export default function App() {
   const [facts, setFacts] = useState<SavedFact[]>([])
-  const [tab, setTab] = useState<AppTab>('hunt')
+  const [tab, setTab] = useState<AppTab>('recon')
   const [overlay, setOverlay] = useState<AppOverlay>(currentOverlay)
 
   useEffect(() => {

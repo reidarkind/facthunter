@@ -6,7 +6,7 @@
 
 ## 1. Hva vi bygger
 
-FactHunter er et tynt lag over Wikipedia GeoSearch. Brukeren går rundt, peker bakkameraet, ser steder som fysiske skilt i synsfeltet, trykker for å låse opp, og samler fakta på telefonen.
+FactHunter er et tynt lag over Wikipedia GeoSearch. Brukeren speider først på kartet etter kunnskap i det fjerne, går mot sporene, peker bakkameraet når hen er nær, ser steder som fysiske skilt i synsfeltet, trykker for å låse opp, og samler fakta på telefonen.
 
 Appen er ikke et lukket Trondheim-spill. Trondheim er bare et sted med mange treff. Jakten virker overalt Wikipedia har koordinater.
 
@@ -30,6 +30,8 @@ Appen er ikke et lukket Trondheim-spill. Trondheim er bare et sted med mange tre
 Utvikling mot telefon krever HTTPS-devserver (ikke `http://<LAN-IP>`).
 
 ## 4. Tilgangsgate (jakt starter ikke uten dette)
+
+Appen åpner på **Rekognoser**. Jakt-gaten er neste kapittel, ikke velkomsten. Begge viser jegermerket og tittelen FactHunter.
 
 Én knapp, **Start jakt**, i samme bruker-gest:
 
@@ -179,7 +181,9 @@ Poeng følger automatisk av flettet samling. Bekreftelse etterpå: «Importerte 
 
 ## 7. Skjermer
 
-To hovedfaner: **Jakt** og **Samling**. Ruten `/install` er ikke en fane; den nås fra deling og en lenke i samlingen.
+Tre faner, i denne rekkefølgen: **Rekognoser** (start), **Jakt**, **Samling**. Ruten `/install` er ikke en fane; den nås fra hamburgeren og deling.
+
+Rekognoser er hjemskjermen: jegermerke, FactHunter, «kunnskap i det fjerne», deretter kartet. Ingen titler, ingen opplåsing. Når brukeren er innen den stiplede 500 m-ringen, bytter hen til Jakt. Jakt-gaten beholder merket; teksten sier at kameraet er nærsynet.
 
 Norsk UI. Appnavn: **FactHunter**.
 
@@ -187,7 +191,7 @@ Norsk UI. Appnavn: **FactHunter**.
 
 Siden skal ha tre tydelige deler:
 
-1. **Hva dette er** — FactHunter er et tynt lag som gjør Wikipedia morsommere å oppdage i den virkelige verden (kamera, skilt, samling). Innholdet kommer fra Wikipedia; appen eier det ikke.
+1. **Hva dette er** — FactHunter er et tynt lag som gjør Wikipedia morsommere å oppdage i den virkelige verden (speid på kartet, deretter kamera og skilt, samling). Innholdet kommer fra Wikipedia; appen eier det ikke.
 2. **Personvern** — Appen lagrer ingenting i skyen. Samling, lest-status og poeng ligger bare lokalt på telefonen. FactHunter synker ikke mellom enheter. Bytt telefon: eksporter filen på den gamle, importer på den nye. Mister du filen (eller sletter nettsteddata uten eksport), er samlingen borte.
 3. **Legg til på hjem-skjermen** — korte steg for iOS (Del → Legg til på Hjem-skjerm) og Android (meny → Installer app / Legg til på startside).
 
@@ -198,7 +202,10 @@ Uttrykk: feltjournal / utforsker. Teal, krem, gull. Grafikk skal være lesbar og
 ## 8. Dataflyt
 
 ```
-Start jakt (tap)
+Åpne appen
+  → Rekognoser (kart, anonyme spor, 2 km)
+  → gå mot den stiplede ringen
+  → Start jakt (tap)
   → tillatelser + kamera + heading + GPS
   → Wikipedia GeoSearch (1–3 utgaver fra innstillinger) rundt posisjon
   → for hvert sted: avstand, peiling

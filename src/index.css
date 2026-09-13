@@ -207,6 +207,20 @@ p {
   margin-bottom: 0.6em;
 }
 
+.install-page a {
+  color: var(--teal);
+  font-weight: 650;
+}
+
+.install-page a.button-link {
+  color: var(--paper);
+  width: fit-content;
+}
+
+.bmc-host {
+  min-height: 50px;
+}
+
 .hunt {
   position: relative;
   height: 100%;

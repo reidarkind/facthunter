@@ -86,3 +86,5 @@ Repoet må være **public**. Første deploy krever at Pages er slått på: [Sett
 Se [AGENTS.md](AGENTS.md) for konvensjoner som AI-agenter skal følge.
 
 Ideen er Reidar Kind sin. Utviklet ved hjelp av AI.
+
+[Andre apper jeg har laget](https://reidarkind.github.io/myapps/) · [Kjøp en kaffe](https://www.buymeacoffee.com/reidarkind)

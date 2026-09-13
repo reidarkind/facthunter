@@ -15,6 +15,19 @@ it('covers Wikipedia, privacy, and local export', () => {
   expect(body).toMatch(/AI/)
 })
 
+it('links to other apps and embeds the Buy Me a Coffee button', () => {
+  render(<InstallPage />)
+  expect(
+    screen.getByRole('link', { name: 'Andre apper jeg har laget' }),
+  ).toHaveAttribute('href', 'https://reidarkind.github.io/myapps/')
+  const script = document.querySelector('script[data-name="bmc-button"]')
+  expect(script).toHaveAttribute(
+    'src',
+    'https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js',
+  )
+  expect(script).toHaveAttribute('data-slug', 'reidarkind')
+})
+
 it('explains home-screen install on iPhone and Android', () => {
   render(<InstallPage />)
   expect(screen.getByRole('heading', { name: 'iPhone' })).toBeInTheDocument()

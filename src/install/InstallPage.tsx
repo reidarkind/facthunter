@@ -1,4 +1,37 @@
+import { useEffect, useRef } from 'react'
 import { useT } from '../i18n/useT'
+import {
+  BUY_ME_A_COFFEE_SCRIPT,
+  BUY_ME_A_COFFEE_SLUG,
+  OTHER_APPS_URL,
+} from '../lib/constants'
+
+function BuyMeACoffeeButton(props: { text: string }) {
+  const host = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = host.current
+    if (!el) return
+    const script = document.createElement('script')
+    script.type = 'text/javascript'
+    script.src = BUY_ME_A_COFFEE_SCRIPT
+    script.dataset.name = 'bmc-button'
+    script.dataset.slug = BUY_ME_A_COFFEE_SLUG
+    script.dataset.color = '#FFDD00'
+    script.dataset.emoji = '☕'
+    script.dataset.font = 'Cookie'
+    script.dataset.text = props.text
+    script.dataset.outlineColor = '#000000'
+    script.dataset.fontColor = '#000000'
+    script.dataset.coffeeColor = '#ffffff'
+    el.appendChild(script)
+    return () => {
+      el.replaceChildren()
+    }
+  }, [props.text])
+
+  return <div className="bmc-host" ref={host} />
+}
 
 export function InstallPage(props: { onBack?: () => void }) {
   const { t } = useT()
@@ -61,6 +94,17 @@ export function InstallPage(props: { onBack?: () => void }) {
       <section>
         <h2>{t('origin')}</h2>
         <p>{t('originBody')}</p>
+        <p>
+          <a
+            href={OTHER_APPS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t('otherApps')}
+          </a>
+        </p>
+        <p>{t('buyCoffeeBody')}</p>
+        <BuyMeACoffeeButton text={t('buyCoffee')} />
       </section>
     </article>
   )

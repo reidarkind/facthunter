@@ -86,6 +86,10 @@ const no = {
     'FactHunter er en nettside du installerer som app. Den ligger ikke i App Store eller Google Play. Du må åpne den over HTTPS, ellers nekter telefonen kamera og kompass.',
   origin: 'Opphav',
   originBody: 'Ideen er Reidar Kind sin. Utviklet ved hjelp av AI.',
+  otherApps: 'Andre apper jeg har laget',
+  buyCoffee: 'Kjøp en kaffe',
+  buyCoffeeBody:
+    'Dette er et hobbyprosjekt. En kaffe hjelper meg å fortsette å fikle i fritiden.',
   ios1:
     'Åpne FactHunter i Safari (ikke Chrome, ikke en lenke inne i en annen app).',
   ios2: 'Trykk Del (firkanten med pil opp) nederst på skjermen.',
@@ -194,6 +198,10 @@ const en: { [K in keyof typeof no]: string } = {
     'FactHunter is a website you install as an app. It is not in the App Store or Google Play. You must open it over HTTPS, or the phone will refuse camera and compass.',
   origin: 'Credits',
   originBody: "The idea is Reidar Kind's. Developed with help from AI.",
+  otherApps: 'Other apps I have made',
+  buyCoffee: 'Buy me a coffee',
+  buyCoffeeBody:
+    'This is a hobby project. A coffee helps me keep tinkering in my spare time.',
   ios1:
     'Open FactHunter in Safari (not Chrome, not a link inside another app).',
   ios2: 'Tap Share (the square with an arrow up) at the bottom of the screen.',

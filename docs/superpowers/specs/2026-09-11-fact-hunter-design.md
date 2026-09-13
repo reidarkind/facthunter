@@ -194,7 +194,7 @@ Siden skal ha fire tydelige deler:
 1. **Hva dette er** — FactHunter er et tynt lag som gjør Wikipedia morsommere å oppdage i den virkelige verden (speid på kartet, deretter kamera og skilt, samling). Innholdet kommer fra Wikipedia; appen eier det ikke.
 2. **Personvern** — Appen lagrer ingenting i skyen. Samling, lest-status og poeng ligger bare lokalt på telefonen. FactHunter synker ikke mellom enheter. Bytt telefon: eksporter filen på den gamle, importer på den nye. Mister du filen (eller sletter nettsteddata uten eksport), er samlingen borte.
 3. **Legg til på hjem-skjermen** — korte steg for iOS (Del → Legg til på Hjem-skjerm) og Android (meny → Installer app / Legg til på startside).
-4. **Opphav** — Reidar Kind, lenke til [andre apper](https://reidarkind.github.io/myapps/), og Buy Me a Coffee-knappen (offisiell embedding, slug `reidarkind`).
+4. **Opphav** — Reidar Kind, lenke til [andre apper](https://reidarkind.github.io/myapps/), og en lokal «Kjøp en kaffe»-knapp (gull, kaffekopp) til [Buy Me a Coffee](https://www.buymeacoffee.com/reidarkind).
 
 Formuleringen på siden skal være klar, ikke juridisk tåke. Wikipedia-lenker brukeren selv deler, går til Wikipedia — det er ikke FactHunter-sky.
 

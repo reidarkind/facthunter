@@ -217,8 +217,23 @@ p {
   width: fit-content;
 }
 
-.bmc-host {
-  min-height: 50px;
+.coffee-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 12px;
+  padding: 12px 18px;
+  background: var(--gold);
+  text-decoration: none;
+}
+
+.install-page a.coffee-button {
+  color: var(--teal-deep);
+  font-weight: 700;
+}
+
+.coffee-cup {
+  flex-shrink: 0;
 }
 
 .hunt {

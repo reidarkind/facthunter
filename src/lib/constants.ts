@@ -60,6 +60,3 @@ export const POINTS_READ = 5
 export const APP_NAME = 'FactHunter'
 export const OTHER_APPS_URL = 'https://reidarkind.github.io/myapps/'
 export const BUY_ME_A_COFFEE_URL = 'https://www.buymeacoffee.com/reidarkind'
-export const BUY_ME_A_COFFEE_SCRIPT =
-  'https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js'
-export const BUY_ME_A_COFFEE_SLUG = 'reidarkind'

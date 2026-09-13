@@ -1,36 +1,35 @@
-import { useEffect, useRef } from 'react'
 import { useT } from '../i18n/useT'
-import {
-  BUY_ME_A_COFFEE_SCRIPT,
-  BUY_ME_A_COFFEE_SLUG,
-  OTHER_APPS_URL,
-} from '../lib/constants'
+import { BUY_ME_A_COFFEE_URL, OTHER_APPS_URL } from '../lib/constants'
 
-function BuyMeACoffeeButton(props: { text: string }) {
-  const host = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const el = host.current
-    if (!el) return
-    const script = document.createElement('script')
-    script.type = 'text/javascript'
-    script.src = BUY_ME_A_COFFEE_SCRIPT
-    script.dataset.name = 'bmc-button'
-    script.dataset.slug = BUY_ME_A_COFFEE_SLUG
-    script.dataset.color = '#FFDD00'
-    script.dataset.emoji = '☕'
-    script.dataset.font = 'Cookie'
-    script.dataset.text = props.text
-    script.dataset.outlineColor = '#000000'
-    script.dataset.fontColor = '#000000'
-    script.dataset.coffeeColor = '#ffffff'
-    el.appendChild(script)
-    return () => {
-      el.replaceChildren()
-    }
-  }, [props.text])
-
-  return <div className="bmc-host" ref={host} />
+function CoffeeCup() {
+  return (
+    <svg
+      className="coffee-cup"
+      viewBox="0 0 24 24"
+      width="22"
+      height="22"
+      aria-hidden="true"
+    >
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        d="M8 3c.3 1 .3 1.8 0 2.6M11 2.5c.4 1.1.4 2.1 0 3.2M14 3c.3 1 .3 1.8 0 2.6"
+      />
+      <path
+        fill="currentColor"
+        d="M5 8h12v6.2A4.8 4.8 0 0 1 12.2 19H9.8A4.8 4.8 0 0 1 5 14.2V8zm13 1.6h1.4A2.6 2.6 0 0 1 22 12.2a2.6 2.6 0 0 1-2.6 2.6H18"
+      />
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        d="M7 20.5h10"
+      />
+    </svg>
+  )
 }
 
 export function InstallPage(props: { onBack?: () => void }) {
@@ -104,7 +103,17 @@ export function InstallPage(props: { onBack?: () => void }) {
           </a>
         </p>
         <p>{t('buyCoffeeBody')}</p>
-        <BuyMeACoffeeButton text={t('buyCoffee')} />
+        <p>
+          <a
+            className="coffee-button"
+            href={BUY_ME_A_COFFEE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <CoffeeCup />
+            {t('buyCoffee')}
+          </a>
+        </p>
       </section>
     </article>
   )

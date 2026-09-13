@@ -11,6 +11,7 @@ export function AppShell(props: {
   onTab: (tab: AppTab) => void
   overlay: AppOverlay
   onCloseOverlay: () => void
+  onClearCollection?: () => void
   children: ReactNode
 }) {
   const { t } = useT()
@@ -27,7 +28,10 @@ export function AppShell(props: {
   if (props.overlay === 'settings') {
     return (
       <div className="app-shell">
-        <SettingsPage onBack={props.onCloseOverlay} />
+        <SettingsPage
+          onBack={props.onCloseOverlay}
+          onClearCollection={props.onClearCollection}
+        />
       </div>
     )
   }

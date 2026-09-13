@@ -134,7 +134,8 @@ p {
 .share-row button,
 .backup-row button,
 .filter-row button,
-.button-link {
+.button-link,
+.danger {
   border: 0;
   border-radius: 12px;
   padding: 10px 14px;
@@ -540,6 +541,7 @@ p {
 .filter-row,
 .backup-row {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 12px;
 }
@@ -547,6 +549,12 @@ p {
 .filter-row button.active {
   background: var(--gold);
   color: var(--teal-deep);
+}
+
+.danger,
+.filter-row button.danger {
+  background: #8b3a2f;
+  color: var(--paper);
 }
 
 .notice {

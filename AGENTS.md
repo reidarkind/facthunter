@@ -1,6 +1,6 @@
 # FactHunter
 
-Norwegian-first mobile PWA (English in Settings). Vite 8 + React 19 + TypeScript. No backend.
+Norwegian-first mobile PWA (UI: `no` / `en` / `de` / `es` / `pt` in Settings). Vite 8 + React 19 + TypeScript. No backend.
 Wikipedia GeoSearch (settings: 1–3 editions in priority order, default `no` then `en`) overlaid as AR signposts. Collection in IndexedDB.
 Hosted on GitHub Pages at `/facthunter/` (repo name, not the local folder `fact_hunter`).
 
@@ -20,7 +20,7 @@ Single test: `npx vitest run src/lib/geo.test.ts`
 
 ## Code style
 
-UI copy lives in `src/i18n/strings.ts`. Default locale is Norwegian; English is a settings toggle (`localStorage` `facthunter-lang`). App name is **FactHunter**. No TypeScript enums. Use `import type`. Named exports except `src/App.tsx` (Vite default).
+UI copy lives in `src/i18n/strings.ts`. Default locale is Norwegian. First visit with empty `facthunter-lang` uses `navigator.languages` if it matches a UI locale (`nb`/`nn`/`no` → `no`; else `en`/`de`/`es`/`pt`); otherwise Norwegian. Settings can change language and empty the IndexedDB collection after confirm. Language names stay native (`Norsk`, `English`, `Deutsch`, `Español`, `Português`). App name is **FactHunter**. No TypeScript enums. Use `import type`. Named exports except `src/App.tsx` (Vite default).
 
 ```ts
 // CORRECT
@@ -43,7 +43,7 @@ factId('no', String(page.pageid)) // wikipedia:no:123
 
 ```
 src/lib/*            pure logic; tests sit beside the module
-src/i18n/*           no/en copy; LocaleProvider; default Norwegian
+src/i18n/*           no/en/de/es/pt copy; LocaleProvider; default Norwegian
 src/hunt/*           camera, compass, GPS, AR signs
 src/recon/*          scout map; anonymous blips; heading wedge; no unlock
 src/facts/FactSheet  extract + share

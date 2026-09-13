@@ -1,17 +1,21 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import {
+  deviceLanguageTags,
   htmlLang,
   LOCALE_STORAGE_KEY,
-  parseLocale,
+  resolveLocale,
   type Locale,
 } from '../lib/locale'
 import { LocaleContext, type LocaleContextValue, translate } from './useT'
 
 function readStoredLocale(): Locale {
   try {
-    return parseLocale(localStorage.getItem(LOCALE_STORAGE_KEY))
+    return resolveLocale(
+      localStorage.getItem(LOCALE_STORAGE_KEY),
+      deviceLanguageTags(),
+    )
   } catch {
-    return 'no'
+    return resolveLocale(null, deviceLanguageTags())
   }
 }
 

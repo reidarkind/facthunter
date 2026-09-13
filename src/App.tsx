@@ -49,6 +49,7 @@ export default function App() {
         window.location.hash = ''
         setOverlay('none')
       }}
+      onClearCollection={() => onFactsChange([])}
     >
       {tab === 'hunt' ? (
         <HuntView facts={facts} onFactsChange={onFactsChange} />

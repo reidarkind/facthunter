@@ -123,7 +123,7 @@ Skiltet skal stå **i verden**, ikke som HUD-klistremerke.
 | `readAt` | ISO-tid eller tom |
 | `source` | `wikipedia` |
 
-Slettes aldri av appen. IndexedDB i denne nettleseren på denne telefonen. Ingen konto, ingen sky-kopi.
+Slettes ikke av appen av seg selv. Brukeren kan tømme samlingen i Innstillinger (bekreftelse; eksporter først). IndexedDB i denne nettleseren på denne telefonen. Ingen konto, ingen sky-kopi.
 
 Ny telefon, annen nettleser, slettet nettsteddata eller avinstallering tømmer samlingen, **med mindre** brukeren har en eksportfil og importerer den.
 
@@ -136,7 +136,7 @@ Ny telefon, annen nettleser, slettet nettsteddata eller avinstallering tømmer s
 
 ### 6.3 Samling-UI
 
-Egen fane. Søk i tittel og utdrag. Filter: alle / ulest / lest. Åpner samme leseark. Knappene Eksporter og Importer ligger her.
+Egen fane. Søk i tittel og utdrag. Filter: alle / ulest / lest. Åpner samme leseark. Knappene Eksporter og Importer ligger her. **Tøm samling** ligger i Innstillinger (bekreftelse), ikke i denne fanen.
 
 ### 6.4 Deling
 
@@ -185,14 +185,14 @@ Tre faner, i denne rekkefølgen: **Rekognoser** (start), **Jakt**, **Samling**. 
 
 Rekognoser er hjemskjermen: jegermerke, FactHunter, «kunnskap i det fjerne», deretter kartet. Ingen titler, ingen opplåsing. Når brukeren er innen den stiplede 500 m-ringen, bytter hen til Jakt. Jakt-gaten beholder merket; teksten sier at kameraet er nærsynet.
 
-Norsk UI. Appnavn: **FactHunter**.
+Norsk UI som standard. Første besøk uten lagret `facthunter-lang`: telefonens språk hvis det er `no`/`nb`/`nn`, `en`, `de`, `es` eller `pt`; ellers norsk. Språk i Innstillinger: norsk, engelsk, tysk, spansk og portugisisk (europeisk). Appnavn: **FactHunter**.
 
 ### 7.1 Installasjonssiden
 
 Siden skal ha fire tydelige deler:
 
 1. **Hva dette er** — FactHunter er et tynt lag som gjør Wikipedia morsommere å oppdage i den virkelige verden (speid på kartet, deretter kamera og skilt, samling). Innholdet kommer fra Wikipedia; appen eier det ikke.
-2. **Personvern** — Appen lagrer ingenting i skyen. Samling, lest-status og poeng ligger bare lokalt på telefonen. FactHunter synker ikke mellom enheter. Bytt telefon: eksporter filen på den gamle, importer på den nye. Mister du filen (eller sletter nettsteddata uten eksport), er samlingen borte.
+2. **Personvern** — Appen lagrer ingenting i skyen. Samling, lest-status og poeng ligger bare lokalt på telefonen. FactHunter synker ikke mellom enheter. Bytt telefon: eksporter filen på den gamle, importer på den nye. I Innstillinger kan du tømme samlingen. Mister du filen (eller sletter nettsteddata uten eksport), er samlingen borte.
 3. **Legg til på hjem-skjermen** — korte steg for iOS (Del → Legg til på Hjem-skjerm) og Android (meny → Installer app / Legg til på startside).
 4. **Opphav** — Reidar Kind, lenke til [andre apper](https://reidarkind.github.io/myapps/), og en lokal «Kjøp en kaffe»-knapp (gull, kaffekopp) til [Buy Me a Coffee](https://www.buymeacoffee.com/reidarkind).
 

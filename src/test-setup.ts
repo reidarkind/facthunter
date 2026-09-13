@@ -4,6 +4,11 @@ import { afterEach } from 'vitest'
 import { LOCALE_STORAGE_KEY } from './lib/locale'
 import { WIKI_LIMIT_STORAGE_KEY } from './lib/prefs'
 
+Object.defineProperty(navigator, 'languages', {
+  configurable: true,
+  get: () => ['nb-NO'],
+})
+
 afterEach(() => {
   cleanup()
   localStorage.removeItem(LOCALE_STORAGE_KEY)

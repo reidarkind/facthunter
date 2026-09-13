@@ -1,8 +1,18 @@
+import { useState } from 'react'
+import type { MessageKey } from '../i18n/strings'
 import { useT } from '../i18n/useT'
 import { WIKI_LIMITS, WIKI_SOURCE_LANGS } from '../lib/constants'
-import type { Locale } from '../lib/locale'
+import { LOCALES, type Locale } from '../lib/locale'
 import { parseWikiLang, withWikiSlot } from '../lib/prefs'
 import { usePrefs } from './usePrefs'
+
+const LOCALE_LABEL: Record<Locale, MessageKey> = {
+  no: 'langNo',
+  en: 'langEn',
+  de: 'langDe',
+  es: 'langEs',
+  pt: 'langPt',
+}
 
 const SLOT_LABELS = [
   'wikiSourcePrimary',
@@ -10,12 +20,23 @@ const SLOT_LABELS = [
   'wikiSourceTertiary',
 ] as const
 
-export function SettingsPage(props: { onBack?: () => void }) {
+export function SettingsPage(props: {
+  onBack?: () => void
+  onClearCollection?: () => void
+}) {
   const { t, locale, setLocale } = useT()
   const { wikiLimit, setWikiLimit, wikiSources, setWikiSources } = usePrefs()
+  const [confirmClear, setConfirmClear] = useState(false)
+  const [cleared, setCleared] = useState(false)
 
   function choose(next: Locale) {
     setLocale(next)
+  }
+
+  function clearCollection() {
+    props.onClearCollection?.()
+    setConfirmClear(false)
+    setCleared(true)
   }
 
   return (
@@ -33,22 +54,17 @@ export function SettingsPage(props: { onBack?: () => void }) {
       <section>
         <h2>{t('language')}</h2>
         <div className="filter-row" role="group" aria-label={t('language')}>
-          <button
-            type="button"
-            className={locale === 'no' ? 'active' : undefined}
-            aria-pressed={locale === 'no'}
-            onClick={() => choose('no')}
-          >
-            {t('langNo')}
-          </button>
-          <button
-            type="button"
-            className={locale === 'en' ? 'active' : undefined}
-            aria-pressed={locale === 'en'}
-            onClick={() => choose('en')}
-          >
-            {t('langEn')}
-          </button>
+          {LOCALES.map((code) => (
+            <button
+              key={code}
+              type="button"
+              className={locale === code ? 'active' : undefined}
+              aria-pressed={locale === code}
+              onClick={() => choose(code)}
+            >
+              {t(LOCALE_LABEL[code])}
+            </button>
+          ))}
         </div>
       </section>
       <section>
@@ -100,6 +116,41 @@ export function SettingsPage(props: { onBack?: () => void }) {
           ))}
         </div>
       </section>
+      {props.onClearCollection ? (
+        <section>
+          <h2>{t('collectionReset')}</h2>
+          <p>{t('collectionResetHelp')}</p>
+          {confirmClear ? (
+            <>
+              <p className="banner warn">{t('collectionResetConfirm')}</p>
+              <div className="filter-row">
+                <button type="button" onClick={() => setConfirmClear(false)}>
+                  {t('cancel')}
+                </button>
+                <button
+                  type="button"
+                  className="danger"
+                  onClick={clearCollection}
+                >
+                  {t('collectionResetConfirmAction')}
+                </button>
+              </div>
+            </>
+          ) : (
+            <button
+              type="button"
+              className="danger"
+              onClick={() => {
+                setCleared(false)
+                setConfirmClear(true)
+              }}
+            >
+              {t('collectionResetAction')}
+            </button>
+          )}
+          {cleared ? <p className="notice">{t('collectionResetDone')}</p> : null}
+        </section>
+      ) : null}
     </article>
   )
 }

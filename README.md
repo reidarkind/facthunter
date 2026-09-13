@@ -16,13 +16,13 @@ FactHunter er et tynt lag over Wikipedia GeoSearch — ikke et lukket spill. Jak
 
 - **Rekognoser** — startsiden. Låst kart med 2 km tåke-sirkel. Prikkene viser at noe er i nærheten, ikke hva. En kile viser hvor telefonen peker (samme ±30° / 500 m som jakten). Bytt til Jakt når du er innen den stiplede ringen.
 - **Jakt** — bakkamera, GPS og kompass. Steder innen 500 m vises som AR-skilt i synsfeltet (±30°).
-- **Innstillinger** — hamburger-meny: UI-språk (norsk/engelsk), Wikipedia-kilder (1–3 utgaver) og treff-tak, og Om appen.
+- **Innstillinger** — hamburger-meny: UI-språk (norsk, engelsk, tysk, spansk, portugisisk; første besøk følger telefonen), Wikipedia-kilder (1–3 utgaver) og treff-tak, tøm samling, og Om appen.
 - **Lås opp** — innen 50 m og med GPS-nøyaktighet ≤ 50 m: 10 poeng, én gang per sted.
-- **Les** — scroll utdraget til bunnen eller minst 80 %: 5 poeng, én gang. Fakta slettes aldri.
+- **Les** — scroll utdraget til bunnen eller minst 80 %: 5 poeng, én gang. Fakta slettes ikke av seg selv; Innstillinger kan tømme samlingen etter bekreftelse.
 - **Samling** — søk, filter (alle / ulest / lest), avledet poengsum.
 - **Del** — Wikipedia-lenke + «Se hva jeg fant via FactHunter!» + installasjonslenke (Del, kopier, SMS, e-post).
 - **Flytt mellom telefoner** — eksporter/importer JSON. Ingen sky-synk.
-- **PWA** — legg til på hjem-skjermen. Norsk UI.
+- **PWA** — legg til på hjem-skjermen. Norsk UI som standard; tysk, spansk og portugisisk i innstillinger.
 
 ## Installer på telefonen
 

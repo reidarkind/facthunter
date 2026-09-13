@@ -63,6 +63,9 @@ const no = {
   language: 'Språk',
   langNo: 'Norsk',
   langEn: 'English',
+  langDe: 'Deutsch',
+  langEs: 'Español',
+  langPt: 'Português',
   wikiLimit: 'Wikipedia-treff',
   wikiLimitHelp:
     'Hvor mange steder som hentes rundt deg. Flere treff gir tettere kart og jakt, men tyngre lasting.',
@@ -73,6 +76,15 @@ const no = {
   wikiSourceSecondary: 'Andre',
   wikiSourceTertiary: 'Tredje',
   wikiSourceNone: 'Ingen',
+  collectionReset: 'Nullstill samling',
+  collectionResetHelp:
+    'Tømmer opplåste Wikipedia-steder på denne telefonen. Poeng følger med. Eksporter først hvis du vil ta vare på dem.',
+  collectionResetAction: 'Tøm samling',
+  collectionResetConfirm:
+    'Slette alle opplåste steder? Dette kan ikke angres.',
+  collectionResetConfirmAction: 'Tøm samlingen',
+  collectionResetDone: 'Samlingen er tom.',
+  cancel: 'Avbryt',
   whatThisIs: 'Hva dette er',
   whatThisIsBody:
     'FactHunter er et tynt lag som gjør Wikipedia morsommere å oppdage i den virkelige verden. Først speider du på kartet etter spor i det fjerne. Når du er nær nok, peker du kameraet bak på telefonen: stedene vises som skilt i gata; du låser dem opp og samler dem i en feltjournal. Innholdet kommer fra Wikipedia; appen eier det ikke.',
@@ -80,7 +92,7 @@ const no = {
   privacyBody1:
     'Appen lagrer ingenting i skyen. Samling, lest-status og poeng ligger bare lokalt på telefonen. FactHunter synkroniserer ikke mellom enheter.',
   privacyBody2:
-    'Bytt telefon: eksporter filen på den gamle, importer på den nye. Mister du filen, eller sletter nettsteddata uten eksport, er samlingen borte. Wikipedia-lenker du deler går til Wikipedia. FactHunter lagrer dem ikke i skyen.',
+    'Bytt telefon: eksporter filen på den gamle, importer på den nye. I Innstillinger kan du tømme samlingen. Mister du filen, eller sletter nettsteddata uten eksport, er samlingen borte. Wikipedia-lenker du deler går til Wikipedia. FactHunter lagrer dem ikke i skyen.',
   addToHome: 'Legg til på hjem-skjermen',
   addToHomeBody:
     'FactHunter er en nettside du installerer som app. Den ligger ikke i App Store eller Google Play. Du må åpne den over HTTPS, ellers nekter telefonen kamera og kompass.',
@@ -112,7 +124,9 @@ const no = {
     'Kompasset på Android kommer fra telefonens retningssensor. Hold telefonen unna magnetiske deksler hvis pila hopper.',
 }
 
-const en: { [K in keyof typeof no]: string } = {
+type Copy = { [K in keyof typeof no]: string }
+
+const en: Copy = {
   navMain: 'Main menu',
   tabRecon: 'Scout',
   tabHunt: 'Hunt',
@@ -175,6 +189,9 @@ const en: { [K in keyof typeof no]: string } = {
   language: 'Language',
   langNo: 'Norsk',
   langEn: 'English',
+  langDe: 'Deutsch',
+  langEs: 'Español',
+  langPt: 'Português',
   wikiLimit: 'Wikipedia results',
   wikiLimitHelp:
     'How many places to fetch around you. More results make the map and hunt denser, but loading is heavier.',
@@ -185,6 +202,15 @@ const en: { [K in keyof typeof no]: string } = {
   wikiSourceSecondary: 'Second',
   wikiSourceTertiary: 'Third',
   wikiSourceNone: 'None',
+  collectionReset: 'Reset collection',
+  collectionResetHelp:
+    'Removes unlocked Wikipedia places on this phone. Score follows. Export first if you want to keep them.',
+  collectionResetAction: 'Clear collection',
+  collectionResetConfirm:
+    'Delete every unlocked place? This cannot be undone.',
+  collectionResetConfirmAction: 'Clear collection now',
+  collectionResetDone: 'The collection is empty.',
+  cancel: 'Cancel',
   whatThisIs: 'What this is',
   whatThisIsBody:
     'FactHunter is a thin layer that makes Wikipedia more fun to discover in the real world. First you scout the map for traces in the distance. When you are close enough, you point the camera on the back of the phone: places appear as signs in the street; you unlock them and collect them in a field journal. The content comes from Wikipedia; the app does not own it.',
@@ -192,7 +218,7 @@ const en: { [K in keyof typeof no]: string } = {
   privacyBody1:
     'The app stores nothing in the cloud. Collection, read status and score live only locally on the phone. FactHunter does not sync between devices.',
   privacyBody2:
-    'Switch phones: export the file on the old one, import on the new one. If you lose the file, or clear site data without exporting, the collection is gone. Wikipedia links you share go to Wikipedia. FactHunter does not store them in the cloud.',
+    'Switch phones: export the file on the old one, import on the new one. Settings can empty the collection. If you lose the file, or clear site data without exporting, the collection is gone. Wikipedia links you share go to Wikipedia. FactHunter does not store them in the cloud.',
   addToHome: 'Add to Home Screen',
   addToHomeBody:
     'FactHunter is a website you install as an app. It is not in the App Store or Google Play. You must open it over HTTPS, or the phone will refuse camera and compass.',
@@ -224,9 +250,384 @@ const en: { [K in keyof typeof no]: string } = {
     'Compass on Android comes from the phone’s orientation sensor. Keep the phone away from magnetic cases if the needle jumps.',
 }
 
-export const strings: Record<Locale, { [K in keyof typeof no]: string }> = {
+const de: Copy = {
+  navMain: 'Hauptmenü',
+  tabRecon: 'Erkunden',
+  tabHunt: 'Jagd',
+  tabCollection: 'Sammlung',
+  menu: 'Menü',
+  settings: 'Einstellungen',
+  about: 'Über die App',
+  back: 'Zurück',
+  huntGateBody:
+    'Jetzt richtest du die Kamera. Die Schilder stehen in der Welt, wenn du nah genug bist. Kamera, Standort und Kompass gehen mit demselben Tipp an.',
+  missingCamera: 'Kamera fehlt oder wurde abgelehnt',
+  missingLocation: 'Standort fehlt oder wurde abgelehnt',
+  missingCompass:
+    'Kompass fehlt oder wurde abgelehnt. iPhone: Einstellungen → Safari (oder FactHunter) → Bewegung und Ausrichtung, dann Erneut versuchen. Bewegung erlauben, wenn das Telefon fragt.',
+  missingHttps: 'Öffne die App über HTTPS, nicht http://192.168…',
+  waitingCompass: 'Warte auf den Kompass — bewege das Telefon ein wenig.',
+  tryAgain: 'Erneut versuchen',
+  startHunt: 'Jagd starten',
+  huntHintIphone:
+    'iPhone: Einstellungen → Safari (oder die App) → Bewegung und Ausrichtung.',
+  gpsUncertain: 'GPS unsicher',
+  wikiFetchFailed: 'Orte von Wikipedia konnten nicht geladen werden',
+  noPlacesHere: 'Keine Orte hier — geh ein Stück',
+  moveCloser: 'Komm näher',
+  reconTitle: 'Erkunden',
+  reconIntro:
+    'Es gibt Wissen in der Ferne. Erkunde 2 km um dich herum. Die Punkte zeigen, dass etwas da ist — nicht was. Geh auf sie zu und wechsle zur Jagd innerhalb des gestrichelten Rings.',
+  startRecon: 'Erkundung starten',
+  reconLiveTitle: 'Erkunden · 2 km',
+  reconWikiFailed: 'Wikipedia konnte nicht erkundet werden',
+  reconEmpty: 'Keine Spuren in 2 km. Geh woanders hin.',
+  reconHint:
+    'Wissen in der Ferne — wechsle zur Jagd innerhalb des gestrichelten Rings.',
+  reconOsm: 'Karte: OpenStreetMap',
+  collectionTitle: 'Sammlung',
+  points: '{score} Punkte',
+  search: 'Suchen',
+  searchPlaceholder: 'Titel und Auszüge durchsuchen',
+  filter: 'Filter',
+  filterAll: 'Alle',
+  filterUnread: 'Ungelesen',
+  filterRead: 'Gelesen',
+  export: 'Exportieren',
+  import: 'Importieren',
+  importFailed: 'Die Datei konnte nicht gelesen werden',
+  importedNew: '{count} neue Fakten importiert',
+  emptyJournal: 'Das Journal ist leer. Geh raus und jage ein paar Fakten.',
+  read: 'Gelesen',
+  unread: 'Ungelesen',
+  close: 'Schließen',
+  metersAway: '{m} m entfernt',
+  readMoreWiki: 'Mehr auf Wikipedia lesen',
+  share: 'Teilen',
+  copy: 'Kopieren',
+  sms: 'SMS',
+  email: 'E-Mail',
+  shareIntro: 'Sieh, was ich mit FactHunter gefunden habe!',
+  shareInstall: 'App installieren:',
+  settingsTitle: 'Einstellungen',
+  language: 'Sprache',
+  langNo: 'Norsk',
+  langEn: 'English',
+  langDe: 'Deutsch',
+  langEs: 'Español',
+  langPt: 'Português',
+  wikiLimit: 'Wikipedia-Treffer',
+  wikiLimitHelp:
+    'Wie viele Orte um dich herum geladen werden. Mehr Treffer machen Karte und Jagd dichter, aber das Laden schwerer.',
+  wikiSources: 'Wikipedia-Quellen',
+  wikiSourcesHelp:
+    'Ein bis drei Wikipedia-Ausgaben, in Prioritätsreihenfolge. Derselbe Artikel (Wikidata) erscheint nur einmal; die erste Sprache gewinnt.',
+  wikiSourcePrimary: 'Erste',
+  wikiSourceSecondary: 'Zweite',
+  wikiSourceTertiary: 'Dritte',
+  wikiSourceNone: 'Keine',
+  collectionReset: 'Sammlung zurücksetzen',
+  collectionResetHelp:
+    'Löscht freigeschaltete Wikipedia-Orte auf diesem Telefon. Punkte folgen mit. Exportiere zuerst, wenn du sie behalten willst.',
+  collectionResetAction: 'Sammlung leeren',
+  collectionResetConfirm:
+    'Alle freigeschalteten Orte löschen? Das lässt sich nicht rückgängig machen.',
+  collectionResetConfirmAction: 'Sammlung jetzt leeren',
+  collectionResetDone: 'Die Sammlung ist leer.',
+  cancel: 'Abbrechen',
+  whatThisIs: 'Was das ist',
+  whatThisIsBody:
+    'FactHunter ist eine dünne Schicht, die Wikipedia in der echten Welt spannender macht. Zuerst erkundest du die Karte nach Spuren in der Ferne. Wenn du nah genug bist, richtest du die Kamera auf der Rückseite des Telefons: Orte erscheinen als Schilder in der Straße; du schaltest sie frei und sammelst sie in einem Feldjournal. Der Inhalt kommt von Wikipedia; die App besitzt ihn nicht.',
+  privacy: 'Datenschutz',
+  privacyBody1:
+    'Die App speichert nichts in der Cloud. Sammlung, Gelesen-Status und Punkte liegen nur lokal auf dem Telefon. FactHunter synchronisiert nicht zwischen Geräten.',
+  privacyBody2:
+    'Telefon wechseln: exportiere die Datei auf dem alten, importiere sie auf dem neuen. Unter Einstellungen kannst du die Sammlung leeren. Verlierst du die Datei oder löschst Website-Daten ohne Export, ist die Sammlung weg. Wikipedia-Links, die du teilst, gehen zu Wikipedia. FactHunter speichert sie nicht in der Cloud.',
+  addToHome: 'Zum Home-Bildschirm hinzufügen',
+  addToHomeBody:
+    'FactHunter ist eine Website, die du als App installierst. Sie ist nicht im App Store oder bei Google Play. Du musst sie über HTTPS öffnen, sonst verweigert das Telefon Kamera und Kompass.',
+  origin: 'Herkunft',
+  originBody: 'Die Idee stammt von Reidar Kind. Entwickelt mit Hilfe von KI.',
+  otherApps: 'Andere Apps, die ich gemacht habe',
+  buyCoffee: 'Kauf mir einen Kaffee',
+  buyCoffeeBody:
+    'Das ist ein Hobbyprojekt. Ein Kaffee hilft mir, in der Freizeit weiterzubasteln.',
+  ios1:
+    'Öffne FactHunter in Safari (nicht Chrome, nicht einen Link in einer anderen App).',
+  ios2: 'Tippe Teilen (das Quadrat mit Pfeil nach oben) unten auf dem Bildschirm.',
+  ios3:
+    'Scrolle im Teilen-Blatt und tippe Zum Home-Bildschirm. Wenn du es nicht siehst: wische die untere Reihe, oder tippe Aktionen bearbeiten.',
+  ios4: 'Tippe Hinzufügen. Öffne FactHunter über das neue Symbol.',
+  ios5:
+    'Die App öffnet auf Erkunden. Wenn du nah bist: tippe Jagd starten und erlaube Kamera und Standort.',
+  ios6:
+    'Kompass: Einstellungen → Safari → Bewegung und Ausrichtung. Hast du die App auf dem Home-Bildschirm: Einstellungen → FactHunter → Bewegung und Ausrichtung.',
+  iosNote:
+    'Die Jagd funktioniert aus einem normalen Safari-Tab nicht so gut wie vom Home-Bildschirm-Symbol. Starte von dort, wenn der Kompass fehlt.',
+  android1: 'Öffne FactHunter in Chrome (oder Samsung Internet).',
+  android2:
+    'Tippe das Menü (drei Punkte) oben rechts, dann App installieren oder Zum Startbildschirm hinzufügen. Manche Telefone zeigen auch ein Installationsbanner unten.',
+  android3: 'Öffne FactHunter vom Startbildschirm.',
+  android4:
+    'Die App öffnet auf Erkunden. Wenn du nah bist: tippe Jagd starten und erlaube Kamera und Standort, wenn das Telefon fragt.',
+  androidNote:
+    'Der Kompass auf Android kommt vom Richtungssensor des Telefons. Halte das Telefon von magnetischen Hüllen fern, wenn die Nadel springt.',
+}
+
+const es: Copy = {
+  navMain: 'Menú principal',
+  tabRecon: 'Explorar',
+  tabHunt: 'Caza',
+  tabCollection: 'Colección',
+  menu: 'Menú',
+  settings: 'Ajustes',
+  about: 'Acerca de la app',
+  back: 'Atrás',
+  huntGateBody:
+    'Ahora apuntas la cámara. Los letreros están en el mundo cuando estás lo bastante cerca. Cámara, ubicación y brújula se activan con el mismo toque.',
+  missingCamera: 'La cámara falta o se denegó',
+  missingLocation: 'La ubicación falta o se denegó',
+  missingCompass:
+    'La brújula falta o se denegó. iPhone: Ajustes → Safari (o FactHunter) → Movimiento y orientación, luego Reintentar. Acepta el movimiento cuando el teléfono lo pida.',
+  missingHttps: 'Abre la app por HTTPS, no http://192.168…',
+  waitingCompass: 'Esperando la brújula — mueve un poco el teléfono.',
+  tryAgain: 'Reintentar',
+  startHunt: 'Empezar caza',
+  huntHintIphone:
+    'iPhone: Ajustes → Safari (o la app) → Movimiento y orientación.',
+  gpsUncertain: 'GPS inseguro',
+  wikiFetchFailed: 'No se pudieron cargar lugares de Wikipedia',
+  noPlacesHere: 'No hay lugares aquí — camina un poco',
+  moveCloser: 'Acércate',
+  reconTitle: 'Explorar',
+  reconIntro:
+    'Hay conocimiento a lo lejos. Explora 2 km a tu alrededor. Los puntos muestran que hay algo — no qué. Camina hacia ellos y cambia a Caza dentro del anillo discontinuo.',
+  startRecon: 'Empezar exploración',
+  reconLiveTitle: 'Explorar · 2 km',
+  reconWikiFailed: 'No se pudo explorar Wikipedia',
+  reconEmpty: 'Ningún rastro en 2 km. Ve a otro sitio.',
+  reconHint:
+    'Conocimiento a lo lejos — cambia a Caza dentro del anillo discontinuo.',
+  reconOsm: 'Mapa: OpenStreetMap',
+  collectionTitle: 'Colección',
+  points: '{score} puntos',
+  search: 'Buscar',
+  searchPlaceholder: 'Buscar en título y extracto',
+  filter: 'Filtro',
+  filterAll: 'Todos',
+  filterUnread: 'No leídos',
+  filterRead: 'Leídos',
+  export: 'Exportar',
+  import: 'Importar',
+  importFailed: 'No se pudo leer el archivo',
+  importedNew: 'Se importaron {count} hechos nuevos',
+  emptyJournal: 'El diario está vacío. Sal a cazar algunos hechos.',
+  read: 'Leído',
+  unread: 'No leído',
+  close: 'Cerrar',
+  metersAway: 'A {m} m',
+  readMoreWiki: 'Leer más en Wikipedia',
+  share: 'Compartir',
+  copy: 'Copiar',
+  sms: 'SMS',
+  email: 'Correo',
+  shareIntro: '¡Mira lo que encontré con FactHunter!',
+  shareInstall: 'Instala la app:',
+  settingsTitle: 'Ajustes',
+  language: 'Idioma',
+  langNo: 'Norsk',
+  langEn: 'English',
+  langDe: 'Deutsch',
+  langEs: 'Español',
+  langPt: 'Português',
+  wikiLimit: 'Resultados de Wikipedia',
+  wikiLimitHelp:
+    'Cuántos lugares se cargan a tu alrededor. Más resultados densifican el mapa y la caza, pero la carga es más pesada.',
+  wikiSources: 'Fuentes de Wikipedia',
+  wikiSourcesHelp:
+    'De una a tres ediciones de Wikipedia, en orden de prioridad. El mismo artículo (Wikidata) se muestra una sola vez; gana el primer idioma.',
+  wikiSourcePrimary: 'Primera',
+  wikiSourceSecondary: 'Segunda',
+  wikiSourceTertiary: 'Tercera',
+  wikiSourceNone: 'Ninguna',
+  collectionReset: 'Restablecer colección',
+  collectionResetHelp:
+    'Borra los lugares de Wikipedia desbloqueados en este teléfono. Los puntos van con ellos. Exporta primero si quieres conservarlos.',
+  collectionResetAction: 'Vaciar colección',
+  collectionResetConfirm:
+    '¿Borrar todos los lugares desbloqueados? No se puede deshacer.',
+  collectionResetConfirmAction: 'Vaciar ahora',
+  collectionResetDone: 'La colección está vacía.',
+  cancel: 'Cancelar',
+  whatThisIs: 'Qué es esto',
+  whatThisIsBody:
+    'FactHunter es una capa fina que hace más divertido descubrir Wikipedia en el mundo real. Primero exploras el mapa en busca de rastros a lo lejos. Cuando estás lo bastante cerca, apuntas la cámara de la parte trasera del teléfono: los lugares aparecen como letreros en la calle; los desbloqueas y los guardas en un diario de campo. El contenido viene de Wikipedia; la app no lo posee.',
+  privacy: 'Privacidad',
+  privacyBody1:
+    'La app no guarda nada en la nube. La colección, el estado de lectura y los puntos viven solo en el teléfono. FactHunter no sincroniza entre dispositivos.',
+  privacyBody2:
+    'Cambia de teléfono: exporta el archivo en el viejo, impórtalo en el nuevo. En Ajustes puedes vaciar la colección. Si pierdes el archivo, o borras los datos del sitio sin exportar, la colección desaparece. Los enlaces de Wikipedia que compartes van a Wikipedia. FactHunter no los guarda en la nube.',
+  addToHome: 'Añadir a la pantalla de inicio',
+  addToHomeBody:
+    'FactHunter es un sitio web que instalas como app. No está en App Store ni en Google Play. Debes abrirla por HTTPS, o el teléfono rechazará la cámara y la brújula.',
+  origin: 'Origen',
+  originBody: 'La idea es de Reidar Kind. Desarrollado con ayuda de IA.',
+  otherApps: 'Otras apps que he hecho',
+  buyCoffee: 'Invítame a un café',
+  buyCoffeeBody:
+    'Esto es un proyecto de afición. Un café me ayuda a seguir trasteando en el tiempo libre.',
+  ios1:
+    'Abre FactHunter en Safari (no Chrome, no un enlace dentro de otra app).',
+  ios2: 'Toca Compartir (el cuadrado con flecha hacia arriba) abajo en la pantalla.',
+  ios3:
+    'Desplázate por la hoja de Compartir y toca Añadir a pantalla de inicio. Si no lo ves: desliza la fila inferior o toca Editar acciones.',
+  ios4: 'Toca Añadir. Abre FactHunter desde el nuevo icono.',
+  ios5:
+    'La app abre en Explorar. Cuando estés cerca: toca Empezar caza y permite cámara y ubicación.',
+  ios6:
+    'Brújula: Ajustes → Safari → Movimiento y orientación. Si añadiste la app a la pantalla de inicio: Ajustes → FactHunter → Movimiento y orientación.',
+  iosNote:
+    'La caza no funciona tan bien desde una pestaña normal de Safari como desde el icono de la pantalla de inicio. Empieza desde allí si falta la brújula.',
+  android1: 'Abre FactHunter en Chrome (o Samsung Internet).',
+  android2:
+    'Toca el menú (tres puntos) arriba a la derecha, luego Instalar app o Añadir a pantalla de inicio. Algunos teléfonos también muestran un banner de instalación abajo.',
+  android3: 'Abre FactHunter desde la pantalla de inicio.',
+  android4:
+    'La app abre en Explorar. Cuando estés cerca: toca Empezar caza y permite cámara y ubicación cuando el teléfono lo pida.',
+  androidNote:
+    'La brújula en Android sale del sensor de orientación del teléfono. Mantén el teléfono lejos de fundas magnéticas si la aguja salta.',
+}
+
+const pt: Copy = {
+  navMain: 'Menu principal',
+  tabRecon: 'Explorar',
+  tabHunt: 'Caça',
+  tabCollection: 'Coleção',
+  menu: 'Menu',
+  settings: 'Definições',
+  about: 'Sobre a aplicação',
+  back: 'Voltar',
+  huntGateBody:
+    'Agora apontas a câmara. Os sinais estão no mundo quando estás suficientemente perto. Câmara, posição e bússola ligam-se com o mesmo toque.',
+  missingCamera: 'A câmara falta ou foi recusada',
+  missingLocation: 'A posição falta ou foi recusada',
+  missingCompass:
+    'A bússola falta ou foi recusada. iPhone: Definições → Safari (ou FactHunter) → Movimento e orientação, depois Tentar novamente. Aceita o movimento quando o telefone perguntar.',
+  missingHttps: 'Abre a aplicação por HTTPS, não http://192.168…',
+  waitingCompass: 'A aguardar a bússola — mexe um pouco o telefone.',
+  tryAgain: 'Tentar novamente',
+  startHunt: 'Iniciar caça',
+  huntHintIphone:
+    'iPhone: Definições → Safari (ou a aplicação) → Movimento e orientação.',
+  gpsUncertain: 'GPS incerto',
+  wikiFetchFailed: 'Não foi possível obter lugares da Wikipedia',
+  noPlacesHere: 'Não há lugares aqui — anda um pouco',
+  moveCloser: 'Aproxima-te',
+  reconTitle: 'Explorar',
+  reconIntro:
+    'Há conhecimento ao longe. Explora 2 km à tua volta. Os pontos mostram que há algo — não o quê. Caminha na direção deles e muda para Caça dentro do anel tracejado.',
+  startRecon: 'Iniciar exploração',
+  reconLiveTitle: 'Explorar · 2 km',
+  reconWikiFailed: 'Não foi possível explorar a Wikipedia',
+  reconEmpty: 'Nenhum rasto em 2 km. Vai para outro sítio.',
+  reconHint:
+    'Conhecimento ao longe — muda para Caça dentro do anel tracejado.',
+  reconOsm: 'Mapa: OpenStreetMap',
+  collectionTitle: 'Coleção',
+  points: '{score} pontos',
+  search: 'Pesquisar',
+  searchPlaceholder: 'Pesquisar no título e no excerto',
+  filter: 'Filtro',
+  filterAll: 'Todos',
+  filterUnread: 'Não lidos',
+  filterRead: 'Lidos',
+  export: 'Exportar',
+  import: 'Importar',
+  importFailed: 'Não foi possível ler o ficheiro',
+  importedNew: 'Importámos {count} factos novos',
+  emptyJournal: 'O diário está vazio. Sai e caça alguns factos.',
+  read: 'Lido',
+  unread: 'Não lido',
+  close: 'Fechar',
+  metersAway: 'A {m} m',
+  readMoreWiki: 'Ler mais na Wikipedia',
+  share: 'Partilhar',
+  copy: 'Copiar',
+  sms: 'SMS',
+  email: 'E-mail',
+  shareIntro: 'Vê o que encontrei com o FactHunter!',
+  shareInstall: 'Instala a aplicação:',
+  settingsTitle: 'Definições',
+  language: 'Idioma',
+  langNo: 'Norsk',
+  langEn: 'English',
+  langDe: 'Deutsch',
+  langEs: 'Español',
+  langPt: 'Português',
+  wikiLimit: 'Resultados da Wikipedia',
+  wikiLimitHelp:
+    'Quantos lugares são obtidos à tua volta. Mais resultados tornam o mapa e a caça mais densos, mas o carregamento é mais pesado.',
+  wikiSources: 'Fontes da Wikipedia',
+  wikiSourcesHelp:
+    'Uma a três edições da Wikipedia, por ordem de prioridade. O mesmo artigo (Wikidata) aparece uma só vez; o primeiro idioma ganha.',
+  wikiSourcePrimary: 'Primeira',
+  wikiSourceSecondary: 'Segunda',
+  wikiSourceTertiary: 'Terceira',
+  wikiSourceNone: 'Nenhuma',
+  collectionReset: 'Repor coleção',
+  collectionResetHelp:
+    'Apaga os lugares da Wikipedia desbloqueados neste telefone. Os pontos vão com eles. Exporta primeiro se quiseres guardá-los.',
+  collectionResetAction: 'Esvaziar coleção',
+  collectionResetConfirm:
+    'Apagar todos os lugares desbloqueados? Não dá para anular.',
+  collectionResetConfirmAction: 'Esvaziar agora',
+  collectionResetDone: 'A coleção está vazia.',
+  cancel: 'Cancelar',
+  whatThisIs: 'O que isto é',
+  whatThisIsBody:
+    'O FactHunter é uma camada fina que torna a Wikipedia mais divertida de descobrir no mundo real. Primeiro explora o mapa à procura de rasto ao longe. Quando estás suficientemente perto, apontas a câmara nas costas do telefone: os lugares aparecem como sinais na rua; desbloqueias-nos e guardas-nos num diário de campo. O conteúdo vem da Wikipedia; a aplicação não o possui.',
+  privacy: 'Privacidade',
+  privacyBody1:
+    'A aplicação não guarda nada na nuvem. A coleção, o estado de leitura e os pontos ficam só no telefone. O FactHunter não sincroniza entre dispositivos.',
+  privacyBody2:
+    'Mudas de telefone: exporta o ficheiro no antigo, importa no novo. Nas Definições podes esvaziar a coleção. Se perderes o ficheiro, ou apagares os dados do sítio sem exportar, a coleção desaparece. As ligações da Wikipedia que partilhas vão para a Wikipedia. O FactHunter não as guarda na nuvem.',
+  addToHome: 'Adicionar ao ecrã principal',
+  addToHomeBody:
+    'O FactHunter é um sítio que instalas como aplicação. Não está na App Store nem no Google Play. Tens de o abrir por HTTPS, senão o telefone recusa a câmara e a bússola.',
+  origin: 'Origem',
+  originBody: 'A ideia é de Reidar Kind. Desenvolvido com ajuda de IA.',
+  otherApps: 'Outras aplicações que fiz',
+  buyCoffee: 'Oferece-me um café',
+  buyCoffeeBody:
+    'Isto é um projeto de hobby. Um café ajuda-me a continuar a mexer nas horas vagas.',
+  ios1:
+    'Abre o FactHunter no Safari (não no Chrome, não uma ligação dentro de outra aplicação).',
+  ios2: 'Toca em Partilhar (o quadrado com seta para cima) no fundo do ecrã.',
+  ios3:
+    'Percorre a folha Partilhar e toca em Adicionar ao ecrã principal. Se não o vires: desliza a fila de baixo, ou toca em Editar ações.',
+  ios4: 'Toca em Adicionar. Abre o FactHunter a partir do novo ícone.',
+  ios5:
+    'A aplicação abre em Explorar. Quando estiveres perto: toca em Iniciar caça e permite câmara e posição.',
+  ios6:
+    'Bússola: Definições → Safari → Movimento e orientação. Se adicionaste a aplicação ao ecrã principal: Definições → FactHunter → Movimento e orientação.',
+  iosNote:
+    'A caça não funciona tão bem a partir de um separador normal do Safari como a partir do ícone do ecrã principal. Começa daí se a bússola faltar.',
+  android1: 'Abre o FactHunter no Chrome (ou Samsung Internet).',
+  android2:
+    'Toca no menu (três pontos) no canto superior direito, depois Instalar aplicação ou Adicionar ao ecrã inicial. Alguns telefones também mostram um banner de instalação em baixo.',
+  android3: 'Abre o FactHunter a partir do ecrã inicial.',
+  android4:
+    'A aplicação abre em Explorar. Quando estiveres perto: toca em Iniciar caça e permite câmara e posição quando o telefone perguntar.',
+  androidNote:
+    'A bússola no Android vem do sensor de orientação do telefone. Mantém o telefone longe de capas magnéticas se a agulha saltar.',
+}
+
+export const strings: Record<Locale, Copy> = {
   no,
   en,
+  de,
+  es,
+  pt,
 }
 
 export type MessageKey = keyof typeof no

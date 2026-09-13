@@ -315,7 +315,8 @@ p {
 }
 
 .recon-hud .primary,
-.recon-hud .banner {
+.recon-hud .banner,
+.recon-hud .install-hint {
   pointer-events: auto;
 }
 
@@ -472,6 +473,28 @@ p {
 
 .banner.warn {
   background: rgb(121 84 12 / 90%);
+}
+
+.install-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.install-hint a {
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.install-hint button {
+  border: 0;
+  background: none;
+  color: var(--paper);
+  text-decoration: underline;
+  padding: 0;
+  font: inherit;
 }
 
 .sheet-backdrop {

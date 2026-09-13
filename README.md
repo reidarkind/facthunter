@@ -22,7 +22,7 @@ FactHunter er et tynt lag over Wikipedia GeoSearch — ikke et lukket spill. Jak
 - **Samling** — søk, filter (alle / ulest / lest), avledet poengsum.
 - **Del** — Wikipedia-lenke + «Se hva jeg fant via FactHunter!» + installasjonslenke (Del, kopier, SMS, e-post).
 - **Flytt mellom telefoner** — eksporter/importer JSON. Ingen sky-synk.
-- **PWA** — legg til på hjem-skjermen. Norsk UI som standard; tysk, spansk og portugisisk i innstillinger.
+- **PWA** — legg til på hjem-skjermen. Rekognoser viser et lite hint i vanlig nettleserfane på telefon. Norsk UI som standard; tysk, spansk og portugisisk i innstillinger.
 
 ## Installer på telefonen
 

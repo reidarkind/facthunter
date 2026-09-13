@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import { InstallHint } from '../install/InstallHint'
 import { useT } from '../i18n/useT'
 import { useWikiPlaces } from '../app/useWikiPlaces'
 import {
@@ -241,6 +242,7 @@ export function ReconView() {
       <div ref={mapEl} className="recon-map" />
       <div className="recon-vignette" aria-hidden="true" />
       <div className="recon-hud">
+        <InstallHint />
         {!coord ? (
           <>
             <img

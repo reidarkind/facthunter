@@ -185,6 +185,8 @@ Tre faner, i denne rekkefølgen: **Rekognoser** (start), **Jakt**, **Samling**. 
 
 Rekognoser er hjemskjermen: jegermerke, FactHunter, «kunnskap i det fjerne», deretter kartet. Ingen titler, ingen opplåsing. Når brukeren er innen den stiplede 500 m-ringen, bytter hen til Jakt. Jakt-gaten beholder merket; teksten sier at kameraet er nærsynet.
 
+Hvis Rekognoser åpnes i en vanlig nettleserfane på telefon (ikke `display-mode: standalone` og ikke iOS `navigator.standalone`), vis et lite lukkbart hint til `/install` («Bedre fra hjem-skjermen»). Ikke vis det på desktop (`hover: hover` + `pointer: fine`). Avvisning huskes i `localStorage`.
+
 Norsk UI som standard. Første besøk uten lagret `facthunter-lang`: telefonens språk hvis det er `no`/`nb`/`nn`, `en`, `de`, `es` eller `pt`; ellers norsk. Språk i Innstillinger: norsk, engelsk, tysk, spansk og portugisisk (europeisk). Appnavn: **FactHunter**.
 
 ### 7.1 Installasjonssiden

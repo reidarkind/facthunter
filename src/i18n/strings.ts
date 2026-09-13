@@ -35,6 +35,7 @@ const no = {
   reconHint:
     'Kunnskap i det fjerne — bytt til Jakt innen den stiplede ringen.',
   reconOsm: 'Kart: OpenStreetMap',
+  installHint: 'Bedre fra hjem-skjermen',
   collectionTitle: 'Samling',
   points: '{score} poeng',
   search: 'Søk',
@@ -161,6 +162,7 @@ const en: Copy = {
   reconHint:
     'Knowledge in the distance — switch to Hunt inside the dashed ring.',
   reconOsm: 'Map: OpenStreetMap',
+  installHint: 'Better from the Home Screen',
   collectionTitle: 'Collection',
   points: '{score} points',
   search: 'Search',
@@ -285,6 +287,7 @@ const de: Copy = {
   reconHint:
     'Wissen in der Ferne — wechsle zur Jagd innerhalb des gestrichelten Rings.',
   reconOsm: 'Karte: OpenStreetMap',
+  installHint: 'Besser vom Home-Bildschirm',
   collectionTitle: 'Sammlung',
   points: '{score} Punkte',
   search: 'Suchen',
@@ -409,6 +412,7 @@ const es: Copy = {
   reconHint:
     'Conocimiento a lo lejos — cambia a Caza dentro del anillo discontinuo.',
   reconOsm: 'Mapa: OpenStreetMap',
+  installHint: 'Mejor desde la pantalla de inicio',
   collectionTitle: 'Colección',
   points: '{score} puntos',
   search: 'Buscar',
@@ -533,6 +537,7 @@ const pt: Copy = {
   reconHint:
     'Conhecimento ao longe — muda para Caça dentro do anel tracejado.',
   reconOsm: 'Mapa: OpenStreetMap',
+  installHint: 'Melhor a partir do ecrã principal',
   collectionTitle: 'Coleção',
   points: '{score} pontos',
   search: 'Pesquisar',

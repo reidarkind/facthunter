@@ -101,7 +101,7 @@ Skiltet skal stå **i verden**, ikke som HUD-klistremerke.
 
 - Hent fra 1–3 Wikipedia-utgaver valgt i innstillinger, i prioritert rekkefølge (standard `no` deretter `en`).
 - Samme artikkel på tvers av språk (Wikidata-Q, ellers langlink-tittel): behold den første. To ulike artikler vises begge, også om de ligger nær hverandre.
-- Bruk GeoSearch + extracts/thumbnail i batch (CORS `origin=*`).
+- Bruk GeoSearch + extracts/thumbnail i batch (CORS `origin=*`). Alle kall sender `Api-User-Agent` med appnavn og kontakt-URL (Wikimedia User-Agent-policy).
 - Ikke cache API-svar som sannhet på disk; minnecache mens jakten kjører. Nytt søk når posisjonen har flyttet seg mer enn 150 m siden *forrige ferdige søk*. Et søk som er i gang avbrytes ikke av nye GPS-punkt; skiltene flytter seg mot deg fra treffene du allerede har.
 - Tomt resultat: «Ingen steder her — gå litt».
 - Nettfeil: melding i jakt; samlingen virker offline.

@@ -351,6 +351,39 @@ describe('fetchNearbyPlaces', () => {
     ])
   })
 
+  it('sends Api-User-Agent so Wikimedia can identify the client', async () => {
+    const agents: string[] = []
+    const fetchFn = async (
+      _input: RequestInfo | URL,
+      init?: RequestInit,
+    ): Promise<Response> => {
+      const header = new Headers(init?.headers)
+      agents.push(header.get('Api-User-Agent') ?? '')
+      return jsonResponse({})
+    }
+
+    await fetchNearbyPlaces(
+      { lat: 63.43, lon: 10.39 },
+      fetchFn,
+      2000,
+      50,
+      { langs: ['no'] },
+    )
+
+    expect(agents.length).toBeGreaterThan(0)
+    expect(agents.every((agent) => agent.includes('FactHunter'))).toBe(true)
+    expect(
+      agents.every((agent) =>
+        agent.includes('https://reidarkind.github.io/facthunter/'),
+      ),
+    ).toBe(true)
+    expect(
+      agents.every((agent) =>
+        agent.includes('https://github.com/reidarkind/facthunter'),
+      ),
+    ).toBe(true)
+  })
+
   it('throws when both language requests fail', async () => {
     const fetchFn = async (): Promise<Response> => {
       throw new Error('Wikipedia unavailable')

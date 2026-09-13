@@ -1,4 +1,5 @@
 import {
+  APP_NAME,
   DEFAULT_WIKI_LIMIT,
   FETCH_RADIUS_M,
   REFETCH_MOVE_M,
@@ -11,6 +12,16 @@ import { parseWikiSources, type WikiSources } from './prefs'
 import type { NearbyPlace } from '../types'
 
 const DEFAULT_WIKI_SOURCES = parseWikiSources(null)
+
+export const WIKI_API_USER_AGENT = `${APP_NAME}/0.0.0 (https://reidarkind.github.io/facthunter/; https://github.com/reidarkind/facthunter)`
+
+function wikiRequestInit(): RequestInit {
+  return {
+    headers: {
+      'Api-User-Agent': WIKI_API_USER_AGENT,
+    },
+  }
+}
 
 export function mergeWikiPlaces(...groups: NearbyPlace[][]): NearbyPlace[] {
   const kept: NearbyPlace[] = []
@@ -185,7 +196,10 @@ async function fetchLang(
   radiusM: number,
   limit: number,
 ): Promise<NearbyPlace[]> {
-  const response = await fetchFn(wikiUrl(lang, coord, radiusM, limit))
+  const response = await fetchFn(
+    wikiUrl(lang, coord, radiusM, limit),
+    wikiRequestInit(),
+  )
   if (!response.ok) {
     throw new Error(`Wikipedia ${lang} ${response.status}`)
   }

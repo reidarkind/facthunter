@@ -62,11 +62,14 @@ const no = {
   shareInstall: 'Installer appen:',
   settingsTitle: 'Innstillinger',
   language: 'Språk',
+  languageHelp:
+    'Velg språket til appen. Språket på faktaene du finner, styres av Wikipedia-kildene.',
   langNo: 'Norsk',
   langEn: 'English',
   langDe: 'Deutsch',
   langEs: 'Español',
   langPt: 'Português',
+  langFr: 'Français',
   wikiLimit: 'Wikipedia-treff',
   wikiLimitHelp:
     'Hvor mange steder som hentes rundt deg. Flere treff gir tettere kart og jakt, men tyngre lasting.',
@@ -189,11 +192,14 @@ const en: Copy = {
   shareInstall: 'Install the app:',
   settingsTitle: 'Settings',
   language: 'Language',
+  languageHelp:
+    'Choose the language of the app. The language of the facts you find is set under Wikipedia sources.',
   langNo: 'Norsk',
   langEn: 'English',
   langDe: 'Deutsch',
   langEs: 'Español',
   langPt: 'Português',
+  langFr: 'Français',
   wikiLimit: 'Wikipedia results',
   wikiLimitHelp:
     'How many places to fetch around you. More results make the map and hunt denser, but loading is heavier.',
@@ -314,11 +320,14 @@ const de: Copy = {
   shareInstall: 'App installieren:',
   settingsTitle: 'Einstellungen',
   language: 'Sprache',
+  languageHelp:
+    'Wähle die Sprache der App. Die Sprache der Fakten, die du findest, kommt von den Wikipedia-Quellen.',
   langNo: 'Norsk',
   langEn: 'English',
   langDe: 'Deutsch',
   langEs: 'Español',
   langPt: 'Português',
+  langFr: 'Français',
   wikiLimit: 'Wikipedia-Treffer',
   wikiLimitHelp:
     'Wie viele Orte um dich herum geladen werden. Mehr Treffer machen Karte und Jagd dichter, aber das Laden schwerer.',
@@ -439,11 +448,14 @@ const es: Copy = {
   shareInstall: 'Instala la app:',
   settingsTitle: 'Ajustes',
   language: 'Idioma',
+  languageHelp:
+    'Elige el idioma de la app. El idioma de los hechos que encuentras lo marcan las fuentes de Wikipedia.',
   langNo: 'Norsk',
   langEn: 'English',
   langDe: 'Deutsch',
   langEs: 'Español',
   langPt: 'Português',
+  langFr: 'Français',
   wikiLimit: 'Resultados de Wikipedia',
   wikiLimitHelp:
     'Cuántos lugares se cargan a tu alrededor. Más resultados densifican el mapa y la caza, pero la carga es más pesada.',
@@ -564,11 +576,14 @@ const pt: Copy = {
   shareInstall: 'Instala a aplicação:',
   settingsTitle: 'Definições',
   language: 'Idioma',
+  languageHelp:
+    'Escolhe o idioma da aplicação. O idioma dos factos que encontras é definido nas fontes da Wikipedia.',
   langNo: 'Norsk',
   langEn: 'English',
   langDe: 'Deutsch',
   langEs: 'Español',
   langPt: 'Português',
+  langFr: 'Français',
   wikiLimit: 'Resultados da Wikipedia',
   wikiLimitHelp:
     'Quantos lugares são obtidos à tua volta. Mais resultados tornam o mapa e a caça mais densos, mas o carregamento é mais pesado.',
@@ -627,12 +642,141 @@ const pt: Copy = {
     'A bússola no Android vem do sensor de orientação do telefone. Mantém o telefone longe de capas magnéticas se a agulha saltar.',
 }
 
+const fr: Copy = {
+  navMain: 'Menu principal',
+  tabRecon: 'Explorer',
+  tabHunt: 'Chasse',
+  tabCollection: 'Collection',
+  menu: 'Menu',
+  settings: 'Réglages',
+  about: 'À propos de l’app',
+  back: 'Retour',
+  huntGateBody:
+    'Maintenant tu pointes la caméra. Les pancartes sont dans le monde quand tu es assez près. Caméra, position et boussole s’allument avec le même tap.',
+  missingCamera: 'La caméra manque ou a été refusée',
+  missingLocation: 'La position manque ou a été refusée',
+  missingCompass:
+    'La boussole manque ou a été refusée. iPhone : Réglages → Safari (ou FactHunter) → Mouvement et orientation, puis Réessayer. Accepte le mouvement quand le téléphone le demande.',
+  missingHttps: 'Ouvre l’app en HTTPS, pas http://192.168…',
+  waitingCompass: 'En attente de la boussole — bouge un peu le téléphone.',
+  tryAgain: 'Réessayer',
+  startHunt: 'Lancer la chasse',
+  huntHintIphone:
+    'iPhone : Réglages → Safari (ou l’app) → Mouvement et orientation.',
+  gpsUncertain: 'GPS incertain',
+  wikiFetchFailed: 'Impossible de charger les lieux depuis Wikipédia',
+  noPlacesHere: 'Pas de lieux ici — marche un peu',
+  moveCloser: 'Approche-toi',
+  reconTitle: 'Explorer',
+  reconIntro:
+    'Il y a du savoir au loin. Explore 2 km autour de toi. Les points montrent que quelque chose est là — pas quoi. Marche vers eux, et passe à Chasse dans l’anneau en pointillés.',
+  startRecon: 'Lancer l’exploration',
+  reconLiveTitle: 'Explorer · 2 km',
+  reconWikiFailed: 'Impossible d’explorer Wikipédia',
+  reconEmpty: 'Aucune trace dans 2 km. Va ailleurs.',
+  reconHint:
+    'Du savoir au loin — passe à Chasse dans l’anneau en pointillés.',
+  reconOsm: 'Carte : OpenStreetMap',
+  installHint: 'Mieux depuis l’écran d’accueil',
+  collectionTitle: 'Collection',
+  points: '{score} points',
+  search: 'Rechercher',
+  searchPlaceholder: 'Rechercher dans le titre et l’extrait',
+  filter: 'Filtre',
+  filterAll: 'Tous',
+  filterUnread: 'Non lus',
+  filterRead: 'Lus',
+  export: 'Exporter',
+  import: 'Importer',
+  importFailed: 'Impossible de lire le fichier',
+  importedNew: '{count} nouveaux faits importés',
+  emptyJournal: 'Le journal est vide. Va chasser quelques faits.',
+  read: 'Lu',
+  unread: 'Non lu',
+  close: 'Fermer',
+  metersAway: 'À {m} m',
+  readMoreWiki: 'Lire plus sur Wikipédia',
+  share: 'Partager',
+  copy: 'Copier',
+  sms: 'SMS',
+  email: 'E-mail',
+  shareIntro: 'Regarde ce que j’ai trouvé avec FactHunter !',
+  shareInstall: 'Installer l’app :',
+  settingsTitle: 'Réglages',
+  language: 'Langue',
+  languageHelp:
+    'Choisis la langue de l’app. La langue des faits que tu trouves est réglée sous les sources Wikipédia.',
+  langNo: 'Norsk',
+  langEn: 'English',
+  langDe: 'Deutsch',
+  langEs: 'Español',
+  langPt: 'Português',
+  langFr: 'Français',
+  wikiLimit: 'Résultats Wikipédia',
+  wikiLimitHelp:
+    'Combien de lieux charger autour de toi. Plus de résultats densifient la carte et la chasse, mais le chargement est plus lourd.',
+  wikiSources: 'Sources Wikipédia',
+  wikiSourcesHelp:
+    'Une à trois éditions de Wikipédia, par ordre de priorité. Le même article (Wikidata) n’apparaît qu’une fois ; la première langue gagne.',
+  wikiSourcePrimary: 'Première',
+  wikiSourceSecondary: 'Deuxième',
+  wikiSourceTertiary: 'Troisième',
+  wikiSourceNone: 'Aucune',
+  collectionReset: 'Réinitialiser la collection',
+  collectionResetHelp:
+    'Efface les lieux Wikipédia débloqués sur ce téléphone. Les points suivent. Exporte d’abord si tu veux les garder.',
+  collectionResetAction: 'Vider la collection',
+  collectionResetConfirm:
+    'Supprimer tous les lieux débloqués ? C’est irréversible.',
+  collectionResetConfirmAction: 'Vider maintenant',
+  collectionResetDone: 'La collection est vide.',
+  cancel: 'Annuler',
+  whatThisIs: 'De quoi il s’agit',
+  whatThisIsBody:
+    'FactHunter est une couche mince qui rend Wikipédia plus amusant à découvrir dans le monde réel. D’abord tu explores la carte à la recherche de traces au loin. Quand tu es assez près, tu pointes la caméra au dos du téléphone : les lieux apparaissent comme des pancartes dans la rue ; tu les débloques et tu les ranges dans un journal de terrain. Le contenu vient de Wikipédia ; l’app ne le possède pas.',
+  privacy: 'Confidentialité',
+  privacyBody1:
+    'L’app ne stocke rien dans le nuage. Collection, statut de lecture et points restent seulement sur le téléphone. FactHunter ne synchronise pas entre appareils.',
+  privacyBody2:
+    'Changer de téléphone : exporte le fichier sur l’ancien, importe-le sur le nouveau. Dans Réglages tu peux vider la collection. Si tu perds le fichier, ou que tu effaces les données du site sans exporter, la collection disparaît. Les liens Wikipédia que tu partages vont vers Wikipédia. FactHunter ne les stocke pas dans le nuage.',
+  addToHome: 'Ajouter à l’écran d’accueil',
+  addToHomeBody:
+    'FactHunter est un site que tu installes comme app. Il n’est ni dans l’App Store ni dans Google Play. Tu dois l’ouvrir en HTTPS, sinon le téléphone refuse la caméra et la boussole.',
+  origin: 'Origine',
+  originBody: 'L’idée est de Reidar Kind. Développé avec l’aide de l’IA.',
+  otherApps: 'D’autres apps que j’ai faites',
+  buyCoffee: 'Offre-moi un café',
+  buyCoffeeBody:
+    'C’est un projet hobby. Un café m’aide à continuer à bricoler sur mon temps libre.',
+  ios1:
+    'Ouvre FactHunter dans Safari (pas Chrome, pas un lien dans une autre app).',
+  ios2: 'Tape Partager (le carré avec une flèche vers le haut) en bas de l’écran.',
+  ios3:
+    'Fais défiler la feuille Partager et tape Sur l’écran d’accueil. Si tu ne le vois pas : balaye la rangée du bas, ou tape Modifier les actions.',
+  ios4: 'Tape Ajouter. Ouvre FactHunter depuis la nouvelle icône.',
+  ios5:
+    'L’app s’ouvre sur Explorer. Quand tu es près : tape Lancer la chasse et autorise caméra et position.',
+  ios6:
+    'Boussole : Réglages → Safari → Mouvement et orientation. Si tu as ajouté l’app à l’écran d’accueil : Réglages → FactHunter → Mouvement et orientation.',
+  iosNote:
+    'La chasse marche moins bien depuis un onglet Safari normal que depuis l’icône de l’écran d’accueil. Pars de là si la boussole manque.',
+  android1: 'Ouvre FactHunter dans Chrome (ou Samsung Internet).',
+  android2:
+    'Tape le menu (trois points) en haut à droite, puis Installer l’app ou Ajouter à l’écran d’accueil. Certains téléphones montrent aussi une bannière d’installation en bas.',
+  android3: 'Ouvre FactHunter depuis l’écran d’accueil.',
+  android4:
+    'L’app s’ouvre sur Explorer. Quand tu es près : tape Lancer la chasse et autorise caméra et position quand le téléphone le demande.',
+  androidNote:
+    'La boussole sur Android vient du capteur d’orientation du téléphone. Éloigne le téléphone des coques magnétiques si l’aiguille saute.',
+}
+
 export const strings: Record<Locale, Copy> = {
   no,
   en,
   de,
   es,
   pt,
+  fr,
 }
 
 export type MessageKey = keyof typeof no

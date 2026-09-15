@@ -12,6 +12,7 @@ const LOCALE_LABEL: Record<Locale, MessageKey> = {
   de: 'langDe',
   es: 'langEs',
   pt: 'langPt',
+  fr: 'langFr',
 }
 
 const SLOT_LABELS = [
@@ -28,10 +29,6 @@ export function SettingsPage(props: {
   const { wikiLimit, setWikiLimit, wikiSources, setWikiSources } = usePrefs()
   const [confirmClear, setConfirmClear] = useState(false)
   const [cleared, setCleared] = useState(false)
-
-  function choose(next: Locale) {
-    setLocale(next)
-  }
 
   function clearCollection() {
     props.onClearCollection?.()
@@ -53,19 +50,24 @@ export function SettingsPage(props: {
       </header>
       <section>
         <h2>{t('language')}</h2>
-        <div className="filter-row" role="group" aria-label={t('language')}>
-          {LOCALES.map((code) => (
-            <button
-              key={code}
-              type="button"
-              className={locale === code ? 'active' : undefined}
-              aria-pressed={locale === code}
-              onClick={() => choose(code)}
-            >
-              {t(LOCALE_LABEL[code])}
-            </button>
-          ))}
-        </div>
+        <p>{t('languageHelp')}</p>
+        <label className="settings-field">
+          {t('language')}
+          <select
+            aria-label={t('language')}
+            value={locale}
+            onChange={(event) => {
+              const next = LOCALES.find((code) => code === event.target.value)
+              if (next) setLocale(next)
+            }}
+          >
+            {LOCALES.map((code) => (
+              <option key={code} value={code}>
+                {t(LOCALE_LABEL[code])}
+              </option>
+            ))}
+          </select>
+        </label>
       </section>
       <section>
         <h2>{t('wikiSources')}</h2>

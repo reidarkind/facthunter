@@ -187,7 +187,7 @@ Rekognoser er hjemskjermen: jegermerke, FactHunter, «kunnskap i det fjerne», d
 
 Hvis Rekognoser åpnes i en vanlig nettleserfane på telefon (ikke `display-mode: standalone` og ikke iOS `navigator.standalone`), vis et lite lukkbart hint til `/install` («Bedre fra hjem-skjermen»). Ikke vis det på desktop (`hover: hover` + `pointer: fine`). Avvisning huskes i `localStorage`.
 
-Norsk UI som standard. Første besøk uten lagret `facthunter-lang`: telefonens språk hvis det er `no`/`nb`/`nn`, `en`, `de`, `es` eller `pt`; ellers norsk. Språk i Innstillinger: norsk, engelsk, tysk, spansk og portugisisk (europeisk). Appnavn: **FactHunter**.
+Norsk UI som standard. Første besøk uten lagret `facthunter-lang`: telefonens språk hvis det er `no`/`nb`/`nn`, `en`, `de`, `es`, `pt` eller `fr`; ellers norsk. I Innstillinger: nedtrekk for app-språk (norsk, engelsk, tysk, spansk, portugisisk, fransk) med kort forklaring at Wikipedia-kilder styrer språket på faktaene. Appnavn: **FactHunter**.
 
 ### 7.1 Installasjonssiden
 

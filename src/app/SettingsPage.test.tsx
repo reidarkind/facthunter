@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, it, vi } from 'vitest'
 import { LocaleProvider } from '../i18n/LocaleProvider'
@@ -13,11 +13,18 @@ it('lists UI languages with native names', () => {
       </PrefsProvider>
     </LocaleProvider>,
   )
-  expect(screen.getByRole('button', { name: 'Norsk' })).toBeInTheDocument()
-  expect(screen.getByRole('button', { name: 'English' })).toBeInTheDocument()
-  expect(screen.getByRole('button', { name: 'Deutsch' })).toBeInTheDocument()
-  expect(screen.getByRole('button', { name: 'Español' })).toBeInTheDocument()
-  expect(screen.getByRole('button', { name: 'Português' })).toBeInTheDocument()
+  const language = screen.getByLabelText('Språk')
+  expect(language.tagName).toBe('SELECT')
+  expect(language).toHaveValue('no')
+  const options = within(language)
+  expect(options.getByRole('option', { name: 'Norsk' })).toBeInTheDocument()
+  expect(options.getByRole('option', { name: 'English' })).toBeInTheDocument()
+  expect(options.getByRole('option', { name: 'Deutsch' })).toBeInTheDocument()
+  expect(options.getByRole('option', { name: 'Español' })).toBeInTheDocument()
+  expect(options.getByRole('option', { name: 'Português' })).toBeInTheDocument()
+  expect(options.getByRole('option', { name: 'Français' })).toBeInTheDocument()
+  expect(screen.getByText(/språket til appen/i)).toBeInTheDocument()
+  expect(screen.getByText(/faktaene du finner/)).toBeInTheDocument()
 })
 
 it('switches the settings heading for each UI language', async () => {
@@ -30,15 +37,17 @@ it('switches the settings heading for each UI language', async () => {
     </LocaleProvider>,
   )
   expect(screen.getByRole('heading', { name: 'Innstillinger' })).toBeInTheDocument()
-  await user.click(screen.getByRole('button', { name: 'English' }))
+  await user.selectOptions(screen.getByLabelText('Språk'), 'en')
   expect(screen.getByRole('heading', { name: 'Settings' })).toBeInTheDocument()
-  await user.click(screen.getByRole('button', { name: 'Deutsch' }))
+  await user.selectOptions(screen.getByLabelText('Language'), 'de')
   expect(screen.getByRole('heading', { name: 'Einstellungen' })).toBeInTheDocument()
-  await user.click(screen.getByRole('button', { name: 'Español' }))
+  await user.selectOptions(screen.getByLabelText('Sprache'), 'es')
   expect(screen.getByRole('heading', { name: 'Ajustes' })).toBeInTheDocument()
-  await user.click(screen.getByRole('button', { name: 'Português' }))
+  await user.selectOptions(screen.getByLabelText('Idioma'), 'pt')
   expect(screen.getByRole('heading', { name: 'Definições' })).toBeInTheDocument()
-  await user.click(screen.getByRole('button', { name: 'Norsk' }))
+  await user.selectOptions(screen.getByLabelText('Idioma'), 'fr')
+  expect(screen.getByRole('heading', { name: 'Réglages' })).toBeInTheDocument()
+  await user.selectOptions(screen.getByLabelText('Langue'), 'no')
   expect(screen.getByRole('heading', { name: 'Innstillinger' })).toBeInTheDocument()
 })
 

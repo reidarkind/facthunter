@@ -9,6 +9,7 @@ it('keeps language names in their own language in every UI locale', () => {
     expect(strings[locale].langDe).toBe('Deutsch')
     expect(strings[locale].langEs).toBe('Español')
     expect(strings[locale].langPt).toBe('Português')
+    expect(strings[locale].langFr).toBe('Français')
   }
 })
 

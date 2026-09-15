@@ -1,9 +1,11 @@
 import { useState } from 'react'
+import { CollectionBackup } from '../collection/CollectionBackup'
 import type { MessageKey } from '../i18n/strings'
 import { useT } from '../i18n/useT'
 import { WIKI_LIMITS, WIKI_SOURCE_LANGS } from '../lib/constants'
 import { LOCALES, type Locale } from '../lib/locale'
 import { parseWikiLang, withWikiSlot } from '../lib/prefs'
+import type { SavedFact } from '../types'
 import { usePrefs } from './usePrefs'
 
 const LOCALE_LABEL: Record<Locale, MessageKey> = {
@@ -24,6 +26,8 @@ const SLOT_LABELS = [
 export function SettingsPage(props: {
   onBack?: () => void
   onClearCollection?: () => void
+  facts?: SavedFact[]
+  onFactsChange?: (facts: SavedFact[]) => void
 }) {
   const { t, locale, setLocale } = useT()
   const { wikiLimit, setWikiLimit, wikiSources, setWikiSources } = usePrefs()
@@ -118,38 +122,47 @@ export function SettingsPage(props: {
           ))}
         </div>
       </section>
-      {props.onClearCollection ? (
+      {props.onClearCollection || props.onFactsChange ? (
         <section>
           <h2>{t('collectionReset')}</h2>
           <p>{t('collectionResetHelp')}</p>
-          {confirmClear ? (
-            <>
-              <p className="banner warn">{t('collectionResetConfirm')}</p>
-              <div className="filter-row">
-                <button type="button" onClick={() => setConfirmClear(false)}>
-                  {t('cancel')}
-                </button>
-                <button
-                  type="button"
-                  className="danger"
-                  onClick={clearCollection}
-                >
-                  {t('collectionResetConfirmAction')}
-                </button>
-              </div>
-            </>
-          ) : (
-            <button
-              type="button"
-              className="danger"
-              onClick={() => {
-                setCleared(false)
-                setConfirmClear(true)
-              }}
-            >
-              {t('collectionResetAction')}
-            </button>
-          )}
+          {props.onFactsChange ? (
+            <CollectionBackup
+              facts={props.facts ?? []}
+              onChange={props.onFactsChange}
+              langPriority={wikiSources.langs}
+            />
+          ) : null}
+          {props.onClearCollection ? (
+            confirmClear ? (
+              <>
+                <p className="banner warn">{t('collectionResetConfirm')}</p>
+                <div className="filter-row">
+                  <button type="button" onClick={() => setConfirmClear(false)}>
+                    {t('cancel')}
+                  </button>
+                  <button
+                    type="button"
+                    className="danger"
+                    onClick={clearCollection}
+                  >
+                    {t('collectionResetConfirmAction')}
+                  </button>
+                </div>
+              </>
+            ) : (
+              <button
+                type="button"
+                className="danger"
+                onClick={() => {
+                  setCleared(false)
+                  setConfirmClear(true)
+                }}
+              >
+                {t('collectionResetAction')}
+              </button>
+            )
+          ) : null}
           {cleared ? <p className="notice">{t('collectionResetDone')}</p> : null}
         </section>
       ) : null}

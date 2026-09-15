@@ -48,6 +48,11 @@ const no = {
   import: 'Importer',
   importFailed: 'Kunne ikke lese filen',
   importedNew: 'Importerte {count} nye fakta',
+  importChooseHelp:
+    'Flett inn i samlingen på telefonen, eller erstatt den. Samme Wikipedia-artikkel på ulike språk blir én; språket følger Wikipedia-kildene. Erstatt sletter det som bare finnes her.',
+  importMerge: 'Flett inn',
+  importReplace: 'Erstatt',
+  importedReplaced: 'Samlingen er erstattet.',
   emptyJournal: 'Journalen er tom. Gå ut og jakt noen fakta.',
   read: 'Lest',
   unread: 'Ulest',
@@ -80,9 +85,9 @@ const no = {
   wikiSourceSecondary: 'Andre',
   wikiSourceTertiary: 'Tredje',
   wikiSourceNone: 'Ingen',
-  collectionReset: 'Nullstill samling',
+  collectionReset: 'Wikipedia-samling',
   collectionResetHelp:
-    'Tømmer opplåste Wikipedia-steder på denne telefonen. Poeng følger med. Eksporter først hvis du vil ta vare på dem.',
+    'Samlingen med opplåste Wikipedia-steder ligger bare på denne telefonen. Poeng følger med. Eksporter først hvis du vil ta vare på dem.',
   collectionResetAction: 'Tøm samling',
   collectionResetConfirm:
     'Slette alle opplåste steder? Dette kan ikke angres.',
@@ -178,6 +183,11 @@ const en: Copy = {
   import: 'Import',
   importFailed: 'Could not read the file',
   importedNew: 'Imported {count} new facts',
+  importChooseHelp:
+    'Merge into the collection on this phone, or replace it. The same Wikipedia article in different languages becomes one; language follows Wikipedia sources. Replace deletes places that only exist here.',
+  importMerge: 'Merge',
+  importReplace: 'Replace',
+  importedReplaced: 'The collection was replaced.',
   emptyJournal: 'The journal is empty. Go hunt some facts.',
   read: 'Read',
   unread: 'Unread',
@@ -210,9 +220,9 @@ const en: Copy = {
   wikiSourceSecondary: 'Second',
   wikiSourceTertiary: 'Third',
   wikiSourceNone: 'None',
-  collectionReset: 'Reset collection',
+  collectionReset: 'Wikipedia collection',
   collectionResetHelp:
-    'Removes unlocked Wikipedia places on this phone. Score follows. Export first if you want to keep them.',
+    'The collection of unlocked Wikipedia places lives only on this phone. Score follows. Export first if you want to keep them.',
   collectionResetAction: 'Clear collection',
   collectionResetConfirm:
     'Delete every unlocked place? This cannot be undone.',
@@ -306,6 +316,11 @@ const de: Copy = {
   import: 'Importieren',
   importFailed: 'Die Datei konnte nicht gelesen werden',
   importedNew: '{count} neue Fakten importiert',
+  importChooseHelp:
+    'Mit der Sammlung auf diesem Telefon zusammenführen oder sie ersetzen. Derselbe Wikipedia-Artikel in verschiedenen Sprachen wird einer; die Sprache folgt den Wikipedia-Quellen. Ersetzen löscht Orte, die nur hier existieren.',
+  importMerge: 'Zusammenführen',
+  importReplace: 'Ersetzen',
+  importedReplaced: 'Die Sammlung wurde ersetzt.',
   emptyJournal: 'Das Journal ist leer. Geh raus und jage ein paar Fakten.',
   read: 'Gelesen',
   unread: 'Ungelesen',
@@ -338,9 +353,9 @@ const de: Copy = {
   wikiSourceSecondary: 'Zweite',
   wikiSourceTertiary: 'Dritte',
   wikiSourceNone: 'Keine',
-  collectionReset: 'Sammlung zurücksetzen',
+  collectionReset: 'Wikipedia-Sammlung',
   collectionResetHelp:
-    'Löscht freigeschaltete Wikipedia-Orte auf diesem Telefon. Punkte folgen mit. Exportiere zuerst, wenn du sie behalten willst.',
+    'Die Sammlung freigeschalteter Wikipedia-Orte liegt nur auf diesem Telefon. Punkte folgen mit. Exportiere zuerst, wenn du sie behalten willst.',
   collectionResetAction: 'Sammlung leeren',
   collectionResetConfirm:
     'Alle freigeschalteten Orte löschen? Das lässt sich nicht rückgängig machen.',
@@ -434,6 +449,11 @@ const es: Copy = {
   import: 'Importar',
   importFailed: 'No se pudo leer el archivo',
   importedNew: 'Se importaron {count} hechos nuevos',
+  importChooseHelp:
+    'Combínalo con la colección de este teléfono, o sustitúyela. El mismo artículo de Wikipedia en distintos idiomas cuenta una vez; el idioma sigue las fuentes de Wikipedia. Sustituir borra los lugares que solo existen aquí.',
+  importMerge: 'Combinar',
+  importReplace: 'Sustituir',
+  importedReplaced: 'La colección fue sustituida.',
   emptyJournal: 'El diario está vacío. Sal a cazar algunos hechos.',
   read: 'Leído',
   unread: 'No leído',
@@ -466,9 +486,9 @@ const es: Copy = {
   wikiSourceSecondary: 'Segunda',
   wikiSourceTertiary: 'Tercera',
   wikiSourceNone: 'Ninguna',
-  collectionReset: 'Restablecer colección',
+  collectionReset: 'Colección de Wikipedia',
   collectionResetHelp:
-    'Borra los lugares de Wikipedia desbloqueados en este teléfono. Los puntos van con ellos. Exporta primero si quieres conservarlos.',
+    'La colección de lugares de Wikipedia desbloqueados vive solo en este teléfono. Los puntos van con ellos. Exporta primero si quieres conservarlos.',
   collectionResetAction: 'Vaciar colección',
   collectionResetConfirm:
     '¿Borrar todos los lugares desbloqueados? No se puede deshacer.',
@@ -562,6 +582,11 @@ const pt: Copy = {
   import: 'Importar',
   importFailed: 'Não foi possível ler o ficheiro',
   importedNew: 'Importámos {count} factos novos',
+  importChooseHelp:
+    'Junta-o à coleção neste telefone, ou substitui-a. O mesmo artigo da Wikipedia em línguas diferentes conta uma vez; o idioma segue as fontes Wikipedia. Substituir apaga os lugares que só existem aqui.',
+  importMerge: 'Juntar',
+  importReplace: 'Substituir',
+  importedReplaced: 'A coleção foi substituída.',
   emptyJournal: 'O diário está vazio. Sai e caça alguns factos.',
   read: 'Lido',
   unread: 'Não lido',
@@ -594,9 +619,9 @@ const pt: Copy = {
   wikiSourceSecondary: 'Segunda',
   wikiSourceTertiary: 'Terceira',
   wikiSourceNone: 'Nenhuma',
-  collectionReset: 'Repor coleção',
+  collectionReset: 'Coleção da Wikipedia',
   collectionResetHelp:
-    'Apaga os lugares da Wikipedia desbloqueados neste telefone. Os pontos vão com eles. Exporta primeiro se quiseres guardá-los.',
+    'A coleção de lugares da Wikipedia desbloqueados fica só neste telefone. Os pontos vão com eles. Exporta primeiro se quiseres guardá-los.',
   collectionResetAction: 'Esvaziar coleção',
   collectionResetConfirm:
     'Apagar todos os lugares desbloqueados? Não dá para anular.',
@@ -690,6 +715,11 @@ const fr: Copy = {
   import: 'Importer',
   importFailed: 'Impossible de lire le fichier',
   importedNew: '{count} nouveaux faits importés',
+  importChooseHelp:
+    'Fusionne avec la collection sur ce téléphone, ou remplace-la. Le même article Wikipédia en plusieurs langues ne compte qu’une fois ; la langue suit les sources Wikipédia. Remplacer efface les lieux qui n’existent qu’ici.',
+  importMerge: 'Fusionner',
+  importReplace: 'Remplacer',
+  importedReplaced: 'La collection a été remplacée.',
   emptyJournal: 'Le journal est vide. Va chasser quelques faits.',
   read: 'Lu',
   unread: 'Non lu',
@@ -722,9 +752,9 @@ const fr: Copy = {
   wikiSourceSecondary: 'Deuxième',
   wikiSourceTertiary: 'Troisième',
   wikiSourceNone: 'Aucune',
-  collectionReset: 'Réinitialiser la collection',
+  collectionReset: 'Collection Wikipédia',
   collectionResetHelp:
-    'Efface les lieux Wikipédia débloqués sur ce téléphone. Les points suivent. Exporte d’abord si tu veux les garder.',
+    'La collection de lieux Wikipédia débloqués reste seulement sur ce téléphone. Les points suivent. Exporte d’abord si tu veux les garder.',
   collectionResetAction: 'Vider la collection',
   collectionResetConfirm:
     'Supprimer tous les lieux débloqués ? C’est irréversible.',

@@ -1,5 +1,6 @@
 import { APP_NAME } from './constants'
 import type { SavedFact } from '../types'
+import { isSameArticle } from './article'
 
 export type ExportPayload = {
   app: 'FactHunter'
@@ -20,6 +21,13 @@ export function buildExportPayload(
   }
 }
 
+function isLangTitles(value: unknown): value is Record<string, string> {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+    return false
+  }
+  return Object.values(value).every((title) => typeof title === 'string')
+}
+
 function isValidFact(item: unknown): item is SavedFact {
   if (typeof item !== 'object' || item === null) return false
   const o = item as Record<string, unknown>
@@ -38,6 +46,12 @@ function isValidFact(item: unknown): item is SavedFact {
     return false
   }
   if (o.readAt !== undefined && typeof o.readAt !== 'string') return false
+  if (o.wikidataId !== undefined) {
+    if (typeof o.wikidataId !== 'string' || !/^Q\d+$/i.test(o.wikidataId)) {
+      return false
+    }
+  }
+  if (o.langTitles !== undefined && !isLangTitles(o.langTitles)) return false
   return true
 }
 
@@ -61,63 +75,87 @@ function isEmpty(value: string | undefined): boolean {
   return value === undefined || value === ''
 }
 
-function mergeOne(local: SavedFact, incoming: SavedFact): SavedFact {
+function mergeLangTitles(
+  preferred?: Record<string, string>,
+  other?: Record<string, string>,
+): Record<string, string> | undefined {
+  if (!preferred && !other) return undefined
+  return { ...other, ...preferred }
+}
+
+function langRank(lang: string, priority: readonly string[]): number {
+  const index = priority.indexOf(lang)
+  return index === -1 ? Number.POSITIVE_INFINITY : index
+}
+
+function mergeOne(preferred: SavedFact, other: SavedFact): SavedFact {
   const unlockedAt =
-    local.unlockedAt <= incoming.unlockedAt
-      ? local.unlockedAt
-      : incoming.unlockedAt
+    preferred.unlockedAt <= other.unlockedAt
+      ? preferred.unlockedAt
+      : other.unlockedAt
 
   let readAt: string | undefined
-  if (local.readAt && incoming.readAt) {
-    readAt = local.readAt <= incoming.readAt ? local.readAt : incoming.readAt
+  if (preferred.readAt && other.readAt) {
+    readAt =
+      preferred.readAt <= other.readAt ? preferred.readAt : other.readAt
   } else {
-    readAt = local.readAt ?? incoming.readAt
+    readAt = preferred.readAt ?? other.readAt
   }
 
+  const wikidataId = preferred.wikidataId ?? other.wikidataId
+  const langTitles = mergeLangTitles(preferred.langTitles, other.langTitles)
+
   return {
-    ...local,
+    ...preferred,
     title:
-      isEmpty(local.title) && !isEmpty(incoming.title)
-        ? incoming.title
-        : local.title,
+      isEmpty(preferred.title) && !isEmpty(other.title)
+        ? other.title
+        : preferred.title,
     extract:
-      isEmpty(local.extract) && !isEmpty(incoming.extract)
-        ? incoming.extract
-        : local.extract,
+      isEmpty(preferred.extract) && !isEmpty(other.extract)
+        ? other.extract
+        : preferred.extract,
     thumbnailUrl:
-      isEmpty(local.thumbnailUrl) && !isEmpty(incoming.thumbnailUrl)
-        ? incoming.thumbnailUrl
-        : local.thumbnailUrl,
+      isEmpty(preferred.thumbnailUrl) && !isEmpty(other.thumbnailUrl)
+        ? other.thumbnailUrl
+        : preferred.thumbnailUrl,
+    pageUrl:
+      isEmpty(preferred.pageUrl) && !isEmpty(other.pageUrl)
+        ? other.pageUrl
+        : preferred.pageUrl,
     unlockedAt,
     readAt,
+    ...(wikidataId ? { wikidataId } : {}),
+    ...(langTitles ? { langTitles } : {}),
   }
+}
+
+function preferredArticle(
+  local: SavedFact,
+  incoming: SavedFact,
+  langPriority: readonly string[],
+): SavedFact {
+  const incomingWins =
+    langRank(incoming.lang, langPriority) < langRank(local.lang, langPriority)
+  return incomingWins ? mergeOne(incoming, local) : mergeOne(local, incoming)
 }
 
 export function mergeFacts(
   local: SavedFact[],
   incoming: SavedFact[],
+  langPriority: readonly string[] = [],
 ): { facts: SavedFact[]; newCount: number } {
-  const byId = new Map(local.map((f) => [f.id, f]))
-  const localIds = new Set(local.map((f) => f.id))
-  const newIds: string[] = []
+  const facts = [...local]
   let newCount = 0
 
   for (const inc of incoming) {
-    const existing = byId.get(inc.id)
-    if (existing) {
-      byId.set(inc.id, mergeOne(existing, inc))
-    } else {
-      byId.set(inc.id, inc)
-      if (!localIds.has(inc.id)) {
-        newIds.push(inc.id)
-        newCount++
-      }
+    const index = facts.findIndex((existing) => isSameArticle(existing, inc))
+    if (index === -1) {
+      facts.push(inc)
+      newCount++
+      continue
     }
-  }
-
-  const facts = local.map((f) => byId.get(f.id)!)
-  for (const id of newIds) {
-    facts.push(byId.get(id)!)
+    facts[index] = preferredArticle(facts[index], inc, langPriority)
   }
 
   return { facts, newCount }

@@ -2,8 +2,25 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, it, vi } from 'vitest'
 import { LocaleProvider } from '../i18n/LocaleProvider'
+import { buildExportPayload } from '../lib/backup'
+import type { SavedFact } from '../types'
 import { PrefsProvider } from './PrefsProvider'
 import { SettingsPage } from './SettingsPage'
+
+function fact(over: Partial<SavedFact> = {}): SavedFact {
+  return {
+    id: 'wikipedia:no:1',
+    title: 'Stiftsgården',
+    extract: 'En bygning i Trondheim',
+    pageUrl: 'https://no.wikipedia.org/wiki/Stiftsg%C3%A5rden',
+    lang: 'no',
+    lat: 63.43,
+    lon: 10.39,
+    unlockedAt: '2026-01-01T00:00:00.000Z',
+    source: 'wikipedia',
+    ...over,
+  }
+}
 
 it('lists UI languages with native names', () => {
   render(
@@ -51,13 +68,160 @@ it('switches the settings heading for each UI language', async () => {
   expect(screen.getByRole('heading', { name: 'Innstillinger' })).toBeInTheDocument()
 })
 
+it('offers export and import next to collection reset', async () => {
+  const user = userEvent.setup()
+  const onFactsChange = vi.fn()
+  render(
+    <LocaleProvider>
+      <PrefsProvider>
+        <SettingsPage
+          onClearCollection={() => {}}
+          facts={[]}
+          onFactsChange={onFactsChange}
+        />
+      </PrefsProvider>
+    </LocaleProvider>,
+  )
+  expect(screen.getByRole('heading', { name: 'Wikipedia-samling' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Eksporter' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Importer' })).toBeInTheDocument()
+  expect(screen.getByText(/Eksporter først/)).toBeInTheDocument()
+
+  const file = new File(
+    [JSON.stringify(buildExportPayload([fact()], '2026-09-11T12:00:00.000Z'))],
+    'samling.json',
+    { type: 'application/json' },
+  )
+  const input = document.querySelector('input[type="file"]')
+  expect(input).toBeInstanceOf(HTMLInputElement)
+  await user.upload(input as HTMLInputElement, file)
+  expect(onFactsChange).toHaveBeenCalledTimes(1)
+  expect(onFactsChange.mock.calls[0]?.[0]).toEqual([fact()])
+  expect(screen.getByText('Importerte 1 nye fakta')).toBeInTheDocument()
+})
+
+it('asks to merge or replace when importing into a non-empty collection', async () => {
+  const user = userEvent.setup()
+  const onFactsChange = vi.fn()
+  const local = fact({ id: 'wikipedia:no:local', title: 'Lokal' })
+  const incoming = fact({ id: 'wikipedia:no:2', title: 'Nidelva' })
+  render(
+    <LocaleProvider>
+      <PrefsProvider>
+        <SettingsPage
+          onClearCollection={() => {}}
+          facts={[local]}
+          onFactsChange={onFactsChange}
+        />
+      </PrefsProvider>
+    </LocaleProvider>,
+  )
+  const file = new File(
+    [JSON.stringify(buildExportPayload([incoming], '2026-09-11T12:00:00.000Z'))],
+    'samling.json',
+    { type: 'application/json' },
+  )
+  await user.upload(document.querySelector('input[type="file"]') as HTMLInputElement, file)
+  expect(onFactsChange).not.toHaveBeenCalled()
+  expect(screen.getByRole('button', { name: 'Flett inn' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Erstatt' })).toBeInTheDocument()
+  await user.click(screen.getByRole('button', { name: 'Flett inn' }))
+  expect(onFactsChange).toHaveBeenCalledTimes(1)
+  expect(onFactsChange.mock.calls[0]?.[0].map((item: SavedFact) => item.id)).toEqual([
+    'wikipedia:no:local',
+    'wikipedia:no:2',
+  ])
+})
+
+it('replaces the collection when the user chooses replace on import', async () => {
+  const user = userEvent.setup()
+  const onFactsChange = vi.fn()
+  const local = fact({ id: 'wikipedia:no:local', title: 'Lokal' })
+  const incoming = fact({ id: 'wikipedia:no:2', title: 'Nidelva' })
+  render(
+    <LocaleProvider>
+      <PrefsProvider>
+        <SettingsPage
+          onClearCollection={() => {}}
+          facts={[local]}
+          onFactsChange={onFactsChange}
+        />
+      </PrefsProvider>
+    </LocaleProvider>,
+  )
+  const file = new File(
+    [JSON.stringify(buildExportPayload([incoming], '2026-09-11T12:00:00.000Z'))],
+    'samling.json',
+    { type: 'application/json' },
+  )
+  await user.upload(document.querySelector('input[type="file"]') as HTMLInputElement, file)
+  await user.click(screen.getByRole('button', { name: 'Erstatt' }))
+  expect(onFactsChange.mock.calls[0]?.[0]).toEqual([incoming])
+  expect(screen.getByText('Samlingen er erstattet.')).toBeInTheDocument()
+})
+
+it('cancels a pending import without changing facts', async () => {
+  const user = userEvent.setup()
+  const onFactsChange = vi.fn()
+  render(
+    <LocaleProvider>
+      <PrefsProvider>
+        <SettingsPage
+          onClearCollection={() => {}}
+          facts={[fact()]}
+          onFactsChange={onFactsChange}
+        />
+      </PrefsProvider>
+    </LocaleProvider>,
+  )
+  const file = new File(
+    [JSON.stringify(buildExportPayload([fact({ id: 'wikipedia:no:2' })], '2026-09-11T12:00:00.000Z'))],
+    'samling.json',
+    { type: 'application/json' },
+  )
+  await user.upload(document.querySelector('input[type="file"]') as HTMLInputElement, file)
+  await user.click(screen.getByRole('button', { name: 'Avbryt' }))
+  expect(onFactsChange).not.toHaveBeenCalled()
+  expect(screen.queryByRole('button', { name: 'Flett inn' })).not.toBeInTheDocument()
+})
+
+it('names the Wikipedia collection in each UI language', async () => {
+  const user = userEvent.setup()
+  render(
+    <LocaleProvider>
+      <PrefsProvider>
+        <SettingsPage
+          onClearCollection={() => {}}
+          facts={[]}
+          onFactsChange={() => {}}
+        />
+      </PrefsProvider>
+    </LocaleProvider>,
+  )
+  expect(screen.getByRole('heading', { name: 'Wikipedia-samling' })).toBeInTheDocument()
+  await user.selectOptions(screen.getByLabelText('Språk'), 'en')
+  expect(screen.getByRole('heading', { name: 'Wikipedia collection' })).toBeInTheDocument()
+  await user.selectOptions(screen.getByLabelText('Language'), 'de')
+  expect(screen.getByRole('heading', { name: 'Wikipedia-Sammlung' })).toBeInTheDocument()
+  await user.selectOptions(screen.getByLabelText('Sprache'), 'es')
+  expect(screen.getByRole('heading', { name: 'Colección de Wikipedia' })).toBeInTheDocument()
+  await user.selectOptions(screen.getByLabelText('Idioma'), 'pt')
+  expect(screen.getByRole('heading', { name: 'Coleção da Wikipedia' })).toBeInTheDocument()
+  await user.selectOptions(screen.getByLabelText('Idioma'), 'fr')
+  expect(screen.getByRole('heading', { name: 'Collection Wikipédia' })).toBeInTheDocument()
+})
+
 it('clears the collection only after confirm', async () => {
   const user = userEvent.setup()
   const onClearCollection = vi.fn()
   render(
     <LocaleProvider>
       <PrefsProvider>
-        <SettingsPage onClearCollection={onClearCollection} />
+        <SettingsPage
+          onClearCollection={onClearCollection}
+          facts={[]}
+          onFactsChange={() => {}}
+        />
       </PrefsProvider>
     </LocaleProvider>,
   )

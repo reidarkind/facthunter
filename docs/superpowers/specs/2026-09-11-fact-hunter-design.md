@@ -122,6 +122,8 @@ Skiltet skal stå **i verden**, ikke som HUD-klistremerke.
 | `unlockedAt` | ISO-tid |
 | `readAt` | ISO-tid eller tom |
 | `source` | `wikipedia` |
+| `wikidataId` | Valgfri Wikidata-Q, lagres ved opplåsing |
+| `langTitles` | Valgfrie langlink-titler, lagres ved opplåsing |
 
 Slettes ikke av appen av seg selv. Brukeren kan tømme samlingen i Innstillinger (bekreftelse; eksporter først). IndexedDB i denne nettleseren på denne telefonen. Ingen konto, ingen sky-kopi.
 
@@ -136,7 +138,7 @@ Ny telefon, annen nettleser, slettet nettsteddata eller avinstallering tømmer s
 
 ### 6.3 Samling-UI
 
-Egen fane. Søk i tittel og utdrag. Filter: alle / ulest / lest. Åpner samme leseark. Knappene Eksporter og Importer ligger her. **Tøm samling** ligger i Innstillinger (bekreftelse), ikke i denne fanen.
+Egen fane. Søk i tittel og utdrag. Filter: alle / ulest / lest. Åpner samme leseark. **Eksporter**, **Importer** og **Tøm samling** ligger i Innstillinger (bekreftelse på tømming), ikke i denne fanen.
 
 ### 6.4 Deling
 
@@ -155,7 +157,7 @@ Installer appen: {installUrl}
 
 ### 6.5 Eksport og import
 
-På samling-fanen: **Eksporter** og **Importer**. Ingen server.
+I Innstillinger: **Eksporter** og **Importer**, under overskriften for Wikipedia-samlingen (samme ord som fanen, per UI-språk). Ingen server.
 
 **Eksport.** JSON-fil, f.eks. `facthunter-samling-YYYY-MM-DD.json`. Innhold:
 
@@ -170,14 +172,11 @@ På samling-fanen: **Eksporter** og **Importer**. Ingen server.
 
 Nedlasting via `Blob` + deling av filen der Web Share med fil støttes.
 
-**Import.** Filvelger, parse JSON. Avvis filer som ikke har `app: "FactHunter"`, `version: 1` og en `facts`-liste. Feilmelding, ingen delvis skriving.
+**Import.** Filvelger, parse JSON. Avvis filer som ikke har `app: "FactHunter"`, `version: 1` og en `facts`-liste. Feilmelding, ingen delvis skriving. Hvis samlingen på telefonen er tom, skrives filen inn med en gang. Hvis den ikke er tom: **Flett inn** eller **Erstatt**. Erstatt bruker bare filen (etter intern dedup). Avbryt lar samlingen være uendret.
 
-**Fletting.** Aldri slett lokale fakta som mangler i filen.
+**Fletting.** Aldri slett lokale fakta som mangler i filen. Samme artikkel på tvers av språk (Wikidata-Q, ellers langlink-tittel, ellers samme `id`) blir **ett** faktum. Språkversjonen følger Wikipedia-kildene i Innstillinger (tidligere i lista vinner); hvis ingen av språkene er i kildene, behold den lokale. Tidligste `unlockedAt`; `readAt` hvis minst én er lest (tidligste). Behold eksisterende tekst/bilde hvis den vinnende versjonen mangler dem. Ny artikkel: sett inn.
 
-- Ny `id`: sett inn.
-- Samme `id`: behold tidligste `unlockedAt`; sett `readAt` hvis minst én av dem er lest (behold tidligste `readAt`); behold eksisterende tekst/bilde hvis importen mangler dem.
-
-Poeng følger automatisk av flettet samling. Bekreftelse etterpå: «Importerte N nye fakta» (N = antall nye id-er).
+Poeng følger automatisk. Etter fletting: «Importerte N nye fakta» (N = artikler som ikke fantes lokalt). Etter erstatt: «Samlingen er erstattet.»
 
 ## 7. Skjermer
 
@@ -187,7 +186,7 @@ Rekognoser er hjemskjermen: jegermerke, FactHunter, «kunnskap i det fjerne», d
 
 Hvis Rekognoser åpnes i en vanlig nettleserfane på telefon (ikke `display-mode: standalone` og ikke iOS `navigator.standalone`), vis et lite lukkbart hint til `/install` («Bedre fra hjem-skjermen»). Ikke vis det på desktop (`hover: hover` + `pointer: fine`). Avvisning huskes i `localStorage`.
 
-Norsk UI som standard. Første besøk uten lagret `facthunter-lang`: telefonens språk hvis det er `no`/`nb`/`nn`, `en`, `de`, `es`, `pt` eller `fr`; ellers norsk. I Innstillinger: nedtrekk for app-språk (norsk, engelsk, tysk, spansk, portugisisk, fransk) med kort forklaring at Wikipedia-kilder styrer språket på faktaene. Appnavn: **FactHunter**.
+Norsk UI som standard. Første besøk uten lagret `facthunter-lang`: telefonens språk hvis det er `no`/`nb`/`nn`, `en`, `de`, `es`, `pt` eller `fr`; ellers norsk. I Innstillinger: nedtrekk for app-språk (norsk, engelsk, tysk, spansk, portugisisk, fransk) med kort forklaring at Wikipedia-kilder styrer språket på faktaene. Seksjonen for Wikipedia-samlingen bruker samme ord som fanen (samling / collection / Sammlung / colección / coleção / collection) og har Eksporter, Importer og Tøm samling. Appnavn: **FactHunter**.
 
 ### 7.1 Installasjonssiden
 

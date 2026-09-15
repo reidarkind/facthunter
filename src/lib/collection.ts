@@ -1,5 +1,6 @@
 import { POINTS_READ, POINTS_UNLOCK } from './constants'
 import type { SavedFact } from '../types'
+import { isSameArticle } from './article'
 
 export function factId(lang: string, pageId: string): string {
   return `wikipedia:${lang}:${pageId}`
@@ -47,7 +48,7 @@ export function withUnlocked(
   fact: SavedFact,
   nowIso: string,
 ): SavedFact[] {
-  if (facts.some((f) => f.id === fact.id)) return facts
+  if (facts.some((f) => isSameArticle(f, fact))) return facts
   return [...facts, { ...fact, unlockedAt: nowIso }]
 }
 

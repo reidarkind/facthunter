@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import { useT } from '../i18n/useT'
 import { InstallPage } from '../install/InstallPage'
+import type { SavedFact } from '../types'
 import { SettingsPage } from './SettingsPage'
 
 export type AppTab = 'hunt' | 'recon' | 'collection'
@@ -11,6 +12,8 @@ export function AppShell(props: {
   onTab: (tab: AppTab) => void
   overlay: AppOverlay
   onCloseOverlay: () => void
+  facts?: SavedFact[]
+  onFactsChange?: (facts: SavedFact[]) => void
   onClearCollection?: () => void
   children: ReactNode
 }) {
@@ -31,6 +34,8 @@ export function AppShell(props: {
         <SettingsPage
           onBack={props.onCloseOverlay}
           onClearCollection={props.onClearCollection}
+          facts={props.facts}
+          onFactsChange={props.onFactsChange}
         />
       </div>
     )

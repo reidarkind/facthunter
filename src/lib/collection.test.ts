@@ -42,6 +42,20 @@ describe('withUnlocked / withRead', () => {
     expect(readAgain[0].readAt).toBe('2026-01-04T00:00:00.000Z')
     expect(scoreFor(readAgain)).toBe(15)
   })
+
+  it('does not unlock the same Wikidata article in another language', () => {
+    const norwegian = fact({ wikidataId: 'Q215023' })
+    const english = fact({
+      id: 'wikipedia:en:2',
+      lang: 'en',
+      title: 'Nidaros Cathedral',
+      wikidataId: 'Q215023',
+    })
+    const once = withUnlocked([], norwegian, '2026-01-01T00:00:00.000Z')
+    const twice = withUnlocked(once, english, '2026-01-03T00:00:00.000Z')
+    expect(twice).toHaveLength(1)
+    expect(twice[0].id).toBe('wikipedia:no:1')
+  })
 })
 
 describe('search and filter', () => {

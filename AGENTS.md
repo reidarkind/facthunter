@@ -20,7 +20,7 @@ Single test: `npx vitest run src/lib/geo.test.ts`
 
 ## Code style
 
-UI copy lives in `src/i18n/strings.ts`. Default locale is Norwegian. First visit with empty `facthunter-lang` uses `navigator.languages` if it matches a UI locale (`nb`/`nn`/`no` → `no`; else `en`/`de`/`es`/`pt`/`fr`); otherwise Norwegian. Settings has a language dropdown for the app UI; Wikipedia sources control article language. Settings can empty the IndexedDB collection after confirm. Language names stay native (`Norsk`, `English`, `Deutsch`, `Español`, `Português`, `Français`). App name is **FactHunter**. No TypeScript enums. Use `import type`. Named exports except `src/App.tsx` (Vite default).
+UI copy lives in `src/i18n/strings.ts`. Default locale is Norwegian. First visit with empty `facthunter-lang` uses `navigator.languages` if it matches a UI locale (`nb`/`nn`/`no` → `no`; else `en`/`de`/`es`/`pt`/`fr`); otherwise Norwegian. Settings has a language dropdown for the app UI; Wikipedia sources control article language. Settings can export, import (merge or replace), and empty the IndexedDB collection after confirm. Language names stay native (`Norsk`, `English`, `Deutsch`, `Español`, `Português`, `Français`). App name is **FactHunter**. No TypeScript enums. Use `import type`. Named exports except `src/App.tsx` (Vite default).
 
 ```ts
 // CORRECT
@@ -32,7 +32,7 @@ enum Lang { No, En }
 export default function scoreFor(facts: SavedFact[]) { /* ... */ }
 ```
 
-Keep hunt numbers in `src/lib/constants.ts`. Do not scatter 500/50/40/150. Wikipedia result caps live in `WIKI_LIMITS` / `DEFAULT_WIKI_LIMIT` / `WIKI_MAX_LIMIT`. Wikipedia editions live in `WIKI_SOURCE_LANGS` (settings: 1–3 languages in priority order; default `no` then `en`). Same Wikidata Q-id (or langlink title) is one place; earlier language wins. Wikipedia fetches send `Api-User-Agent` (`WIKI_API_USER_AGENT` in `src/lib/wikipedia.ts`). Wikipedia refetch waits for the in-flight request; GPS still updates AR layout from cached places. Rekognoser always fetches every geotagged hit within 50 m. Places inside the 500 m hunt ring stay unclustered; farther hits cluster when they overlap at the locked 2 km map scale (`reconClusterMeters`). Cluster marks are a modest teal disc with a count; they do not grow with membership.
+Keep hunt numbers in `src/lib/constants.ts`. Do not scatter 500/50/40/150. Wikipedia result caps live in `WIKI_LIMITS` / `DEFAULT_WIKI_LIMIT` / `WIKI_MAX_LIMIT`. Wikipedia editions live in `WIKI_SOURCE_LANGS` (settings: 1–3 languages in priority order; default `no` then `en`). Same Wikidata Q-id (or langlink title) is one place on hunt, unlock, and import merge; earlier Wikipedia-source language wins. Wikipedia fetches send `Api-User-Agent` (`WIKI_API_USER_AGENT` in `src/lib/wikipedia.ts`). Wikipedia refetch waits for the in-flight request; GPS still updates AR layout from cached places. Rekognoser always fetches every geotagged hit within 50 m. Places inside the 500 m hunt ring stay unclustered; farther hits cluster when they overlap at the locked 2 km map scale (`reconClusterMeters`). Cluster marks are a modest teal disc with a count; they do not grow with membership.
 
 ```ts
 // id format — callers must String(pageId)
@@ -47,7 +47,7 @@ src/i18n/*           no/en/de/es/pt/fr copy; LocaleProvider; default Norwegian
 src/hunt/*           camera, compass, GPS, AR signs
 src/recon/*          scout map; anonymous blips; heading wedge; no unlock
 src/facts/FactSheet  extract + share
-src/collection/*     search, filter, export/import
+src/collection/*     search, filter; export/import UI used from Settings
 src/install/*        privacy + home-screen steps + credits + browser-tab hint
 src/app/AppShell     tabs Rekognoser | Jakt | Samling (opens on Rekognoser), hamburger, `#/install` `#/settings`
 ```

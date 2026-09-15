@@ -151,4 +151,82 @@ describe('mergeFacts', () => {
     expect(merged.extract).toBe('Incoming extract')
     expect(merged.thumbnailUrl).toBe('https://example.com/thumb.jpg')
   })
+
+  it('collapses the same Wikidata article in two languages into one', () => {
+    const local = [
+      fact({
+        id: 'wikipedia:no:1',
+        lang: 'no',
+        title: 'Nidarosdomen',
+        wikidataId: 'Q215023',
+      }),
+    ]
+    const incoming = [
+      fact({
+        id: 'wikipedia:en:2',
+        lang: 'en',
+        title: 'Nidaros Cathedral',
+        extract: 'A cathedral in Trondheim',
+        pageUrl: 'https://en.wikipedia.org/wiki/Nidaros_Cathedral',
+        wikidataId: 'Q215023',
+      }),
+    ]
+    const { facts, newCount } = mergeFacts(local, incoming, ['no', 'en'])
+    expect(newCount).toBe(0)
+    expect(facts).toHaveLength(1)
+    expect(facts[0].id).toBe('wikipedia:no:1')
+    expect(facts[0].lang).toBe('no')
+    expect(facts[0].title).toBe('Nidarosdomen')
+  })
+
+  it('keeps the Wikipedia-source language when merging the same Q-id', () => {
+    const local = [
+      fact({
+        id: 'wikipedia:en:2',
+        lang: 'en',
+        title: 'Nidaros Cathedral',
+        wikidataId: 'Q215023',
+        unlockedAt: '2026-01-02T00:00:00.000Z',
+      }),
+    ]
+    const incoming = [
+      fact({
+        id: 'wikipedia:no:1',
+        lang: 'no',
+        title: 'Nidarosdomen',
+        wikidataId: 'Q215023',
+        unlockedAt: '2026-01-01T00:00:00.000Z',
+        readAt: '2026-01-03T00:00:00.000Z',
+      }),
+    ]
+    const { facts, newCount } = mergeFacts(local, incoming, ['no', 'en'])
+    expect(newCount).toBe(0)
+    expect(facts).toHaveLength(1)
+    expect(facts[0].id).toBe('wikipedia:no:1')
+    expect(facts[0].title).toBe('Nidarosdomen')
+    expect(facts[0].unlockedAt).toBe('2026-01-01T00:00:00.000Z')
+    expect(facts[0].readAt).toBe('2026-01-03T00:00:00.000Z')
+  })
+
+  it('matches across languages via langlink titles', () => {
+    const local = [
+      fact({
+        id: 'wikipedia:no:1',
+        lang: 'no',
+        title: 'Nidarosdomen',
+        langTitles: { en: 'Nidaros Cathedral' },
+      }),
+    ]
+    const incoming = [
+      fact({
+        id: 'wikipedia:en:2',
+        lang: 'en',
+        title: 'Nidaros Cathedral',
+      }),
+    ]
+    const { facts, newCount } = mergeFacts(local, incoming, ['no', 'en'])
+    expect(newCount).toBe(0)
+    expect(facts).toHaveLength(1)
+    expect(facts[0].id).toBe('wikipedia:no:1')
+  })
 })

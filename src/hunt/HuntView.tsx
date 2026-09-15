@@ -30,6 +30,8 @@ function toSaved(place: NearbyPlace, nowIso: string): SavedFact {
     lon: place.lon,
     unlockedAt: nowIso,
     source: 'wikipedia',
+    ...(place.wikidataId ? { wikidataId: place.wikidataId } : {}),
+    ...(place.langTitles ? { langTitles: place.langTitles } : {}),
   }
 }
 

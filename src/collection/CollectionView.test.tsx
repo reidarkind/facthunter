@@ -37,6 +37,12 @@ it('search for stifts hides the other card', async () => {
   expect(screen.queryByText('Nidelva')).not.toBeInTheDocument()
 })
 
+it('does not offer export or import on the collection tab', () => {
+  render(<CollectionView facts={facts} onChange={() => {}} />)
+  expect(screen.queryByRole('button', { name: 'Eksporter' })).not.toBeInTheDocument()
+  expect(screen.queryByRole('button', { name: 'Importer' })).not.toBeInTheDocument()
+})
+
 it('filter Lest shows only read facts', async () => {
   const user = userEvent.setup()
   render(<CollectionView facts={facts} onChange={() => {}} />)

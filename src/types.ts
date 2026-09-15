@@ -10,6 +10,8 @@ export type SavedFact = {
   unlockedAt: string
   readAt?: string
   source: 'wikipedia'
+  wikidataId?: string
+  langTitles?: Record<string, string>
 }
 
 export type NearbyPlace = {

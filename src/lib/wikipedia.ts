@@ -1,3 +1,5 @@
+import { isSameArticle } from './article'
+import { factId } from './collection'
 import {
   APP_NAME,
   DEFAULT_WIKI_LIMIT,
@@ -6,7 +8,6 @@ import {
   UNLOCK_RADIUS_M,
   WIKI_MAX_LIMIT,
 } from './constants'
-import { factId } from './collection'
 import { movedAtLeast, type Coord } from './geo'
 import { parseWikiSources, type WikiSources } from './prefs'
 import type { NearbyPlace } from '../types'
@@ -25,44 +26,14 @@ function wikiRequestInit(): RequestInit {
 
 export function mergeWikiPlaces(...groups: NearbyPlace[][]): NearbyPlace[] {
   const kept: NearbyPlace[] = []
-  const claimedQ = new Set<string>()
 
   for (const group of groups) {
     for (const place of group) {
-      if (isSameArticle(place, kept, claimedQ)) continue
+      if (kept.some((existing) => isSameArticle(existing, place))) continue
       kept.push(place)
-      if (place.wikidataId) claimedQ.add(place.wikidataId)
     }
   }
   return kept
-}
-
-function titlesMatch(a: string, b: string): boolean {
-  return a.localeCompare(b, undefined, { sensitivity: 'accent' }) === 0
-}
-
-function isSameArticle(
-  candidate: NearbyPlace,
-  kept: NearbyPlace[],
-  claimedQ: Set<string>,
-): boolean {
-  if (candidate.wikidataId && claimedQ.has(candidate.wikidataId)) return true
-  return kept.some((place) => {
-    if (
-      candidate.wikidataId &&
-      place.wikidataId &&
-      candidate.wikidataId === place.wikidataId
-    ) {
-      return true
-    }
-    const candidateAsKept = candidate.langTitles?.[place.lang]
-    if (candidateAsKept && titlesMatch(candidateAsKept, place.title)) return true
-    const keptAsCandidate = place.langTitles?.[candidate.lang]
-    if (keptAsCandidate && titlesMatch(keptAsCandidate, candidate.title)) {
-      return true
-    }
-    return false
-  })
 }
 
 export function mergePlacesById(places: NearbyPlace[]): NearbyPlace[] {

@@ -49,6 +49,8 @@ export default function App() {
         window.location.hash = ''
         setOverlay('none')
       }}
+      facts={facts}
+      onFactsChange={onFactsChange}
       onClearCollection={() => onFactsChange([])}
     >
       {tab === 'hunt' ? (

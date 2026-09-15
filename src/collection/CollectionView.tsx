@@ -1,11 +1,6 @@
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { FactSheet } from '../facts/FactSheet'
 import { useT } from '../i18n/useT'
-import {
-  buildExportPayload,
-  mergeFacts,
-  parseImportPayload,
-} from '../lib/backup'
 import {
   filterFacts,
   scoreFor,
@@ -16,10 +11,6 @@ import type { SavedFact } from '../types'
 
 type Filter = 'all' | 'unread' | 'read'
 
-function exportFilename(now: Date): string {
-  return `facthunter-samling-${now.toISOString().slice(0, 10)}.json`
-}
-
 export function CollectionView(props: {
   facts: SavedFact[]
   onChange: (facts: SavedFact[]) => void
@@ -29,8 +20,6 @@ export function CollectionView(props: {
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState<Filter>('all')
   const [openId, setOpenId] = useState<string | null>(null)
-  const [notice, setNotice] = useState<string | null>(null)
-  const fileRef = useRef<HTMLInputElement>(null)
 
   const visible = useMemo(() => {
     return filterFacts(searchFacts(facts, query), filter)
@@ -38,49 +27,6 @@ export function CollectionView(props: {
 
   const openSaved = openId ? facts.find((f) => f.id === openId) : undefined
   const emptySrc = `${import.meta.env.BASE_URL}empty-journal.png`
-
-  async function exportCollection() {
-    const payload = buildExportPayload(facts, new Date().toISOString())
-    const file = new File(
-      [JSON.stringify(payload, null, 2)],
-      exportFilename(new Date()),
-      { type: 'application/json' },
-    )
-    const nav = navigator as Navigator & {
-      canShare?: (data: ShareData) => boolean
-    }
-    if (nav.canShare?.({ files: [file] }) && navigator.share) {
-      try {
-        await navigator.share({ files: [file], title: 'FactHunter' })
-        return
-      } catch {
-        /* fall through to download */
-      }
-    }
-    const url = URL.createObjectURL(file)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = file.name
-    link.click()
-    URL.revokeObjectURL(url)
-  }
-
-  async function importFile(file: File) {
-    setNotice(null)
-    try {
-      const raw: unknown = JSON.parse(await file.text())
-      const parsed = parseImportPayload(raw)
-      if (!parsed.ok) {
-        setNotice(t('importFailed'))
-        return
-      }
-      const { facts: merged, newCount } = mergeFacts(facts, parsed.facts)
-      onChange(merged)
-      setNotice(t('importedNew', { count: newCount }))
-    } catch {
-      setNotice(t('importFailed'))
-    }
-  }
 
   return (
     <section className="collection">
@@ -128,27 +74,6 @@ export function CollectionView(props: {
           {t('filterRead')}
         </button>
       </div>
-
-      <div className="backup-row">
-        <button type="button" onClick={() => void exportCollection()}>
-          {t('export')}
-        </button>
-        <button type="button" onClick={() => fileRef.current?.click()}>
-          {t('import')}
-        </button>
-        <input
-          ref={fileRef}
-          type="file"
-          accept="application/json,.json"
-          hidden
-          onChange={(event) => {
-            const file = event.target.files?.[0]
-            event.target.value = ''
-            if (file) void importFile(file)
-          }}
-        />
-      </div>
-      {notice ? <p className="notice">{notice}</p> : null}
 
       {facts.length === 0 ? (
         <div className="empty">

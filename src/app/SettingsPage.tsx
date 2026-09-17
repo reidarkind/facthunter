@@ -149,13 +149,20 @@ export function SettingsPage(props: {
       </section>
       <section>
         <h2>{t('appUpdateTitle')}</h2>
-        <button
-          type="button"
-          disabled={updateStep === 'checking'}
-          onClick={onCheckUpdate}
-        >
-          {t('appUpdate')}
-        </button>
+        <div className="backup-row">
+          <button
+            type="button"
+            disabled={updateStep === 'checking'}
+            onClick={onCheckUpdate}
+          >
+            {t('appUpdate')}
+          </button>
+          {updateStep === 'available' ? (
+            <button type="button" onClick={() => void applyUpdate()}>
+              {t('appUpdateApply')}
+            </button>
+          ) : null}
+        </div>
         {updateStep === 'checking' ? (
           <p className="notice">{t('appUpdateChecking')}</p>
         ) : null}
@@ -166,12 +173,7 @@ export function SettingsPage(props: {
           <p className="notice">{t('appUpdateOffline')}</p>
         ) : null}
         {updateStep === 'available' ? (
-          <>
-            <p className="notice">{t('appUpdateAvailable')}</p>
-            <button type="button" className="primary" onClick={() => void applyUpdate()}>
-              {t('appUpdateApply')}
-            </button>
-          </>
+          <p className="notice">{t('appUpdateAvailable')}</p>
         ) : null}
       </section>
       {props.onClearCollection || props.onFactsChange ? (

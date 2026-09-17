@@ -147,6 +147,11 @@ p {
   justify-content: center;
 }
 
+.backup-row button:disabled,
+.filter-row button:disabled {
+  opacity: 0.55;
+}
+
 .primary {
   background: var(--gold);
   color: var(--teal-deep);

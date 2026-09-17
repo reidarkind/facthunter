@@ -5,6 +5,12 @@ import { useT } from '../i18n/useT'
 import { WIKI_LIMITS, WIKI_SOURCE_LANGS } from '../lib/constants'
 import { LOCALES, type Locale } from '../lib/locale'
 import { parseWikiLang, withWikiSlot } from '../lib/prefs'
+import {
+  applyAppUpdate,
+  browserUpdateBridge,
+  checkForAppUpdate,
+  type UpdateCheckResult,
+} from '../pwa/updates'
 import type { SavedFact } from '../types'
 import { usePrefs } from './usePrefs'
 
@@ -23,21 +29,40 @@ const SLOT_LABELS = [
   'wikiSourceTertiary',
 ] as const
 
+type UpdateStep = 'idle' | 'checking' | UpdateCheckResult
+
 export function SettingsPage(props: {
   onBack?: () => void
   onClearCollection?: () => void
   facts?: SavedFact[]
   onFactsChange?: (facts: SavedFact[]) => void
+  checkUpdate?: () => Promise<UpdateCheckResult>
+  applyUpdate?: () => void | Promise<void>
 }) {
   const { t, locale, setLocale } = useT()
   const { wikiLimit, setWikiLimit, wikiSources, setWikiSources } = usePrefs()
   const [confirmClear, setConfirmClear] = useState(false)
   const [cleared, setCleared] = useState(false)
+  const [updateStep, setUpdateStep] = useState<UpdateStep>('idle')
+
+  const checkUpdate =
+    props.checkUpdate ?? (() => checkForAppUpdate(browserUpdateBridge()))
+  const applyUpdate =
+    props.applyUpdate ??
+    (() =>
+      applyAppUpdate(browserUpdateBridge(), {
+        reload: () => window.location.reload(),
+      }))
 
   function clearCollection() {
     props.onClearCollection?.()
     setConfirmClear(false)
     setCleared(true)
+  }
+
+  function onCheckUpdate() {
+    setUpdateStep('checking')
+    void checkUpdate().then(setUpdateStep)
   }
 
   return (
@@ -121,6 +146,33 @@ export function SettingsPage(props: {
             </button>
           ))}
         </div>
+      </section>
+      <section>
+        <h2>{t('appUpdateTitle')}</h2>
+        <button
+          type="button"
+          disabled={updateStep === 'checking'}
+          onClick={onCheckUpdate}
+        >
+          {t('appUpdate')}
+        </button>
+        {updateStep === 'checking' ? (
+          <p className="notice">{t('appUpdateChecking')}</p>
+        ) : null}
+        {updateStep === 'current' ? (
+          <p className="notice">{t('appUpdateCurrent')}</p>
+        ) : null}
+        {updateStep === 'offline' ? (
+          <p className="notice">{t('appUpdateOffline')}</p>
+        ) : null}
+        {updateStep === 'available' ? (
+          <>
+            <p className="notice">{t('appUpdateAvailable')}</p>
+            <button type="button" className="primary" onClick={() => void applyUpdate()}>
+              {t('appUpdateApply')}
+            </button>
+          </>
+        ) : null}
       </section>
       {props.onClearCollection || props.onFactsChange ? (
         <section>

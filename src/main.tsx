@@ -4,6 +4,9 @@ import './index.css'
 import App from './App.tsx'
 import { LocaleProvider } from './i18n/LocaleProvider'
 import { PrefsProvider } from './app/PrefsProvider'
+import { registerPwa } from './pwa'
+
+registerPwa()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

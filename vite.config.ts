@@ -15,12 +15,21 @@ export default defineConfig({
     ...(!isTest
       ? [
           VitePWA({
-            registerType: 'autoUpdate',
+            strategies: 'injectManifest',
+            srcDir: 'src',
+            filename: 'sw.ts',
+            registerType: 'prompt',
+            injectRegister: false,
             includeAssets: [
               'icon.png',
               'empty-journal.png',
               'hunter-badge.png',
             ],
+            injectManifest: {
+              globPatterns: [
+                '**/*.{js,css,html,ico,png,svg,webmanifest}',
+              ],
+            },
             manifest: {
               name: 'FactHunter',
               short_name: 'FactHunter',

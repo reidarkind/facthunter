@@ -255,6 +255,40 @@ it('hides collection reset when it cannot clear', () => {
   ).not.toBeInTheDocument()
 })
 
+it('checks for an app update from settings', async () => {
+  const user = userEvent.setup()
+  const checkUpdate = vi.fn(async () => 'current' as const)
+  render(
+    <LocaleProvider>
+      <PrefsProvider>
+        <SettingsPage checkUpdate={checkUpdate} applyUpdate={() => {}} />
+      </PrefsProvider>
+    </LocaleProvider>,
+  )
+  await user.click(screen.getByRole('button', { name: 'Sjekk for oppdateringer' }))
+  expect(checkUpdate).toHaveBeenCalledTimes(1)
+  expect(screen.getByText('Du har nyeste versjon.')).toBeInTheDocument()
+})
+
+it('offers to load a waiting app update', async () => {
+  const user = userEvent.setup()
+  const applyUpdate = vi.fn()
+  render(
+    <LocaleProvider>
+      <PrefsProvider>
+        <SettingsPage
+          checkUpdate={async () => 'available'}
+          applyUpdate={applyUpdate}
+        />
+      </PrefsProvider>
+    </LocaleProvider>,
+  )
+  await user.click(screen.getByRole('button', { name: 'Sjekk for oppdateringer' }))
+  expect(screen.getByText(/Ny versjon/)).toBeInTheDocument()
+  await user.click(screen.getByRole('button', { name: 'Last inn ny versjon' }))
+  expect(applyUpdate).toHaveBeenCalledTimes(1)
+})
+
 it('lets the user raise the Wikipedia result cap', async () => {
   const user = userEvent.setup()
   render(

@@ -20,7 +20,7 @@ Single test: `npx vitest run src/lib/geo.test.ts`
 
 ## Code style
 
-UI copy lives in `src/i18n/strings.ts`. Default locale is Norwegian. First visit with empty `facthunter-lang` uses `navigator.languages` if it matches a UI locale (`nb`/`nn`/`no` → `no`; else `en`/`de`/`es`/`pt`/`fr`); otherwise Norwegian. Settings has a language dropdown for the app UI; Wikipedia sources control article language. Settings can export, import (merge or replace), and empty the IndexedDB collection after confirm. Language names stay native (`Norsk`, `English`, `Deutsch`, `Español`, `Português`, `Français`). App name is **FactHunter**. No TypeScript enums. Use `import type`. Named exports except `src/App.tsx` (Vite default).
+UI copy lives in `src/i18n/strings.ts`. Default locale is Norwegian. First visit with empty `facthunter-lang` uses `navigator.languages` if it matches a UI locale (`nb`/`nn`/`no` → `no`; else `en`/`de`/`es`/`pt`/`fr`); otherwise Norwegian. Settings has a language dropdown for the app UI; Wikipedia sources control article language. Settings can export, import (merge or replace), empty the IndexedDB collection after confirm, and check for app updates. Language names stay native (`Norsk`, `English`, `Deutsch`, `Español`, `Português`, `Français`). App name is **FactHunter**. No TypeScript enums. Use `import type`. Named exports except `src/App.tsx` (Vite default).
 
 ```ts
 // CORRECT
@@ -43,6 +43,7 @@ factId('no', String(page.pageid)) // wikipedia:no:123
 
 ```
 src/lib/*            pure logic; tests sit beside the module
+src/pwa/*            persistent storage + manual service-worker update check
 src/i18n/*           no/en/de/es/pt/fr copy; LocaleProvider; default Norwegian
 src/hunt/*           camera, compass, GPS, AR signs
 src/recon/*          scout map; anonymous blips; heading wedge; no unlock
@@ -50,9 +51,10 @@ src/facts/FactSheet  extract + share
 src/collection/*     search, filter; export/import UI used from Settings
 src/install/*        privacy + home-screen steps + credits + browser-tab hint
 src/app/AppShell     tabs Rekognoser | Jakt | Samling (opens on Rekognoser), hamburger, `#/install` `#/settings`
+src/sw.ts            Workbox precache + SKIP_WAITING (prompt updates from Settings)
 ```
 
-Data flow: sensors → Wikipedia fetch → AR signs → unlock writes IndexedDB → collection reads the same `SavedFact[]`. Score is derived (`10` unlock + `5` read), never stored.
+Data flow: sensors → Wikipedia fetch → AR signs → unlock writes IndexedDB → collection reads the same `SavedFact[]`. Score is derived (`10` unlock + `5` read), never stored. On production load, `registerPwa()` registers the service worker and asks the browser for persistent storage so the offline shell is less likely to be evicted.
 
 The app opens on **Rekognoser** (scout map, knowledge in the distance). A dismissible home-screen hint appears in a phone browser tab (`display-mode` not standalone, not iOS `navigator.standalone`); not on desktop. Hunt must not start until a **live** camera stream (`readyState === 'live'`) + one GPS fix + one heading exist, all from one **Start jakt** tap. If the camera track ends or GPS errors, hunt returns to the gate. Coming back to the foreground after Start retries GPS and camera; **Prøv igjen** re-requests from a user gesture. Video: `playsInline` + muted, `facingMode: environment`. Rekognoser requests compass on **Start rekognosering** for the FOV wedge, but the map still works without heading.
 
